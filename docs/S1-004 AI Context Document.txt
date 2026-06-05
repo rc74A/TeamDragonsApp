@@ -1,0 +1,40 @@
+﻿S1-004- Create AI Prompting and Review Context Document
+
+
+This document establishes the required standards for generating, reviewing, testing, and approving AI-generated code. All team members utilising our AI provider of choice(Claude)  must adhere to these workflows to guarantee approval to be able to merge with our application. 
+
+
+#1. Required Standards for Generation
+Each piece of AI-generated code must explicitly follow these three non-negotiable rules: 
+1. S1-BR-001: User authentication is required for all protected application routes.
+2. S1-BR-006: All user-scoped records must be isolated by owner identity.
+3. S1-BR-008: Ownership enforcement must be implemented server-side (frontend checks are not sufficient).
+
+
+#2. Standardised Framework for AI Prompts
+When using AI to generate code for our current deliverables (Dashboard, Authentication, and Profiles), developers must inject specific guardrails into their prompts. Do not let the AI generate generic responses that don’t fit our requirements. 
+A: Component Prompting: Dashboard Foundation
+When prompting for specific components, the AI must handle conditional views server-side, and therefore needs a specific prompt to create the component you are looking for
+Bad Prompt- “Make me a Dashboard Foundation using React with authentication”
+B: Logical Prompting: Authentication and Profile
+When prompting for user profiles or token parsing, explicitly block client-side ID parameters. 
+Bad Prompt: “Make a route to update someone’s profile on Express”
+C: CI/CD Integration
+When using AI to help write our GitHub Actions and other components, always tell the AI which other components it’s expected to work in tandem with, so the generated code can be slotted in with the rest of the components and work as intended with little to no issues.  
+
+
+#3 Team Review
+1. Human Review
+   1. Read the code first: Make sure it makes sense, matches our project structure and requirements, and doesn’t include any placeholder text or unnecessary package imports
+   2. Look for any missing requirements: Ensure that the AI didn’t forget to include anything that you specifically mentioned in the generation prompt that is crucial to the logic of the application
+2. Testing
+   1. Test it normally: Run the application normally with the AI-generated code in place and see if it works as intended, like a normal user.
+   2. Test it to break it: Run the application as a bug finder, try to intentionally break it by missing key steps and see if the code brings up any errors and handles them accordingly or crashes entirely 
+3. Pull Request Approval
+   1. Once the first two steps have been conducted successfully, push the branch with the newly generated work, open a pull request and include the check sheet below so the project manager can verify the code himself before accepting the pull request. 
+
+
+### AI Code Review Sign-off:
+- [x] Read through the AI-generated code to ensure it matches project standards.
+- [x] Tested the logic locally to confirm it works correctly.
+- [x] Verified that it handles basic error and login checks without crashing.
