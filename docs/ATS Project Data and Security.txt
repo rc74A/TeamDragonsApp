@@ -1,0 +1,24 @@
+ATS Project: Data and Security Guardrails
+
+This document defines the per-user data ownership, authorizations checks, protected route behaviors, and prohibited cross-user access patterns. 
+
+#1. Authorization Checks
+
+-If a user attempts to visit any part of the website without being logged into an account, they will be redirected to the login screen, where they will be prompted to either log in to a pre-existing account or to sign up for a new account.
+
+-While the user authentication is being authorized, the frontend will hide protected content via a loading screen i.e. a spinning circle.
+
+#2. Data Ownership
+
+-Every user will have a specific user ID that we will use to identify them in our database. 
+
+-Each user will only have access to their own resume information, but not the information of any other user.
+
+-The editing, manipulation, and deletion of a user's information can only be done by that user.
+
+-As the developers of the software, we will store any data that the user submits to us, but we do not claim ownership of the content.
+
+#3. Protected route and cross-user access patterns
+
+-If a user attempts to visit a page related to a user that is not them, they will be denied via a 403 Forbidden status code.
+
