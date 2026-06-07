@@ -1,0 +1,23 @@
+# Ruff configuration for the Team Dragons backend.
+# Ruff handles BOTH linting and formatting (replaces Black + Flake8 + isort).
+#   ruff check .          -> lint
+#   ruff check . --fix    -> lint and auto-fix
+#   ruff format .         -> format
+#   ruff format --check . -> verify formatting (used in CI)
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+# E/W: pycodestyle, F: pyflakes, I: isort, N: pep8-naming (matches our
+# naming conventions), UP: pyupgrade, B: bugbear, SIM: simplify,
+# D: pydocstyle (enforces the docstring rule in Conventions.md).
+select = ["E", "W", "F", "I", "N", "UP", "B", "SIM", "D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
