@@ -1,0 +1,64 @@
+name: CI — Build and Test
+
+# S1-008: Every pull request runs an automated build and unit tests.
+# A failing job blocks merge (enable branch protection on `main` to
+# require the jobs below).
+#
+# Linting runs in a separate workflow (lint.yml, from S1-006). Together,
+# lint.yml + ci.yml satisfy the Sprint 1 CI/CD Baseline Gate: every PR
+# runs lint + build + unit tests.
+#
+# Note on tests: the unit-test steps are wired but tolerant of the
+# frameworks not being installed yet. They run real tests automatically
+# once S1-007 (Configure Unit Test Frameworks) adds them — no edit here.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  frontend:
+    name: Frontend (build + test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Unit tests
+        # Runs the "test" script once S1-007 adds one; no-op until then.
+        run: npm run test --if-present
+
+  backend:
+    name: Backend (build + test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        # Install runtime deps once a requirements file exists.
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Build (byte-compile)
+        run: python -m compileall -q .
+      - name: Unit tests
+        # Runs pytest once S1-007 installs it; skips cleanly until then.
+        run: |
+          if python -c "import pytest" 2>/dev/null; then
+            pytest
+          else
+            echo "pytest not installed yet (added by S1-007); skipping unit tests."
+          fi
