@@ -1,18 +1,21 @@
 import { data, redirect } from "react-router";
 import type { Route } from "./+types/register";
 
-// ==========================================
-// BACKEND (Serverless Edge Action)
-// ==========================================
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
+  
+  // Extract all relevant ATS fields
   const email = formData.get("email")?.toString().trim().toLowerCase();
   const password = formData.get("password")?.toString();
   const confirmPassword = formData.get("confirmPassword")?.toString();
+  const firstName = formData.get("firstName")?.toString().trim();
+  const lastName = formData.get("lastName")?.toString().trim();
+  const dob = formData.get("dob")?.toString();
+  const phone = formData.get("phone")?.toString().trim();
 
-  // 1. Basic Client-Side Structure Validation
-  if (!email || !password || !confirmPassword) {
-    return data({ error: "All fields are required." }, { status: 400 });
+  // 1. Core Server-Side Validations
+  if (!email || !password || !confirmPassword || !firstName || !lastName || !dob || !phone) {
+    return data({ error: "All fields are required to create a profile." }, { status: 400 });
   }
 
   if (password !== confirmPassword) {
@@ -20,95 +23,103 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   try {
-    // 2. FORWARD THE REQUEST TO YOUR PYTHON BACKEND
-    // Replace with your local python server URL (e.g., http://localhost:8000)
     const BACKEND_URL = "http://localhost:8000/api/register"; 
 
+    // Forward the expanded object payload to Python
     const response = await fetch(BACKEND_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        email, 
+        password, 
+        first_name: firstName, 
+        last_name: lastName, 
+        dob, 
+        phone 
+      }),
     });
 
     const result = await response.json();
 
-    // 3. Handle Error Responses from Python
     if (!response.ok) {
       return data({ error: result.detail || "Registration failed." }, { status: response.status });
     }
 
-    // 4. Success: Redirect cleanly to the login view
     return redirect("/login");
-
   } catch (err) {
     console.error("Failed to connect to Python backend:", err);
     return data({ error: "Unable to connect to registration server." }, { status: 500 });
   }
 }
 
-// ==========================================
-// FRONTEND: React UI Component
-// ==========================================
 export default function Register({ actionData }: Route.ComponentProps) {
   const errorMessage = actionData?.error;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-xl shadow-md">
+      <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-xl shadow-md border border-gray-100">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 tracking-tight">
-            Create your account
+          <h2 className="text-center text-3xl font-extrabold text-gray-900 tracking-tight">
+            Create your ATS Profile
           </h2>
+          <p className="mt-2 text-center text-sm text-gray-500">
+            Set up your candidate account to start tracking jobs.
+          </p>
         </div>
 
         {errorMessage && (
-          <div className="rounded-md bg-red-50 p-4 border border-red-200">
+          <div className="rounded-lg bg-red-50 p-4 border border-red-200">
             <p className="text-sm font-medium text-red-800">{errorMessage}</p>
           </div>
         )}
 
-        <form className="mt-8 space-y-6" method="POST">
-          <div className="space-y-4 rounded-md shadow-sm">
+        <form className="space-y-4" method="POST">
+          {/* Name Row */}
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <input
-                id="email-address"
-                name="email"
-                type="email"
-                required
-                className="relative block w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                placeholder="Email address"
-              />
+              <label className="block text-xs font-semibold text-gray-600 mb-1">First Name</label>
+              <input name="firstName" type="text" required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-indigo-500" placeholder="John" />
             </div>
             <div>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="relative block w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                placeholder="Password"
-              />
-            </div>
-            <div>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                required
-                className="relative block w-full appearance-none rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                placeholder="Confirm Password"
-              />
+              <label className="block text-xs font-semibold text-gray-600 mb-1">Last Name</label>
+              <input name="lastName" type="text" required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-indigo-500" placeholder="Doe" />
             </div>
           </div>
 
+          {/* Contact Row */}
           <div>
+            <label className="block text-xs font-semibold text-gray-600 mb-1">Email Address</label>
+            <input name="email" type="email" required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-indigo-500" placeholder="you@example.com" />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-600 mb-1">Phone Number</label>
+            <input name="phone" type="tel" required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-indigo-500" placeholder="(123) 456-7890" />
+          </div>
+
+          {/* DOB Row */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-600 mb-1">Date of Birth</label>
+            <input name="dob" type="date" required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-indigo-500" />
+          </div>
+
+          {/* Passwords */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-600 mb-1">Password</label>
+            <input name="password" type="password" required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-indigo-500" placeholder="••••••••" />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-600 mb-1">Confirm Password</label>
+            <input name="confirmPassword" type="password" required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-indigo-500" placeholder="••••••••" />
+          </div>
+
+          <div className="pt-2">
             <button
               type="submit"
-              className="group relative flex w-full justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors cursor-pointer"
+              className="w-full flex justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 transition-colors cursor-pointer shadow-sm"
             >
-              Sign Up
+              Register Candidate Profile
             </button>
           </div>
         </form>
