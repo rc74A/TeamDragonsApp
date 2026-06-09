@@ -1,9 +1,9 @@
 import { Link } from "react-router";
 import "./app.css";
 
-export default function App() {
+export default function LoginView() {
   return (
-  <div className="page-container">
+    <div className="page-container">
     <header className="banner">
       <h1>Dragon Application</h1>
     </header>
@@ -27,12 +27,11 @@ export default function App() {
       <main className="main-content">
         <h2>Welcome</h2>
         <p>
-          This is your dashboard.
+          This is your profile page.
         </p>
       </main>
     </div>
   </div>
-);
+  );
 }
-
 
