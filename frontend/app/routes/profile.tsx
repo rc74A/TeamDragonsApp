@@ -2,15 +2,35 @@ import { Link } from "react-router";
 
 export default function LoginView() {
   return (
-    <> 
-      <nav>
-        <Link to="/">Home</Link>
-        {" | "}
-        <Link to="/login">Login</Link>
-      </nav>
-      
-      <h1>Login Page Test</h1>
-    </> 
+    <div className="page-container">
+    <header className="banner">
+      <h1>Dragon Application</h1>
+    </header>
+
+    <div className="content-layout">
+      <aside className="sidebar">
+        <nav>
+          <ul className="menu-list">
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#profile">Profile</a></li>
+            <li><a href="#settings">Settings</a></li>
+	    {/* 
+		For now a hyperlink, later will block access
+	        with a login screen until user logs in 	
+	    */}
+            <li><a href="#login">Dashboard</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main className="main-content">
+        <h2>Welcome</h2>
+        <p>
+          This is your profile page.
+        </p>
+      </main>
+    </div>
+  </div>
   );
 }
 
