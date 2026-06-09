@@ -13,7 +13,7 @@ export default function App() {
         <nav>
           <ul className="menu-list">
             <li><a href="#dashboard">Dashboard</a></li>
-            <li><a href="#profile">Profile</a></li>
+            <li><a href="./profile.tsx">Profile</a></li>
             <li><a href="#settings">Settings</a></li>
 	    {/* 
 		For now a hyperlink, later will block access
