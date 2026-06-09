@@ -12,7 +12,7 @@ export default function Settings() {
       <aside className="sidebar">
         <nav>
           <ul className="menu-list">
-            <li><a href="/">Dashboard</a></li>
+            <li><a href="/app/">Dashboard</a></li>
             <li><a href="/profile">Profile</a></li>
             <li><a href="/settings">Settings</a></li>
 	    {/* 
