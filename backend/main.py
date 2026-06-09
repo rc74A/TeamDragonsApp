@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from invalid import authrouter
 app = FastAPI()
 
 origins = [
@@ -16,6 +16,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(authrouter)
 
 @app.get("/", tags=["root"])
 async def read_root() -> dict:
