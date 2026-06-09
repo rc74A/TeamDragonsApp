@@ -5,7 +5,7 @@ app = FastAPI()
 
 origins = [
     "https://team-dragons-app.vercel.app",
-    "", # Local dev ONLY
+    "http://localhost:5000", # Local dev ONLY
 ]
 
 app.add_middleware(
@@ -16,6 +16,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/", tags=["root"])
+async def read_root() -> dict:
+    return {"message": "Backend testing"}
 
 @app.get("/api/login")
 def verify_hashed_login(username: str, password: str):
