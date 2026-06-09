@@ -12,9 +12,9 @@ export default function LoginView() {
       <aside className="sidebar">
         <nav>
           <ul className="menu-list">
-            <li><a href="#dashboard">Dashboard</a></li>
-            <li><a href="#profile">Profile</a></li>
-            <li><a href="#settings">Settings</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/settings">Settings</a></li>
 	    {/* 
 		For now a hyperlink, later will block access
 	        with a login screen until user logs in 	

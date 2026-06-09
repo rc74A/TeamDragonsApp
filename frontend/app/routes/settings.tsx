@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import "./app.css";
 
-export default function App() {
+export default function Settings() {
   return (
   <div className="page-container">
     <header className="banner">
@@ -27,12 +27,10 @@ export default function App() {
       <main className="main-content">
         <h2>Welcome</h2>
         <p>
-          This is your dashboard.
+          This is the settings page.
         </p>
       </main>
     </div>
   </div>
 );
 }
-
-
