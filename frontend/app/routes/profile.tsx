@@ -15,11 +15,12 @@ export default function LoginView() {
             <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/profile">Profile</a></li>
             <li><a href="/settings">Settings</a></li>
+            <li><a href="/login">Login</a></li>
 	    {/* 
 		For now a hyperlink, later will block access
 	        with a login screen until user logs in 	
 	    */}
-            <li><a href="#login">Dashboard</a></li>
+            <li><a href="/login">Dashboard</a></li>
           </ul>
         </nav>
       </aside>
