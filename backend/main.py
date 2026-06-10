@@ -63,3 +63,10 @@ def register_user(username: str, password: str):
         # Don't forget to store the salt along with the password
     # 4.) Return true
     return True
+
+
+@app.get("/api/current-user")
+def get_current_user():
+    # For Sprint 1, we can return a mock user or track the last registered session.
+    # Replace this with your database or state lookup as authentication expands!
+    return {"username": "Joshua"}
