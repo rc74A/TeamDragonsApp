@@ -1,11 +1,12 @@
 import { Link } from "react-router";
 import React, { useState } from 'react';
 import "./app.css";
-import { errorMonitor } from "events";
 
-export default function Settings() {
+export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginResponse, setLoginResponse] = useState("");
+  const [error, setError] = useState("");
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -17,9 +18,17 @@ export default function Settings() {
 
   const submitLogin = async (e) => 
   {
+    console.log("submit fired");
+    {/* TODO:
+      Plaintext for now, ENCRYPT LATER
+      Additionally validate input
+      
+    */}
+
     e.preventDefault();
-    console.log("TEST\n");
+    setError("");
     try {
+
       const response = await fetch('http://localhost:8000/api/login', {
         method: 'POST',
         headers: {
@@ -29,9 +38,17 @@ export default function Settings() {
       });
 
       const data = await response.json();
-      console.log(data.message);
-    } catch (error) {
-      console.error("Error sending data:", error);
+      if (!response.ok) {
+        setError(data.message || "Login failed");
+        return;
+      }
+
+      setLoginResponse(data.message);
+    } catch (err) {
+      setError("Network error, please try again");
+    }
+    finally {
+      setPassword("");
     }
 
   }
@@ -68,8 +85,11 @@ export default function Settings() {
           <input value={password} onChange={handlePasswordChange} className="bg-white text-black" type="password" id="password" name="password"/><br/>
 
           <button type="submit" className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-            Button
+            Log In
           </button>
+          {loginResponse && <p className="text-green-900">{loginResponse}</p>}
+          {error && <p className="text-red-500">{error}</p>}
+
         </form>
         <br/><br/><br/><br/><br/><br/><br/><br/>
       </div>
