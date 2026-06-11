@@ -1,5 +1,5 @@
 .env
 
-#Josh Local testing variables that dont need to be in github__pycache__/
+#Josh Local testing variables that dont need to be in github
 *.pyc
 .vscode/

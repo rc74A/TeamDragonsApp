@@ -69,4 +69,4 @@ def register_user(username: str, password: str):
 def get_current_user():
     # For Sprint 1, we can return a mock user or track the last registered session.
     # Replace this with your database or state lookup as authentication expands!
-    return {"username": "Joshua"}
+    return {"username": "USER!!"}
