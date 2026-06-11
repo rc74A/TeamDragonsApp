@@ -1,7 +1,9 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from database import Base, engine
 from invalid import authrouter
+from jobs import jobsrouter
 from pydantic import BaseModel
 
 # ----- FastAPI setup -----
@@ -15,6 +17,10 @@ origins = [
 async def lifespan(app: FastAPI):
     # Init
     print("Starting Up")
+    # Baseline migration approach (S1-019): create missing tables on
+    # startup. Replace with real migrations (e.g. Alembic) when the
+    # schema starts changing.
+    Base.metadata.create_all(bind=engine)
 
     yield
 
@@ -27,10 +33,11 @@ app.add_middleware(
     allow_origins=origins,
     allow_origin_regex=r"https://.*\.vercel\.app",  # Preview vercel urls
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type", "Authorizatoin"],
+    allow_methods=["GET", "POST", "PUT"],
+    allow_headers=["Content-Type", "Authorization", "X-User-Id"],
 )
 app.include_router(authrouter)
+app.include_router(jobsrouter)
 
 # ----- Classes -----
 

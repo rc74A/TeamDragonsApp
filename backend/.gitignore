@@ -1,0 +1,13 @@
+# Python build/cache artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Local databases
+*.db
+
+# Virtual environments
+.venv/
+venv/
