@@ -8,7 +8,7 @@ export default function App() {
       <h1>Dragon Application</h1>
     </header>
 
-    <div className="content-layout">
+    <div className="contents">
       <aside className="sidebar">
         <nav>
           <ul className="menu-list">
