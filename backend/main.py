@@ -93,3 +93,9 @@ def register_user(creds: RegisterRequest):
         # Don't forget to store the salt along with the password
     # 4.) Return true
     return True
+
+
+
+
+# Merge Jasons Login Invalidation
+# Merge Joel's Database 
