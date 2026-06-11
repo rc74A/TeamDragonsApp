@@ -32,7 +32,7 @@ app.add_middleware(
     allow_origins=origins,
     allow_origin_regex=r"https://.*\.vercel\.app",  # Preview vercel urls
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT"],
+    allow_methods=["GET", "POST", "PUT", "ACCEPT"],
     allow_headers=["Content-Type", "Authorization", "X-User-Id"],
 )
 app.include_router(authrouter)
@@ -43,33 +43,3 @@ app.include_router(jobsrouter)
 @app.get("/", tags=["root"])
 async def read_root() -> dict:
     return {"message": "Backend testing"}
-
-
-
-
-
-
-from database import get_db
-from models import User
-
-
-Base.metadata.create_all(bind=engine)
-
-db = next(get_db())
-"""
-user = User(
-    id=0,
-    username="test",
-    hashed_password="test"
-)
-db.add(user)
-db.commit()
-db.refresh(user)
-"""
-
-query = db.query(User).filter(User.id == 0, User.username == "test")
-print(query.count())
-
-
-# Merge Jasons Login Invalidation
-# Merge Joel's Database 

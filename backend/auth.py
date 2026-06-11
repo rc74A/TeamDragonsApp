@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Response, HTTPException, Depends
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
 from database import get_db
 from models import User
@@ -35,7 +36,7 @@ def logout(response: Response):
   return {"message": "Logout Successful"}
 
 @authrouter.post("/login")
-def verify_hashed_login(creds: LoginRequest):
+def verify_hashed_login(creds: LoginRequest, db: Session = Depends(get_db)):
     """
     Authenting encrypted username / password from frontend
 
@@ -47,22 +48,23 @@ def verify_hashed_login(creds: LoginRequest):
         bool: True if password was correct, False if not
 
     """
+    print("TEST")
 
     if creds.uname == "" or creds.pwd == "":
       raise HTTPException(status_code=401, detail="Username or password cannot be empty")
 
     query = db.query(User).filter(User.username == creds.uname)
 
-    if query.count() != 0:
-      raise HTTPException(status_code=401, detail="User {creds.uname} isn't registered")
+    if query.count() == 0:
+      raise HTTPException(status_code=401, detail=f"User {creds.uname} isn't registered")
 
-    if query.uname != uname or query.hashed_password != password:
+    if query.first().username != creds.uname or query.first().hashed_password != creds.pwd:
       raise HTTPException(status_code=401, detail="Invalid username or password")
     
     return {"message": "Login successful"}
 
 @authrouter.post("/register")
-def register_user(creds: RegisterRequest):
+def register_user(creds: RegisterRequest, db: Session = Depends(get_db)):
     """
     Registering users to the database
 
@@ -74,10 +76,25 @@ def register_user(creds: RegisterRequest):
         bool: True if registration successful, False if not
 
     """
-    # 1.) Check if username already exists in DB, if so return false
-    # 2.) Check if password is secure enough, if not return false
-    # 3.) If both checks register in the db
-        # Don't forget to unencrypt using the same hashing algorithm
-        # Don't forget to store the salt along with the password
-    # 4.) Return true
-    return True
+    if creds.uname == "" or creds.pwd == "":
+      raise HTTPException(status_code=401, detail="Username or password cannot be empty")
+
+    query = db.query(User).filter(User.username == creds.uname)
+
+    if query.count() != 0:
+      raise HTTPException(status_code=401, detail="Username {creds.uname} is already registered")
+
+    # Check if password secure enough    
+    # Don't forget to unencrypt using the same hashing algorithm
+    # Don't forget to store the salt along with the password
+
+    user = User(
+        id=query.count(),
+        username=username,
+        hashed_password=password
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    return {"message": "Registration Successful"}
