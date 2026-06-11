@@ -37,3 +37,12 @@ class Job(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=utc_now
     )
+
+class User(Base):
+    """A user that has been registered to the database"""
+
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    username: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    hashed_password: Mapped[str] = mapped_column(String(200), nullable=False)
