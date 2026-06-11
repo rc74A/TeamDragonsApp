@@ -11,7 +11,7 @@ body {
 
 /* Top Banner */
 .banner {
-    background-color: #2c3e50;
+    background-color: #0085FA;
     color: white;
     padding: 20px;
     text-align: center;
@@ -48,8 +48,9 @@ body {
         }
 
 /* Main Content Area */
-.content {
+.main-content {
     flex: 1;
     padding: 20px;
     background-color: #f4f4f4;
+    text-align: center;
 }
