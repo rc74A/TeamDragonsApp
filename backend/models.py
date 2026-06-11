@@ -1,0 +1,39 @@
+from datetime import datetime, timezone
+
+from sqlalchemy import DateTime, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+from database import Base
+
+
+def utc_now() -> datetime:
+    """
+    Get the current UTC time.
+
+    Returns:
+        datetime: Timezone-aware current time in UTC.
+    """
+    return datetime.now(timezone.utc)
+
+
+class Job(Base):
+    """
+    A job application record owned by a single user (S1-BR-006).
+
+    Baseline fields follow S1-BR-014: title, company, stage, and the
+    last activity date.
+    """
+
+    __tablename__ = "jobs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    owner_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    company: Mapped[str] = mapped_column(String(200), nullable=False)
+    stage: Mapped[str] = mapped_column(String(50), nullable=False, default="Saved")
+    last_activity: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=utc_now
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=utc_now
+    )
