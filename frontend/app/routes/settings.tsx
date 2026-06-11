@@ -19,7 +19,7 @@ export default function Settings() {
 		For now a hyperlink, later will block access
 	        with a login screen until user logs in 	
 	    */}
-            <li><a href="#login">Dashboard</a></li>
+            <li><a href="/login">Dashboard</a></li>
           </ul>
         </nav>
       </aside>

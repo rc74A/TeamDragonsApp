@@ -1,28 +1,55 @@
-from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from invalid import authrouter
+from pydantic import BaseModel
 
-app = FastAPI()
+# ----- FastAPI setup -----
 
 origins = [
     "https://team-dragons-app.vercel.app",
-    "http://localhost:5000", # Local dev ONLY
+    "http://localhost:5173", # Local dev ONLY
 ]
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Init
+    print("Starting Up")
+
+    yield
+
+    print("Shutting Down")
+    # Shutdown
+
+app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_origin_regex=r"https://.*\.vercel\.app",  # Preview vercel urls
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "Authorizatoin"],
 )
+app.include_router(authrouter)
+
+# ----- Classes -----
+
+class LoginRequest(BaseModel):
+    uname: str
+    pwd: str
+
+class RegisterRequest(BaseModel):
+    uname: str
+    pwd: str
+
+# ----- API Endpoints ----- 
 
 @app.get("/", tags=["root"])
 async def read_root() -> dict:
     return {"message": "Backend testing"}
 
-@app.get("/api/login")
-def verify_hashed_login(username: str, password: str):
+@app.post("/api/login")
+def verify_hashed_login(creds: LoginRequest):
     """
     Authenting encrypted username / password from frontend
 
@@ -41,10 +68,13 @@ def verify_hashed_login(username: str, password: str):
         #
     # 3.) If neither returned false, return true
     print("Testing")
-    return True
+    valid = (creds.uname == "test" and creds.pwd == "test")
+    if not valid:
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+    return {"message": "Login successful"}
 
-@app.get("/api/register")
-def register_user(username: str, password: str):
+@app.post("/api/register")
+def register_user(creds: RegisterRequest):
     """
     Registering users to the database
 
