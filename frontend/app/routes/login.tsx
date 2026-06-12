@@ -73,7 +73,7 @@ export default function Login() {
         </nav>
       </aside>
 
-    </div>
+    
 
     {/* Ugly now, we can make it look better late */}
     <main className="main-content">
@@ -94,6 +94,7 @@ export default function Login() {
         <br/><br/><br/><br/><br/><br/><br/><br/>
       </div>
     </main>
+    </div>
   </div>
 );
 }
