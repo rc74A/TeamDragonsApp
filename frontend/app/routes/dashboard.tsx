@@ -8,7 +8,7 @@ export default function App() {
       <h1>Dragon Application</h1>
     </header>
 
-    <div className="content-layout">
+    <div className="container">
       <aside className="sidebar">
         <nav>
           <ul className="menu-list">
@@ -21,7 +21,7 @@ export default function App() {
 		For now a hyperlink, later will block access
 	        with a login screen until user logs in 	
 	    */}
-            <li><a href="/login">Dashboard</a></li>
+            
           </ul>
         </nav>
       </aside>

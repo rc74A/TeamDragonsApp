@@ -11,6 +11,7 @@ body {
     min-height: 100vh;
 }
 
+/*Details for register*/
 input {
     font-family: Arial, sans-serif !important;
     border: 1px solid #1E40AF !important;       
@@ -45,7 +46,7 @@ button:hover {
 }
 
 .banner {
-    background-color: #2c3e50;
+    background-color: #0085FA;
     color: white;
     padding: 20px;
     text-align: center;
@@ -60,7 +61,7 @@ button:hover {
 
 .sidebar {
     width: 220px;
-    background-color: #34495e;
+    background-color: #1370C2;
     padding-top: 20px;
 }
 
@@ -79,13 +80,14 @@ button:hover {
     background-color: #4a6785;
 }
 
-.content {
+/* Main Content Area */
+.main-content {
     flex: 1;
     padding: 20px;
-    background-color: #f4f4f4;
-    color: #1a202c;
+    text-align: center;
 }
 
+/*Register Details*/
 .register-page {
     display: flex;
     justify-content: center;
@@ -164,3 +166,65 @@ button:hover {
 .auth-footer a:hover {
     text-decoration: underline;
 }
+
+.auth-title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.auth-subtitle {
+    font-size: 14px;
+    color: #a0aec0;
+    margin-bottom: 28px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group-last {
+    margin-bottom: 28px;
+}
+
+.input-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 6px;
+    text-align: left;
+}
+
+.error-banner {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #EF4444;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.auth-footer {
+    font-size: 13px;
+    color: #a0aec0;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.auth-footer a {
+    color: #06B6D4;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
