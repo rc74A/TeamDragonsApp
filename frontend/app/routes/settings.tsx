@@ -15,6 +15,8 @@ export default function Settings() {
             <li><a href="/">Dashboard</a></li>
             <li><a href="/profile">Profile</a></li>
             <li><a href="/settings">Settings</a></li>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
 	    {/* 
 		For now a hyperlink, later will block access
 	        with a login screen until user logs in 	

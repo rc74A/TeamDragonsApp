@@ -1,12 +1,12 @@
-import { Link } from "react-router";
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import "./app.css";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loginResponse, setLoginResponse] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -16,44 +16,32 @@ export default function Login() {
     setPassword(event.target.value);
   }
 
-  const submitLogin = async (e) => 
-  {
-    console.log("submit fired");
+  const submitLogin = async (e) => {
     {/* TODO:
       Plaintext for now, ENCRYPT LATER
       Additionally validate input
-      
     */}
 
     e.preventDefault();
     setError("");
     try {
-
       const response = await fetch('http://localhost:8000/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ uname : username, pwd: password })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uname: username, pwd: password })
       });
-
       const data = await response.json();
       if (!response.ok) {
-        setError(data.message || "Login failed");
+        setError(data.detail || "Login failed");
         return;
       }
-
-      setLoginResponse(data.message);
+      navigate("/");
     } catch (err) {
       setError("Network error, please try again");
-    }
-    finally {
+    } finally {
       setPassword("");
     }
-
   }
-
-
 
   return (
   <div className="page-container">
@@ -65,10 +53,7 @@ export default function Login() {
       <aside className="sidebar">
         <nav>
           <ul className="menu-list">
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/profile">Profile</a></li>
-            <li><a href="/settings">Settings</a></li>
-            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
           </ul>
         </nav>
       </aside>
@@ -87,7 +72,6 @@ export default function Login() {
           <button type="submit" className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
             Log In
           </button>
-          {loginResponse && <p className="text-green-900">{loginResponse}</p>}
           {error && <p className="text-red-500">{error}</p>}
 
         </form>
