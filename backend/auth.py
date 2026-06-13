@@ -18,6 +18,7 @@ class LoginRequest(BaseModel):
 
 class RegisterRequest(BaseModel):
     uname: str
+    email: str
     pwd: str
 
 # ----- API Endpoints ----- 
@@ -41,14 +42,13 @@ def verify_hashed_login(creds: LoginRequest, db: Session = Depends(get_db)):
     Authenting encrypted username / password from frontend
 
     Args:
-        username (str): Unique account name
-        password (str): Hashed password sent to the backend
+        creds.username (str): Unique account name
+        creds.password (str): Hashed password sent to the backend
 
     Returns:
         bool: True if password was correct, False if not
 
     """
-    print("TEST")
 
     if creds.uname == "" or creds.pwd == "":
       raise HTTPException(status_code=401, detail="Username or password cannot be empty")
@@ -56,7 +56,7 @@ def verify_hashed_login(creds: LoginRequest, db: Session = Depends(get_db)):
     query = db.query(User).filter(User.username == creds.uname)
 
     if query.count() == 0:
-      raise HTTPException(status_code=401, detail=f"User {creds.uname} isn't registered")
+      raise HTTPException(status_code=401, detail=f"User '{creds.uname}' isn't registered")
 
     if query.first().username != creds.uname or query.first().hashed_password != creds.pwd:
       raise HTTPException(status_code=401, detail="Invalid username or password")
@@ -69,8 +69,9 @@ def register_user(creds: RegisterRequest, db: Session = Depends(get_db)):
     Registering users to the database
 
     Args:
-        username (str): Unique account name
-        password (str): Hashed password sent to the backend
+        creds.username (str): Unique account name
+        creds.email (str): Email associated with account
+        creds.password (str): Hashed password sent to the backend
 
     Returns:
         bool: True if registration successful, False if not
@@ -82,16 +83,17 @@ def register_user(creds: RegisterRequest, db: Session = Depends(get_db)):
     query = db.query(User).filter(User.username == creds.uname)
 
     if query.count() != 0:
-      raise HTTPException(status_code=401, detail="Username {creds.uname} is already registered")
+      raise HTTPException(status_code=401, detail=f"Username {creds.uname} is already registered")
 
     # Check if password secure enough    
     # Don't forget to unencrypt using the same hashing algorithm
     # Don't forget to store the salt along with the password
 
     user = User(
-        id=query.count(),
-        username=username,
-        hashed_password=password
+        # Id auto assigned
+        username=creds.uname,
+        email=creds.email,
+        hashed_password=creds.pwd
     )
     db.add(user)
     db.commit()
