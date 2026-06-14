@@ -21,7 +21,9 @@ def _reject_blank(value: str) -> str:
         raise ValueError("must not be empty")
     return stripped
 
-# ----- Jobs ----- 
+
+# ----- Jobs -----
+
 
 class JobCreate(BaseModel):
     """Request body for creating a job record."""

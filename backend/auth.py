@@ -1,40 +1,45 @@
-from fastapi import APIRouter, Response, HTTPException, Depends
+from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from database import get_db
 from models import User
 
-authrouter = APIRouter(
-  prefix="/api/auth",
-  tags=["authenthication"]
-)
+authrouter = APIRouter(prefix="/api/auth", tags=["authenthication"])
 
 # ----- Classes -----
 
+
 class LoginRequest(BaseModel):
+    """Login request body: username and hashed password."""
+
     uname: str
     pwd: str
 
+
 class RegisterRequest(BaseModel):
+    """Registration request body: username, email, and hashed password."""
+
     uname: str
     email: str
     pwd: str
 
-# ----- API Endpoints ----- 
+
+# ----- API Endpoints -----
+
 
 @authrouter.post("/logout")
 def logout(response: Response):
-  ''' 
-  We invalidate the user's session state by clearing their HTTP-only authentication cookies
+    """
+    Invalidate the user's session by clearing their HTTP-only
+    authentication cookies.
 
-  Args:
-      response: fastAPI post request
-  
-  '''
+    Args:
+        response (Response): FastAPI response used to clear the cookie.
+    """
+    response.delete_cookie(key="token")
+    return {"message": "Logout Successful"}
 
-  response.delete_cookie(key="token")
-  return {"message": "Logout Successful"}
 
 @authrouter.post("/login")
 def verify_hashed_login(creds: LoginRequest, db: Session = Depends(get_db)):
@@ -42,26 +47,36 @@ def verify_hashed_login(creds: LoginRequest, db: Session = Depends(get_db)):
     Authenting encrypted username / password from frontend
 
     Args:
-        creds.username (str): Unique account name
-        creds.password (str): Hashed password sent to the backend
+        creds (LoginRequest): Username (uname) and hashed password (pwd).
+        db (Session): Database session.
 
     Returns:
-        bool: True if password was correct, False if not
+        dict: A success message when the credentials are valid.
 
+    Raises:
+        HTTPException: 401 if fields are empty, the user is not found,
+            or the password does not match.
     """
-
     if creds.uname == "" or creds.pwd == "":
-      raise HTTPException(status_code=401, detail="Username or password cannot be empty")
+        raise HTTPException(
+            status_code=401, detail="Username or password cannot be empty"
+        )
 
     query = db.query(User).filter(User.username == creds.uname)
 
     if query.count() == 0:
-      raise HTTPException(status_code=401, detail=f"User '{creds.uname}' isn't registered")
+        raise HTTPException(
+            status_code=401, detail=f"User '{creds.uname}' isn't registered"
+        )
 
-    if query.first().username != creds.uname or query.first().hashed_password != creds.pwd:
-      raise HTTPException(status_code=401, detail="Invalid username or password")
-    
+    if (
+        query.first().username != creds.uname
+        or query.first().hashed_password != creds.pwd
+    ):
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+
     return {"message": "Login successful"}
+
 
 @authrouter.post("/register")
 def register_user(creds: RegisterRequest, db: Session = Depends(get_db)):
@@ -69,23 +84,29 @@ def register_user(creds: RegisterRequest, db: Session = Depends(get_db)):
     Registering users to the database
 
     Args:
-        creds.username (str): Unique account name
-        creds.email (str): Email associated with account
-        creds.password (str): Hashed password sent to the backend
+        creds (RegisterRequest): Username (uname), email, and hashed
+            password (pwd).
+        db (Session): Database session.
 
     Returns:
-        bool: True if registration successful, False if not
+        dict: A success message when registration succeeds.
 
+    Raises:
+        HTTPException: 401 if fields are empty or the username is taken.
     """
     if creds.uname == "" or creds.pwd == "":
-      raise HTTPException(status_code=401, detail="Username or password cannot be empty")
+        raise HTTPException(
+            status_code=401, detail="Username or password cannot be empty"
+        )
 
     query = db.query(User).filter(User.username == creds.uname)
 
     if query.count() != 0:
-      raise HTTPException(status_code=401, detail=f"Username {creds.uname} is already registered")
+        raise HTTPException(
+            status_code=401, detail=f"Username {creds.uname} is already registered"
+        )
 
-    # Check if password secure enough    
+    # Check if password secure enough
     # Don't forget to unencrypt using the same hashing algorithm
     # Don't forget to store the salt along with the password
 
@@ -93,7 +114,7 @@ def register_user(creds: RegisterRequest, db: Session = Depends(get_db)):
         # Id auto assigned
         username=creds.uname,
         email=creds.email,
-        hashed_password=creds.pwd
+        hashed_password=creds.pwd,
     )
     db.add(user)
     db.commit()

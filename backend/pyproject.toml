@@ -1,0 +1,52 @@
+# Ruff configuration for the Team Dragons backend.
+# Ruff handles BOTH linting and formatting (replaces Black + Flake8 + isort).
+#   ruff check .          -> lint
+#   ruff check . --fix    -> lint and auto-fix
+#   ruff format .         -> format
+#   ruff format --check . -> verify formatting (used in CI)
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+# A virtualenv was accidentally committed under backend/ (bin, lib, ...).
+# Exclude it so linting only covers our own source. Remove once the venv
+# is cleaned out of git.
+extend-exclude = ["bin", "lib", "lib64", "include", "share"]
+
+[tool.ruff.lint]
+# E/W: pycodestyle, F: pyflakes, I: isort, N: pep8-naming (matches our
+# naming conventions), UP: pyupgrade, B: bugbear, SIM: simplify,
+# D: pydocstyle (enforces the docstring rule in Conventions.md).
+select = ["E", "W", "F", "I", "N", "UP", "B", "SIM", "D"]
+# Conventions.md requires docstrings to exist and describe args/returns
+# (D1xx, D417). The rules below are cosmetic-only (summary punctuation,
+# line placement) and are not part of the team convention.
+ignore = [
+  "D100", # module docstrings not required, only functions/classes
+  "D104",
+  "D200", # one-line docstring fitting
+  "D205", # blank line between summary and description
+  "D212", # summary position in multi-line docstrings
+  "D400", # first line ends with period
+  "D415", # first line punctuation
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI's dependency-injection idiom requires these calls in argument
+# defaults (e.g. db: Session = Depends(get_db)); they are not real B008 bugs.
+extend-immutable-calls = [
+  "fastapi.Depends",
+  "fastapi.Query",
+  "fastapi.Header",
+  "fastapi.Path",
+  "fastapi.Body",
+  "fastapi.Cookie",
+  "fastapi.Form",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
