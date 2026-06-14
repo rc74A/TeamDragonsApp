@@ -1,4 +1,8 @@
-/* Profile page baseline content (S1-022). Scoped to the profile route. */
+/* Profile page baseline content (S1-022). Scoped to the profile route.
+   Inputs and buttons are styled globally in app.css (with !important) so
+   forms look identical across every screen — we intentionally do NOT
+   override those here. This file only adds layout, labels, the textarea
+   (not covered by the global rules), and status messages. */
 
 .profile-subtitle {
   color: #555;
@@ -6,10 +10,6 @@
 }
 
 .profile-form {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
   max-width: 560px;
 }
 
@@ -24,20 +24,19 @@
   margin-bottom: 4px;
 }
 
-.profile-form input,
+/* The global app.css theme styles input/button but not textarea; match it. */
 .profile-form textarea {
+  font-family: Arial, sans-serif;
+  border: 1px solid #1e40af;
+  background-color: #2d3748;
+  color: #ffffff;
   padding: 8px 10px;
-  border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 14px;
-  font-family: inherit;
 }
 
-.profile-form input:focus,
 .profile-form textarea:focus {
   outline: none;
-  border-color: #1e40af; /* brand royal blue */
-  box-shadow: 0 0 0 2px #06b6d4; /* brand cyan */
+  border-color: #06b6d4;
 }
 
 .error-text {
@@ -46,27 +45,14 @@
   margin-top: 4px;
 }
 
+.success-text {
+  color: #10b981;
+  font-size: 14px;
+}
+
 .form-actions {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-.btn-primary {
-  background-color: #1e40af; /* brand royal blue */
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background-color: #1b3a9c;
-}
-
-.success-text {
-  color: #10b981;
-  font-size: 14px;
+  margin-top: 8px;
 }

@@ -189,9 +189,7 @@ export default function Profile() {
             </div>
 
             <div className="form-actions">
-              <button type="submit" className="btn-primary">
-                Save profile
-              </button>
+              <button type="submit">Save profile</button>
               {status === "saved" && (
                 <span role="status" className="success-text">
                   Profile saved.

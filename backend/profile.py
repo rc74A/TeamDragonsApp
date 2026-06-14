@@ -34,7 +34,9 @@ def empty_profile(owner_id: int) -> Profile:
         phone="",
         location="",
         summary="",
-        updated_at=utc_now(),
+        # Naive UTC to match how the DateTime column round-trips from the
+        # database, so transient and persisted profiles serialize alike.
+        updated_at=utc_now().replace(tzinfo=None),
     )
 
 

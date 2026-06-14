@@ -50,6 +50,9 @@ def test_update_preserves_untouched_fields(client):
 
     refetched = client.get("/api/profile", headers=USER_1)
     assert refetched.json()["summary"] == "Backend developer."
+    # Untouched fields survive the round-trip, not just the updated one.
+    assert refetched.json()["full_name"] == "Joel Walker"
+    assert refetched.json()["email"] == "joel@example.com"
 
 
 def test_invalid_email_is_rejected(client):
