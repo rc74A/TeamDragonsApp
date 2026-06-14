@@ -5,9 +5,6 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 
-# Local databases
-*.db
-
 # Virtual environments
 .venv/
 venv/
