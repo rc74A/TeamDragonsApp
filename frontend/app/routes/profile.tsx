@@ -135,7 +135,9 @@ export default function Profile() {
                 name="full_name"
                 type="text"
                 value={form.full_name}
-                onChange={(event) => updateField("full_name", event.target.value)}
+                onChange={(event) =>
+                  updateField("full_name", event.target.value)
+                }
               />
             </div>
 
@@ -173,7 +175,9 @@ export default function Profile() {
                 name="location"
                 type="text"
                 value={form.location}
-                onChange={(event) => updateField("location", event.target.value)}
+                onChange={(event) =>
+                  updateField("location", event.target.value)
+                }
               />
             </div>
 

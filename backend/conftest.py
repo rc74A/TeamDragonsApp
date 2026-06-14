@@ -24,7 +24,7 @@ def client():
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
-    TestingSessionLocal = sessionmaker(
+    TestingSessionLocal = sessionmaker(  # noqa: N806  (session factory, PascalCase by convention)
         bind=test_engine, autoflush=False, autocommit=False
     )
     Base.metadata.create_all(bind=test_engine)
