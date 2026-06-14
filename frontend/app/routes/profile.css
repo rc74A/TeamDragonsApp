@@ -1,0 +1,58 @@
+/* Profile page baseline content (S1-022). Scoped to the profile route.
+   Inputs and buttons are styled globally in app.css (with !important) so
+   forms look identical across every screen — we intentionally do NOT
+   override those here. This file only adds layout, labels, the textarea
+   (not covered by the global rules), and status messages. */
+
+.profile-subtitle {
+  color: #555;
+  margin: 4px 0 20px;
+}
+
+.profile-form {
+  max-width: 560px;
+}
+
+.profile-form .field {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-form label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+/* The global app.css theme styles input/button but not textarea; match it. */
+.profile-form textarea {
+  font-family: Arial, sans-serif;
+  border: 1px solid #1e40af;
+  background-color: #2d3748;
+  color: #ffffff;
+  padding: 8px 10px;
+  border-radius: 4px;
+}
+
+.profile-form textarea:focus {
+  outline: none;
+  border-color: #06b6d4;
+}
+
+.error-text {
+  color: #ef4444;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.success-text {
+  color: #10b981;
+  font-size: 14px;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}

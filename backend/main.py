@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from profile import profilerouter
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -42,6 +43,7 @@ app.add_middleware(
 )
 app.include_router(authrouter)
 app.include_router(jobsrouter)
+app.include_router(profilerouter)
 
 # ----- API Endpoints -----
 
