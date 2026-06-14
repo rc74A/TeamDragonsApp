@@ -1,0 +1,13 @@
+# Normalize line endings to LF for all text files, on every platform.
+# This keeps Prettier/Ruff formatting checks consistent regardless of each
+# developer's git autocrlf setting (Windows vs. macOS/Linux).
+* text=auto eol=lf
+
+# Treat common binary assets as binary (never modify line endings).
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary

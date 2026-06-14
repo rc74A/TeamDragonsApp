@@ -67,3 +67,42 @@
 - Identical to Pythons section
 
 
+## Linting & Formatting (S1-006)
+
+Linting and formatting are enforced automatically. Every pull request runs
+these checks in CI (`.github/workflows/lint.yml`); a failing check blocks merge.
+
+### Frontend (`/frontend`)
+
+- **ESLint** (flat config in `eslint.config.js`) — TypeScript + React + Hooks rules.
+- **Prettier** (`.prettierrc.json`) — formatting.
+
+```bash
+cd frontend
+npm install        # first-time setup (installs dev tooling)
+npm run lint       # report lint problems
+npm run lint:fix   # auto-fix lint problems
+npm run format     # auto-format all files
+npm run format:check  # verify formatting (what CI runs)
+```
+
+### Backend (`/backend`)
+
+- **Ruff** (`pyproject.toml`) — handles both linting and formatting.
+
+```bash
+cd backend
+pip install -r requirements-dev.txt   # first-time setup
+ruff check .             # report lint problems
+ruff check . --fix       # auto-fix lint problems
+ruff format .            # auto-format all files
+ruff format --check .    # verify formatting (what CI runs)
+```
+
+### Editor setup
+
+`.editorconfig` at the repo root keeps indentation and line endings consistent
+across editors. Install the EditorConfig plugin for your editor, and enable
+"format on save" with the Prettier (frontend) / Ruff (backend) extensions.
+
+

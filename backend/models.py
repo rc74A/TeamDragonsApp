@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import DateTime, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
@@ -13,7 +13,7 @@ def utc_now() -> datetime:
     Returns:
         datetime: Timezone-aware current time in UTC.
     """
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class Job(Base):
@@ -37,6 +37,7 @@ class Job(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=utc_now
     )
+
 
 class User(Base):
     """A user that has been registered to the database"""
