@@ -36,9 +36,9 @@ app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_origin_regex=r"https://.*\.vercel\.app",  # Preview vercel urls
+    allow_origin_regex=r"https://team-dragons-app.*\.vercel\.app",
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "ACCEPT"],
+    allow_methods=["GET", "POST", "PUT", "ACCEPT", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization", "X-User-Id"],
 )
 app.include_router(authrouter)

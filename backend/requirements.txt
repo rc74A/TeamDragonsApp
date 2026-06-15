@@ -3,6 +3,7 @@ uvicorn
 pydantic
 sqlalchemy
 pymysql
+python-jose 
 
 # Testing (kept here so CI installs them and runs pytest)
 pytest

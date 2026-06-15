@@ -1,3 +1,5 @@
+import type { Route } from "./+types/settings";
+import { requireAuth } from "../lib/auth";
 import { useEffect, useState, type FormEvent } from "react";
 import "./app.css";
 import "./settings.css";
@@ -48,6 +50,10 @@ function validate(settings: AccountSettings): FieldErrors {
   return errors;
 }
 
+export async function loader({ request }: Route.LoaderArgs) {
+  return await requireAuth(request);
+}
+
 export default function Settings() {
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
@@ -96,13 +102,6 @@ export default function Settings() {
               </li>
               <li>
                 <a href="/settings">Settings</a>
-              </li>
-              {/*
-		For now a hyperlink, later will block access
-	        with a login screen until user logs in
-	    */}
-              <li>
-                <a href="#login">Dashboard</a>
               </li>
             </ul>
           </nav>
