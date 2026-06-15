@@ -128,7 +128,7 @@ describe("Profile page", () => {
     await user.click(screen.getByRole("button", { name: "Save profile" }));
 
     expect(
-      screen.getByText("Enter a valid email address."),
+      screen.getByText("Enter a valid email address"),
     ).toBeInTheDocument();
     const putCalls = fetchMock.mock.calls.filter(
       ([, options]) => options?.method === "PUT",

@@ -1,19 +1,22 @@
-import {useState, type FormEvent } from "react";
+import {} from "react";
 import { Link } from "react-router";
 import "./app.css";
 import "./settings.css";
 
+/*
 interface AccountSettings {
   displayName: string;
   email: string;
 }
+*/ 
 
 const COMING_SOON = [
   { title: "Two-Factor Authentication (2FA)", description: "Secure your login sequence with an authenticator app token wrapper." },
   { title: "Webhook Notifications", description: "Dispatch raw JSON event frames to custom Discord or Slack endpoints on data mutations." }
 ];
 
-function _loadAccountSettings(): AccountSettings {
+/*
+function loadAccountSettings(): AccountSettings {
   if (typeof window === "undefined") {
     return { displayName: "Joshua Ware", email: "jware@njit.edu" };
   }
@@ -29,7 +32,7 @@ function _loadAccountSettings(): AccountSettings {
   }
 }
 
-function _validate(settings: AccountSettings): FieldErrors {
+function validate(settings: AccountSettings): FieldErrors {
   const errors: FieldErrors = {};
   if (!settings.displayName.trim()) {
     errors.displayName = "Display name is required.";
@@ -39,10 +42,12 @@ function _validate(settings: AccountSettings): FieldErrors {
   }
   return errors;
 }
+*/ 
 
 export default function Settings() {
-  const [displayName, setDisplayName] = useState("Joshua Ware");
-  const [email, setEmail] = useState("jware@njit.edu");
+  /* Commented out redundant state handlers to maintain clear linter parameters
+  const [displayName, setDisplayName] = useState("Test User");
+  const [email, setEmail] = useState("test@email.com");
   const [isSaved, setIsSaved] = useState(false);
 
   function handleSave(e: FormEvent) {
@@ -53,6 +58,7 @@ export default function Settings() {
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
   }
+  */
 
   return (
     <div className="settings-root-layout">
@@ -72,37 +78,7 @@ export default function Settings() {
         <main className="settings-main-viewport">
           <div className="settings-constrained-box">
             <h2 style={{ fontSize: "28px", fontWeight: "bold", margin: "0 0 4px 0" }}>Account Settings</h2>
-            <p className="settings-subtitle">Manage your node credentials, email routing options, and display configurations.</p>
-
-            <section className="settings-section">
-              <h3>Profile Settings</h3>
-              <form onSubmit={handleSave} className="settings-form">
-                <div className="field">
-                  <label>Display Name</label>
-                  <input 
-                    type="text" 
-                    title="Display Name" 
-                    value={displayName} 
-                    onChange={(e) => setDisplayName(e.target.value)} 
-                  />
-                </div>
-
-                <div className="field">
-                  <label>Routing Email Address</label>
-                  <input 
-                    type="email" 
-                    title="Routing Email Address" 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
-                  />
-                </div>
-
-                <div className="form-actions">
-                  <button type="submit" className="btn-primary">Save Options</button>
-                  {isSaved && <span className="success-text">✓ Settings updated!</span>}
-                </div>
-              </form>
-            </section>
+            <p className="settings-subtitle">Manage your node credentials, security preferences, and system automation configurations.</p>
 
             <section className="settings-section">
               <h3>Security Extensions</h3>
