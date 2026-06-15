@@ -176,7 +176,7 @@ def validate_user_logged_in(request: Request):
     if not token:
         cookie_header = request.headers.get("cookie") or request.headers.get("Cookie")
         if cookie_header:
-            match = re.search(r'(?:^|;\s*)token=([^;]*)', cookie_header)
+            match = re.search(r"(?:^|;\s*)token=([^;]*)", cookie_header)
             if match:
                 token = match.group(1)
 
