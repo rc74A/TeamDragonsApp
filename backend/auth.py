@@ -17,18 +17,21 @@ SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-only-fallback-key")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
+
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
-  """Create a signed JWT access token with an expiry claim."""
-  to_encode = data.copy()
-  expire = datetime.now(UTC) + (
-    expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-  )
-  to_encode.update({"exp": expire})
-  return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    """Create a signed JWT access token with an expiry claim."""
+    to_encode = data.copy()
+    expire = datetime.now(UTC) + (
+        expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
 
 def decode_access_token(token: str):
-  """Decode and verify a JWT access token, raising if invalid or expired."""
-  return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    """Decode and verify a JWT access token, raising if invalid or expired."""
+    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
 
 # ----- Classes -----
 
@@ -67,7 +70,7 @@ def logout(response: Response):
 @authrouter.post("/login")
 def verify_hashed_login(
     creds: LoginRequest, response: Response, db: Session = Depends(get_db)
-  ):
+):
     """
     Authenting encrypted username / password from frontend, additionally creates
     a cookie for the user to keep track of logged in state and permissions
@@ -104,17 +107,17 @@ def verify_hashed_login(
 
     user = query.first()
     if user.username != creds.uname or user.hashed_password != creds.pwd:
-      raise HTTPException(status_code=401, detail="Invalid username or password")
+        raise HTTPException(status_code=401, detail="Invalid username or password")
 
     token = create_access_token(data={"sub": creds.uname})
 
     response.set_cookie(
-      key="token",
-      value=token,
-      httponly=True,
-      secure=True,
-      samesite="none",
-      max_age=60*60*24    # 24 hours
+        key="token",
+        value=token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        max_age=60 * 60 * 24,  # 24 hours
     )
 
     return {"message": "Login successful"}
@@ -164,21 +167,23 @@ def register_user(creds: RegisterRequest, db: Session = Depends(get_db)):
 
     return {"message": "Registration Successful"}
 
-def validate_user_logged_in(request: Request):
-  """Verify the request has a valid auth token cookie and return its payload."""
-  token = request.cookies.get("token")
 
-  if not token:
-    raise HTTPException(status_code=401, detail="Not logged in, permission denied.")
-  try:
-    payload = decode_access_token(token)
-  except Exception:
-    raise HTTPException(
-      status_code=401, detail="Login expired, please try again"
-    ) from None
-  return payload
+def validate_user_logged_in(request: Request):
+    """Verify the request has a valid auth token cookie and return its payload."""
+    token = request.cookies.get("token")
+
+    if not token:
+        raise HTTPException(status_code=401, detail="Not logged in, permission denied.")
+    try:
+        payload = decode_access_token(token)
+    except Exception:
+        raise HTTPException(
+            status_code=401, detail="Login expired, please try again"
+        ) from None
+    return payload
+
 
 @authrouter.get("/me")
 def get_me(payload: dict = Depends(validate_user_logged_in)):
-  """Return the username of the currently authenticated user."""
-  return {"username": payload["sub"]}
+    """Return the username of the currently authenticated user."""
+    return {"username": payload["sub"]}
