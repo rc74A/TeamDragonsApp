@@ -4,7 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import "./app.css";
 import "./profile.css";
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request }: Route.ClientLoaderArgs) {
   return await requireAuth(request);
 }
 
