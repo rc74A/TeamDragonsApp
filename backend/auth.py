@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response, HTTPException, Depends
+from fastapi import APIRouter, Response, HTTPException, Depends, Request
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -39,7 +39,8 @@ def logout(response: Response):
 @authrouter.post("/login")
 def verify_hashed_login(creds: LoginRequest, db: Session = Depends(get_db)):
     """
-    Authenting encrypted username / password from frontend
+    Authenting encrypted username / password from frontend, additionally creates
+    a cookie for the user to keep track of logged in state and permissions
 
     Args:
         creds.username (str): Unique account name
@@ -60,11 +61,22 @@ def verify_hashed_login(creds: LoginRequest, db: Session = Depends(get_db)):
 
     if query.first().username != creds.uname or query.first().hashed_password != creds.pwd:
       raise HTTPException(status_code=401, detail="Invalid username or password")
+
+    token = create_access_token(data={"sub": creds.uname})
+
+    response.set_cookie(
+      key="token",
+      value=token,
+      httponly=True,
+      secure=True,
+      samesite="none",
+      max_age=60*60*24    # 24 hours
+    )
     
     return {"message": "Login successful"}
 
 @authrouter.post("/register")
-def register_user(creds: RegisterRequest, db: Session = Depends(get_db)):
+def register_user(creds: Request, db: Session = Depends(get_db)):
     """
     Registering users to the database
 
@@ -100,3 +112,17 @@ def register_user(creds: RegisterRequest, db: Session = Depends(get_db)):
     db.refresh(user)
 
     return {"message": "Registration Successful"}
+
+def validate_user_logged_in(request: Request):
+  token = request.cookies.get("token")
+  if not token:
+    raise HTTPException(status_code=401, detail="Not logged in, permission denied.")
+  try:
+    payload = decode_access_token(token)
+  except Exception:
+    raise HTTPException(status_code=401, detail="Login expired, please try again")
+  return payload
+
+@authrouter.get("/me")
+def get_me(payload: dict = Depends(validate_user_logged_in)):
+    return {"username": payload["sub"]}
