@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router"; 
 import Profile from "./profile";
 
 type ProfileResponse = {
@@ -43,13 +44,16 @@ afterEach(() => {
 describe("Profile page", () => {
   it("renders the profile form inside the app shell", async () => {
     vi.stubGlobal("fetch", mockFetch());
-    render(<Profile />);
+    
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>
+    );
 
-    // App-shell behavior is preserved (banner + sidebar nav).
     expect(
       screen.getByRole("heading", { name: "Dragon Application", level: 1 }),
     ).toBeInTheDocument();
-    // Flush the on-mount fetch effect.
     expect(
       await screen.findByRole("heading", { name: "Profile", level: 2 }),
     ).toBeInTheDocument();
@@ -70,7 +74,12 @@ describe("Profile page", () => {
         email: "joel@example.com",
       }),
     );
-    render(<Profile />);
+    
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>
+    );
 
     expect(await screen.findByDisplayValue("Joel Walker")).toBeInTheDocument();
     expect(screen.getByDisplayValue("joel@example.com")).toBeInTheDocument();
@@ -80,7 +89,12 @@ describe("Profile page", () => {
     const fetchMock = mockFetch();
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
-    render(<Profile />);
+    
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>
+    );
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
 
     await user.type(screen.getByLabelText("Full name"), "Ada Lovelace");
@@ -101,7 +115,12 @@ describe("Profile page", () => {
     const fetchMock = mockFetch();
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
-    render(<Profile />);
+    
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>
+    );
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     fetchMock.mockClear();
 

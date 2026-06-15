@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router"; 
 import Settings from "./settings";
 
 const STORAGE_KEY = "tdAccountSettings";
@@ -10,7 +11,11 @@ describe("Settings page", () => {
   });
 
   it("renders inside the app shell with account and coming-soon sections", () => {
-    render(<Settings />);
+    render(
+      <MemoryRouter>
+        <Settings />
+      </MemoryRouter>
+    );
 
     // App-shell behavior is preserved (banner + sidebar nav).
     expect(
@@ -33,7 +38,11 @@ describe("Settings page", () => {
       JSON.stringify({ displayName: "Joel Walker", email: "joel@example.com" }),
     );
 
-    render(<Settings />);
+    render(
+      <MemoryRouter>
+        <Settings />
+      </MemoryRouter>
+    );
 
     expect(await screen.findByDisplayValue("Joel Walker")).toBeInTheDocument();
     expect(screen.getByDisplayValue("joel@example.com")).toBeInTheDocument();
@@ -41,7 +50,12 @@ describe("Settings page", () => {
 
   it("saves valid account details to localStorage", async () => {
     const user = userEvent.setup();
-    render(<Settings />);
+    
+    render(
+      <MemoryRouter>
+        <Settings />
+      </MemoryRouter>
+    );
 
     await user.type(screen.getByLabelText("Display name"), "Ada Lovelace");
     await user.type(screen.getByLabelText("Email"), "ada@example.com");
@@ -57,7 +71,12 @@ describe("Settings page", () => {
 
   it("shows a validation error for an invalid email and does not save", async () => {
     const user = userEvent.setup();
-    render(<Settings />);
+    
+    render(
+      <MemoryRouter>
+        <Settings />
+      </MemoryRouter>
+    );
 
     await user.type(screen.getByLabelText("Display name"), "Ada Lovelace");
     await user.type(screen.getByLabelText("Email"), "not-an-email");
