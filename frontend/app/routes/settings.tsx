@@ -1,5 +1,4 @@
 import type { Route } from "./+types/settings";
-import { requireAuth } from "../lib/auth";
 import { useEffect, useState, type FormEvent } from "react";
 import "./app.css";
 import "./settings.css";
@@ -48,10 +47,6 @@ function validate(settings: AccountSettings): FieldErrors {
     errors.email = "Enter a valid email address.";
   }
   return errors;
-}
-
-export async function loader({ request }: Route.ClientLoaderArgs) {
-  return await requireAuth(request);
 }
 
 export default function Settings() {

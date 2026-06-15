@@ -1,12 +1,7 @@
 import type { Route } from "./+types/profile";
-import { requireAuth } from "../lib/auth";
 import { useEffect, useState, type FormEvent } from "react";
 import "./app.css";
 import "./profile.css";
-
-export async function loader({ request }: Route.ClientLoaderArgs) {
-  return await requireAuth(request);
-}
 
 const API_BASE = import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
