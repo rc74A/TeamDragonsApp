@@ -1,58 +1,180 @@
-/* Profile page baseline content (S1-022). Scoped to the profile route.
-   Inputs and buttons are styled globally in app.css (with !important) so
-   forms look identical across every screen — we intentionally do NOT
-   override those here. This file only adds layout, labels, the textarea
-   (not covered by the global rules), and status messages. */
-
-.profile-subtitle {
-  color: #555;
-  margin: 4px 0 20px;
+/* Profile Interface Framing */
+.profile-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #1a202c;
+  color: #ffffff;
+  font-family: sans-serif;
 }
 
-.profile-form {
+.profile-header {
+  background-color: #2d3748;
+  padding: 16px 24px;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 1px solid #4a5568;
+  color: #06b6d4;
+}
+
+.profile-workspace {
+  display: flex;
+  flex: 1;
+}
+
+.profile-sidebar {
+  width: 240px;
+  background-color: #2d3748;
+  border-right: 1px solid #4a5568;
+  padding: 24px 16px;
+}
+
+.profile-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-nav-link {
+  display: block;
+  padding: 10px 16px;
+  border-radius: 8px;
+  color: #a0aec0;
+  text-decoration: none;
+}
+
+.profile-nav-link.active {
+  background-color: #06b6d4;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.profile-main {
+  flex: 1;
+  padding: 40px;
+}
+
+.profile-content-box {
   max-width: 560px;
 }
 
-.profile-form .field {
+.settings-subtitle {
+  color: #a0aec0;
+  margin: 4px 0 24px;
+}
+
+.settings-section {
+  background-color: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+  max-width: 560px;
+}
+
+.settings-section h3 {
+  margin-bottom: 12px;
+  color: #06b6d4;
+  margin-top: 0;
+}
+
+.settings-form .field {
   margin-bottom: 16px;
   display: flex;
   flex-direction: column;
 }
 
-.profile-form label {
+.settings-form label {
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  color: #e2e8f0;
+  font-size: 14px;
 }
 
-/* The global app.css theme styles input/button but not textarea; match it. */
-.profile-form textarea {
-  font-family: Arial, sans-serif;
-  border: 1px solid #1e40af;
-  background-color: #2d3748;
+.settings-form input {
+  padding: 10px;
+  border: 1px solid #4a5568;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #1a202c;
   color: #ffffff;
-  padding: 8px 10px;
-  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.profile-form textarea:focus {
+.settings-form input:focus {
   outline: none;
   border-color: #06b6d4;
+  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
 }
 
 .error-text {
   color: #ef4444;
   font-size: 13px;
   margin-top: 4px;
+  font-weight: 500;
 }
 
-.success-text {
-  color: #10b981;
+.btn-primary {
+  background-color: #06b6d4;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
   font-size: 14px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 8px;
+  width: fit-content;
 }
 
-.form-actions {
+.btn-primary:hover {
+  background-color: #0891b2;
+}
+
+.progress-container {
+  background-color: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  max-width: 560px;
+}
+
+.progress-header-text {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 8px;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #cbd5e0;
+}
+
+progress.profile-progress-element {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 12px;
+  border: none;
+  border-radius: 999px;
+  background-color: #1a202c;
+}
+
+progress.profile-progress-element::-webkit-progress-bar {
+  background-color: #1a202c;
+  border-radius: 999px;
+}
+
+progress.profile-progress-element::-webkit-progress-value {
+  background-color: #06b6d4;
+  border-radius: 999px;
+}
+
+progress.profile-progress-element::-moz-progress-bar {
+  background-color: #06b6d4;
+  border-radius: 999px;
 }

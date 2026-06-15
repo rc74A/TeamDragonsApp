@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Form,
   redirectDocument,
@@ -34,7 +33,7 @@ export async function action({ request }: { request: Request }) {
     }
 
     return redirectDocument("/");
-  } catch (err) {
+  } catch {
     return { error: "Network error, please try again" };
   }
 }
@@ -45,63 +44,76 @@ export default function Login() {
   const isSubmitting = navigation.state === "submitting";
 
   return (
-    <div className="page-container">
-      <header className="banner">
-        <h1>Dragon Application</h1>
-      </header>
+    <div className="register-page">
+      <div className="auth-card">
+        <h1 className="auth-title">Welcome Back</h1>
+        <p className="auth-subtitle">
+          Log in to your Dragon Application account
+        </p>
 
-      <div className="content-layout">
-        <aside className="sidebar">
-          <nav>
-            <ul className="menu-list">
-              <li>
-                <a href="/register">Register</a>
-              </li>
-            </ul>
-          </nav>
-        </aside>
-      </div>
-
-      <main className="flex justify-center items-center">
-        <div className="bg-[#06B6D4] rounded-md h-xl w-xl shadow-md p-8">
-          <Form method="post" className="font-bold text-2xl">
-            <label htmlFor="username">Email:</label>
-            <br />
-            <input
-              className="bg-white text-black"
-              type="text"
-              id="username"
-              name="username"
-              required
-            />
-            <br />
-            <label htmlFor="password">Password:</label>
-            <br />
-            <input
-              className="bg-white text-black"
-              type="password"
-              id="password"
-              name="password"
-              required
-            />
-            <br />
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
-            >
-              {isSubmitting ? "Logging In..." : "Log In"}
-            </button>
-
-            {actionData?.error && (
-              <p className="text-red-500 mt-4 text-xl font-bold bg-white p-2 rounded border border-red-500 text-center">
-                {actionData.error}
-              </p>
-            )}
-          </Form>
+        <div className="content-layout">
+          <aside className="sidebar">
+            <nav>
+              <ul className="menu-list">
+                <li>
+                  <a href="/register">Register</a>
+                </li>
+              </ul>
+            </nav>
+          </aside>
         </div>
-      </main>
+
+        <main className="flex justify-center items-center">
+          <div className="bg-[#06B6D4] rounded-md h-xl w-xl shadow-md p-8">
+            <Form method="post" className="font-bold text-2xl">
+              <div className="form-group">
+                <label htmlFor="username">Email:</label>
+                <br />
+                <input
+                  className="bg-white text-black"
+                  type="text"
+                  id="username"
+                  name="username"
+                  required
+                  placeholder="you@example.com"
+                />
+              </div>
+
+              <div className="form-group-last login-password-spacing">
+                <label className="input-label" htmlFor="password">
+                  Password
+                </label>
+                <input
+                  className="bg-white text-black"
+                  type="password"
+                  id="password"
+                  name="password"
+                  required
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50 login-submit-btn"
+              >
+                {isSubmitting ? "Logging In..." : "Log In"}
+              </button>
+
+              {actionData?.error && (
+                <p className="text-red-500 mt-4 text-xl font-bold bg-white p-2 rounded border border-red-500 text-center">
+                  {actionData.error}
+                </p>
+              )}
+            </Form>
+
+            <div className="auth-footer login-footer-styling">
+              Do not have an account? <a href="/register">Register here</a>
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

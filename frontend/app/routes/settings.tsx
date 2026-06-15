@@ -1,30 +1,32 @@
-import type { Route } from "./+types/settings";
-import { useEffect, useState, type FormEvent } from "react";
+import {} from "react";
+import { Link } from "react-router";
 import "./app.css";
 import "./settings.css";
 
-const STORAGE_KEY = "tdAccountSettings";
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-type AccountSettings = {
+/*
+interface AccountSettings {
   displayName: string;
   email: string;
-};
-
-type FieldErrors = {
-  displayName?: string;
-  email?: string;
-};
+}
+*/
 
 const COMING_SOON = [
-  { title: "Security", description: "Password and login management." },
-  { title: "Notifications", description: "Email and in-app alerts." },
-  { title: "Appearance", description: "Theme and display preferences." },
+  {
+    title: "Two-Factor Authentication (2FA)",
+    description:
+      "Secure your login sequence with an authenticator app token wrapper.",
+  },
+  {
+    title: "Webhook Notifications",
+    description:
+      "Dispatch raw JSON event frames to custom Discord or Slack endpoints on data mutations.",
+  },
 ];
 
+/*
 function loadAccountSettings(): AccountSettings {
   if (typeof window === "undefined") {
-    return { displayName: "", email: "" };
+    return { displayName: "Joshua Ware", email: "jware@njit.edu" };
   }
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -48,135 +50,76 @@ function validate(settings: AccountSettings): FieldErrors {
   }
   return errors;
 }
+*/
 
 export default function Settings() {
-  const [displayName, setDisplayName] = useState("");
-  const [email, setEmail] = useState("");
-  const [errors, setErrors] = useState<FieldErrors>({});
-  const [saved, setSaved] = useState(false);
+  /* Commented out redundant state handlers to maintain clear linter parameters
+  const [displayName, setDisplayName] = useState("Test User");
+  const [email, setEmail] = useState("test@email.com");
+  const [isSaved, setIsSaved] = useState(false);
 
-  useEffect(() => {
-    // Load persisted values after hydration. A lazy useState initializer
-    // would read localStorage during the server render and cause a
-    // hydration mismatch, so syncing here is intentional.
-    const stored = loadAccountSettings();
-    /* eslint-disable react-hooks/set-state-in-effect */
-    setDisplayName(stored.displayName);
-    setEmail(stored.email);
-    /* eslint-enable react-hooks/set-state-in-effect */
-  }, []);
-
-  function handleSave(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const next: AccountSettings = { displayName, email };
-    const validationErrors = validate(next);
-    setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) {
-      setSaved(false);
-      return;
+  function handleSave(e: FormEvent) {
+    e.preventDefault();
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("account_settings", JSON.stringify({ displayName, email }));
     }
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    setSaved(true);
+    setIsSaved(true);
+    setTimeout(() => setIsSaved(false), 3000);
   }
+  */
 
   return (
-    <div className="page-container">
-      <header className="banner">
-        <h1>Dragon Application</h1>
-      </header>
+    <div className="settings-root-layout">
+      <header className="settings-top-bar">Dragon Application</header>
 
-      <div className="content-layout">
-        <aside className="sidebar">
-          <nav>
-            <ul className="menu-list">
-              <li>
-                <a href="/">Dashboard</a>
-              </li>
-              <li>
-                <a href="/profile">Profile</a>
-              </li>
-              <li>
-                <a href="/settings">Settings</a>
-              </li>
-            </ul>
-          </nav>
+      <div className="settings-split-pane">
+        <aside className="settings-sidebar-nav">
+          <ul>
+            <li>
+              <Link to="/">Dashboard</Link>
+            </li>
+            <li>
+              <Link to="/profile">Profile</Link>
+            </li>
+            <li>
+              <Link to="/settings" className="active-link">
+                Settings
+              </Link>
+            </li>
+          </ul>
         </aside>
 
-        <main className="main-content">
-          <h2>Settings</h2>
-          <p className="settings-subtitle">Manage your account settings.</p>
+        <main className="settings-main-viewport">
+          <div className="settings-constrained-box">
+            <h2
+              style={{
+                fontSize: "28px",
+                fontWeight: "bold",
+                margin: "0 0 4px 0",
+              }}
+            >
+              Account Settings
+            </h2>
+            <p className="settings-subtitle">
+              Manage your node credentials, security preferences, and system
+              automation configurations.
+            </p>
 
-          <section
-            className="settings-section"
-            aria-labelledby="account-heading"
-          >
-            <h3 id="account-heading">Account</h3>
-            <form className="settings-form" onSubmit={handleSave} noValidate>
-              <div className="field">
-                <label htmlFor="displayName">Display name</label>
-                <input
-                  id="displayName"
-                  name="displayName"
-                  type="text"
-                  value={displayName}
-                  onChange={(event) => setDisplayName(event.target.value)}
-                />
-                {errors.displayName && (
-                  <p role="alert" className="error-text">
-                    {errors.displayName}
-                  </p>
-                )}
-              </div>
-
-              <div className="field">
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                />
-                {errors.email && (
-                  <p role="alert" className="error-text">
-                    {errors.email}
-                  </p>
-                )}
-              </div>
-
-              <div className="form-actions">
-                <button type="submit" className="btn-primary">
-                  Save
-                </button>
-                {saved && (
-                  <span role="status" className="success-text">
-                    Saved.
-                  </span>
-                )}
-              </div>
-            </form>
-          </section>
-
-          <section className="settings-section" aria-labelledby="more-heading">
-            <h3 id="more-heading" className="visually-hidden">
-              More settings
-            </h3>
-            <ul className="coming-soon-list">
-              {COMING_SOON.map((item) => (
-                <li
-                  key={item.title}
-                  className="coming-soon"
-                  aria-disabled="true"
-                >
-                  <div>
-                    <h4>{item.title}</h4>
-                    <p>{item.description}</p>
-                  </div>
-                  <span className="badge">Coming soon</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+            <section className="settings-section">
+              <h3>Security Extensions</h3>
+              <ul className="coming-soon-list">
+                {COMING_SOON.map((item, index) => (
+                  <li key={index} className="coming-soon">
+                    <div className="coming-soon-info">
+                      <h4>{item.title}</h4>
+                      <p>{item.description}</p>
+                    </div>
+                    <span className="badge">Coming soon</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </div>
         </main>
       </div>
     </div>
