@@ -2,7 +2,7 @@ import type { Route } from "./+types/dashboard";
 import { requireAuth } from "../lib/auth";
 import "./app.css";
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request }: Route.ClientLoaderArgs) {
   return await requireAuth(request);
 }
 
