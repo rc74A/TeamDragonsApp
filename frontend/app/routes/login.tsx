@@ -5,7 +5,7 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const loginLink = "http://localhost:8000/api/auth/login"
+  const loginLink = `${import.meta.env.VITE_API_URL}/api/auth/login`;
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
