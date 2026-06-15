@@ -8,10 +8,10 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export default function App() {
   return (
-  <div className="page-container">
-    <header className="banner">
-      <h1>Dragon Application</h1>
-    </header>
+    <div className="page-container">
+      <header className="banner">
+        <h1>Dragon Application</h1>
+      </header>
 
     <div className="content-layout">
       <aside className="sidebar">
@@ -24,15 +24,11 @@ export default function App() {
         </nav>
       </aside>
 
-      <main className="main-content">
-        <h2>Welcome</h2>
-        <p>
-          This is your dashboard.
-        </p>
-      </main>
+        <main className="main-content">
+          <h2>Welcome</h2>
+          <p>This is your dashboard.</p>
+        </main>
+      </div>
     </div>
-  </div>
-);
+  );
 }
-
-

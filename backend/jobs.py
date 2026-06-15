@@ -56,9 +56,7 @@ def get_owned_job(db: Session, job_id: int, owner_id: int) -> Job:
         HTTPException: 404 if the job does not exist or is not owned
             by the requesting user.
     """
-    job = (
-        db.query(Job).filter(Job.id == job_id, Job.owner_id == owner_id).first()
-    )
+    job = db.query(Job).filter(Job.id == job_id, Job.owner_id == owner_id).first()
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
     return job
