@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Response, HTTPException, Depends, Request
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from datetime import datetime, timedelta, timezone
+import os
+from jose import jwt
 
 from database import get_db
 from models import User
@@ -9,6 +12,21 @@ authrouter = APIRouter(
   prefix="/api/auth",
   tags=["authenthication"]
 )
+
+# ----- Token Logic -----
+
+SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-only-fallback-key")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  
+
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+def decode_access_token(token: str):
+  return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
 # ----- Classes -----
 
@@ -37,7 +55,7 @@ def logout(response: Response):
   return {"message": "Logout Successful"}
 
 @authrouter.post("/login")
-def verify_hashed_login(creds: LoginRequest, db: Session = Depends(get_db)):
+def verify_hashed_login(creds: LoginRequest, response: Response, db: Session = Depends(get_db)):
     """
     Authenting encrypted username / password from frontend, additionally creates
     a cookie for the user to keep track of logged in state and permissions
@@ -76,7 +94,7 @@ def verify_hashed_login(creds: LoginRequest, db: Session = Depends(get_db)):
     return {"message": "Login successful"}
 
 @authrouter.post("/register")
-def register_user(creds: Request, db: Session = Depends(get_db)):
+def register_user(creds: RegisterRequest, db: Session = Depends(get_db)):
     """
     Registering users to the database
 

@@ -1,5 +1,10 @@
-import { Link } from "react-router";
+import type { Route } from "./+types/profile";
+import { requireAuth } from "../lib/auth";
 import "./app.css";
+
+export async function loader({ request }: Route.LoaderArgs) {
+  return await requireAuth(request);
+}
 
 export default function LoginView() {
   return (
@@ -15,13 +20,6 @@ export default function LoginView() {
             <li><a href="/">Dashboard</a></li>
             <li><a href="/profile">Profile</a></li>
             <li><a href="/settings">Settings</a></li>
-            <li><a href="/login">Login</a></li>
-            <li><a href="/register">Register</a></li>
-	    {/* 
-		For now a hyperlink, later will block access
-	        with a login screen until user logs in 	
-	    */}
-            <li><a href="/login">Dashboard</a></li>
           </ul>
         </nav>
       </aside>

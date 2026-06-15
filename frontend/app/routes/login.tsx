@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
 import "./app.css";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const loginLink = "http://localhost:8000/api/auth/login"
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -15,19 +14,22 @@ export default function Login() {
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   }
-
-  const submitLogin = async (e) => {
     {/* TODO:
       Plaintext for now, ENCRYPT LATER
       Additionally validate input
     */}
 
+  const submitLogin = async (e) => {
+
     e.preventDefault();
     setError("");
     try {
-      const response = await fetch('http://localhost:8000/api/auth/login', {
+      const response = await fetch(loginLink, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: { 
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ uname: username, pwd: password })
       });
       const data = await response.json();
@@ -35,7 +37,7 @@ export default function Login() {
         setError(data.detail || "Login failed");
         return;
       }
-      navigate("/");
+      window.location.href = "/"
     } catch (err) {
       setError("Network error, please try again");
     } finally {
