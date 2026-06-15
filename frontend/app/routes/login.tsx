@@ -16,24 +16,23 @@ export default function Login() {
   };
 
   const submitLogin = async (e) => {
-
     e.preventDefault();
     setError("");
     try {
       const response = await fetch(loginLink, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 
-          'Content-Type': 'application/json',
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ uname: username, pwd: password })
+        body: JSON.stringify({ uname: username, pwd: password }),
       });
       const data = await response.json();
       if (!response.ok) {
         setError(data.detail || "Login failed");
         return;
       }
-      window.location.href = "/"
+      window.location.href = "/";
     } catch (err) {
       setError("Network error, please try again");
     } finally {

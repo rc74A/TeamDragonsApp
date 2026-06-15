@@ -13,16 +13,22 @@ export default function App() {
         <h1>Dragon Application</h1>
       </header>
 
-    <div className="content-layout">
-      <aside className="sidebar">
-        <nav>
-          <ul className="menu-list">
-            <li><a href="/">Dashboard</a></li>
-            <li><a href="/profile">Profile</a></li>
-            <li><a href="/settings">Settings</a></li>
-          </ul>
-        </nav>
-      </aside>
+      <div className="content-layout">
+        <aside className="sidebar">
+          <nav>
+            <ul className="menu-list">
+              <li>
+                <a href="/">Dashboard</a>
+              </li>
+              <li>
+                <a href="/profile">Profile</a>
+              </li>
+              <li>
+                <a href="/settings">Settings</a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
 
         <main className="main-content">
           <h2>Welcome</h2>

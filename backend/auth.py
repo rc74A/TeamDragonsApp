@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Response, HTTPException, Depends, Request
+import os
+from datetime import UTC, datetime, timedelta
+
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from jose import jwt
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta, timezone
-import os
-from jose import jwt
 
 from database import get_db
 from models import User
@@ -14,12 +15,12 @@ authrouter = APIRouter(prefix="/api/auth", tags=["authenthication"])
 
 SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-only-fallback-key")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
   """Create a signed JWT access token with an expiry claim."""
   to_encode = data.copy()
-  expire = datetime.now(timezone.utc) + (
+  expire = datetime.now(UTC) + (
     expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
   )
   to_encode.update({"exp": expire})
@@ -74,6 +75,7 @@ def verify_hashed_login(
     Args:
         creds (LoginRequest): Username (uname) and hashed password (pwd).
         db (Session): Database session.
+        response (Response): FastAPI response object, used to set the auth cookie
 
     Returns:
         dict: A success message when the credentials are valid.
@@ -114,7 +116,7 @@ def verify_hashed_login(
       samesite="none",
       max_age=60*60*24    # 24 hours
     )
-    
+
     return {"message": "Login successful"}
 
 
@@ -171,7 +173,9 @@ def validate_user_logged_in(request: Request):
   try:
     payload = decode_access_token(token)
   except Exception:
-    raise HTTPException(status_code=401, detail="Login expired, please try again")
+    raise HTTPException(
+      status_code=401, detail="Login expired, please try again"
+    ) from None
   return payload
 
 @authrouter.get("/me")
