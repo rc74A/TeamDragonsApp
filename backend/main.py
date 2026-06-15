@@ -38,8 +38,8 @@ app.add_middleware(
     allow_origins=origins,
     allow_origin_regex=r"https://team-dragons-app.*\.vercel\.app",
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "ACCEPT", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "X-User-Id"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 app.include_router(authrouter)
 app.include_router(jobsrouter)
