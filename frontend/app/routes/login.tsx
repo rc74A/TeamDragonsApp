@@ -62,7 +62,7 @@ export default function Login() {
       <main className="flex justify-center items-center">
         <div className="bg-[#06B6D4] rounded-md h-xl w-xl shadow-md p-8">
           <form onSubmit={submitLogin} className="font-bold text-2xl">
-            <label htmlFor="username">Username:</label>
+            <label htmlFor="username">Email:</label>
             <br />
             <input
               value={username}
