@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import "./app.css";
 
 export default function Login() {
@@ -32,7 +33,7 @@ export default function Login() {
         setError(data.detail || "Login failed");
         return;
       }
-      window.location.href = "/";
+      navigate("/");
     } catch (err) {
       setError("Network error, please try again");
     } finally {
