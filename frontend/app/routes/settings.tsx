@@ -1,6 +1,7 @@
 import type { Route } from "./+types/settings";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router";
+import "./app.css";
 import "./settings.css";
 
 interface AccountSettings {
@@ -17,8 +18,27 @@ function loadAccountSettings(): AccountSettings {
   if (typeof window === "undefined") {
     return { displayName: "Joshua Ware", email: "jware@njit.edu" };
   }
-  const stored = window.localStorage.getItem("account_settings");
-  return stored ? JSON.parse(stored) : { displayName: "Joshua Ware", email: "jware@njit.edu" };
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return { displayName: "", email: "" };
+    }
+    const parsed = JSON.parse(raw) as Partial<AccountSettings>;
+    return { displayName: parsed.displayName ?? "", email: parsed.email ?? "" };
+  } catch {
+    return { displayName: "", email: "" };
+  }
+}
+
+function validate(settings: AccountSettings): FieldErrors {
+  const errors: FieldErrors = {};
+  if (!settings.displayName.trim()) {
+    errors.displayName = "Display name is required.";
+  }
+  if (!EMAIL_PATTERN.test(settings.email)) {
+    errors.email = "Enter a valid email address.";
+  }
+  return errors;
 }
 
 export default function Settings() {

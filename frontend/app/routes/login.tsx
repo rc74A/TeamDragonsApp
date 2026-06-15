@@ -1,44 +1,48 @@
-import React, { useState } from "react";
+import React from "react";
+import {
+  Form,
+  redirectDocument,
+  useActionData,
+  useNavigation,
+} from "react-router";
 import "./app.css";
 
-export default function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const loginLink = `${import.meta.env.VITE_API_URL}/api/auth/login`;
+export async function action({ request }: { request: Request }) {
+  const formData = await request.formData();
+  const username = formData.get("username");
+  const password = formData.get("password");
 
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  };
+  const BACKEND_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ uname: username, pwd: password }),
+    });
 
-  const submitLogin = async (e) => {
-    e.preventDefault();
-    setError("");
-    try {
-      const response = await fetch(loginLink, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ uname: username, pwd: password }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        setError(data.detail || "Login failed");
-        return;
+    if (!response.ok) {
+      try {
+        const data = await response.json();
+        return { error: data.detail || "Invalid username or password" };
+      } catch {
+        return { error: "Invalid username or password" };
       }
-      window.location.href = "/";
-    } catch (err) {
-      setError("Network error, please try again");
-    } finally {
-      setPassword("");
     }
-  };
+
+    return redirectDocument("/");
+  } catch (err) {
+    return { error: "Network error, please try again" };
+  }
+}
+
+export default function Login() {
+  const actionData = useActionData() as { error?: string } | undefined;
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
 
   return (
     <div className="register-page">
@@ -47,46 +51,68 @@ export default function Login() {
         <h1 className="auth-title">Welcome Back</h1>
         <p className="auth-subtitle">Log in to your Dragon Application account</p>
 
-        {/* Dynamic Error Banner displays only if error state fires */}
-        {error && <div className="error-banner">{error}</div>}
-        
-        <form onSubmit={submitLogin}>
-          
-          <div className="form-group">
-            <label className="input-label" htmlFor="username">Email Address</label>
-            <input
-              value={username}
-              onChange={handleUsernameChange}
-              type="text"
-              id="username"
-              name="username"
-              required
-              placeholder="you@example.com"
-            />
-          </div>
-          
-          <div className="form-group-last">
-            <label className="input-label" htmlFor="password">Password</label>
-            <input
-              value={password}
-              onChange={handlePasswordChange}
-              type="password"
-              id="password"
-              name="password"
-              required
-              placeholder="••••••••"
-            />
-          </div>
-          
-          {/* Reuses your global button component definitions */}
-          <button type="submit" style={{ width: "100%" }}>
-            Log In
-          </button>
-        </form>
-        
-        <div className="auth-footer">
-          Don't have an account? <a href="/register">Register here</a>
+        <div className="content-layout">
+          <aside className="sidebar">
+            <nav>
+              <ul className="menu-list">
+                <li>
+                  <a href="/register">Register</a>
+                </li>
+              </ul>
+            </nav>
+          </aside>
         </div>
+
+        <main className="flex justify-center items-center">
+          <div className="bg-[#06B6D4] rounded-md h-xl w-xl shadow-md p-8">
+            
+            <Form method="post" className="font-bold text-2xl">
+              <div className="form-group">
+                <label htmlFor="username">Email:</label>
+                <br />
+                <input
+                  className="bg-white text-black"
+                  type="text"
+                  id="username"
+                  name="username"
+                  required
+                  placeholder="you@example.com"
+                />
+              </div>
+              
+              <div className="form-group-last login-password-spacing">
+                <label className="input-label" htmlFor="password">Password</label>
+                <input
+                  className="bg-white text-black"
+                  type="password"
+                  id="password"
+                  name="password"
+                  required
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50 login-submit-btn"
+              >
+                {isSubmitting ? "Logging In..." : "Log In"}
+              </button>
+
+              {actionData?.error && (
+                <p className="text-red-500 mt-4 text-xl font-bold bg-white p-2 rounded border border-red-500 text-center">
+                  {actionData.error}
+                </p>
+              )}
+            </Form>
+
+            <div className="auth-footer login-footer-styling">
+              Don't have an account? <a href="/register">Register here</a>
+            </div>
+
+          </div>
+        </main>
         
       </div>
     </div>

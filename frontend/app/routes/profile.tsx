@@ -1,7 +1,40 @@
 import type { Route } from "./+types/profile";
-import { useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router";
-import "./profile.css"; 
+import "./app.css";
+import "./profile.css";
+
+const API_BASE = import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+type ProfileForm = {
+  full_name: string;
+  email: string;
+  phone: string;
+  location: string;
+  summary: string;
+};
+
+const EMPTY_PROFILE: ProfileForm = {
+  full_name: "",
+  email: "",
+  phone: "",
+  location: "",
+  summary: "",
+};
+
+/**
+ * Resolve the current user's id for ownership-scoped requests.
+ *
+ * Placeholder until real sessions land (S1-011/S1-015): mirrors the
+ * backend's X-User-Id approach by reading an id stored at login.
+ */
+function currentUserId(): string {
+  if (typeof window === "undefined") {
+    return "1";
+  }
+  return window.localStorage.getItem("userId") ?? "1";
+}
 
 export default function Profile() {
   const [profile, setProfile] = useState({ 
