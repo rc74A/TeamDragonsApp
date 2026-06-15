@@ -1,5 +1,4 @@
-import type { Route } from "./+types/settings";
-import { useEffect, useState, type FormEvent } from "react";
+import {useState, type FormEvent } from "react";
 import { Link } from "react-router";
 import "./app.css";
 import "./settings.css";
@@ -14,7 +13,7 @@ const COMING_SOON = [
   { title: "Webhook Notifications", description: "Dispatch raw JSON event frames to custom Discord or Slack endpoints on data mutations." }
 ];
 
-function loadAccountSettings(): AccountSettings {
+function _loadAccountSettings(): AccountSettings {
   if (typeof window === "undefined") {
     return { displayName: "Joshua Ware", email: "jware@njit.edu" };
   }
@@ -30,7 +29,7 @@ function loadAccountSettings(): AccountSettings {
   }
 }
 
-function validate(settings: AccountSettings): FieldErrors {
+function _validate(settings: AccountSettings): FieldErrors {
   const errors: FieldErrors = {};
   if (!settings.displayName.trim()) {
     errors.displayName = "Display name is required.";

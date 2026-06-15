@@ -1,11 +1,10 @@
-import type { Route } from "./+types/profile";
-import { useEffect, useState, type FormEvent } from "react";
+import {useState} from "react";
 import { Link } from "react-router";
 import "./app.css";
 import "./profile.css";
 
-const API_BASE = import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const _API_BASE = import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
+const _EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type ProfileForm = {
   full_name: string;
@@ -15,7 +14,7 @@ type ProfileForm = {
   summary: string;
 };
 
-const EMPTY_PROFILE: ProfileForm = {
+const _EMPTY_PROFILE: ProfileForm = {
   full_name: "",
   email: "",
   phone: "",
@@ -29,7 +28,7 @@ const EMPTY_PROFILE: ProfileForm = {
  * Placeholder until real sessions land (S1-011/S1-015): mirrors the
  * backend's X-User-Id approach by reading an id stored at login.
  */
-function currentUserId(): string {
+function _currentUserId(): string {
   if (typeof window === "undefined") {
     return "1";
   }

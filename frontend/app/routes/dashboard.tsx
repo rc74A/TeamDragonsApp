@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useLoaderData, Link, useNavigate } from "react-router";
-import type { Route } from "./+types/dashboard";
 import "./dashboard.css"; 
 
 interface Job {
@@ -86,8 +85,8 @@ export default function Dashboard() {
       setEditingJobId(null);
       setJobForm({ title: "", company: "", stage: "Wishlist" });
       navigate(".", { replace: true });
-    } catch (err: any) {
-      setFormError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setFormError((err as Error).message || "An unexpected error occurred.");
     }
   };
 

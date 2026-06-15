@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Form,
   redirectDocument,
@@ -34,7 +33,7 @@ export async function action({ request }: { request: Request }) {
     }
 
     return redirectDocument("/");
-  } catch (err) {
+  } catch{
     return { error: "Network error, please try again" };
   }
 }
@@ -108,7 +107,7 @@ export default function Login() {
             </Form>
 
             <div className="auth-footer login-footer-styling">
-              Don't have an account? <a href="/register">Register here</a>
+              Do not have an account? <a href="/register">Register here</a>
             </div>
 
           </div>
