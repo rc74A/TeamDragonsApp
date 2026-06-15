@@ -1,8 +1,7 @@
 import type { Route } from "./+types/profile";
 import { requireAuth } from "../lib/auth";
 import { useEffect, useState, type FormEvent } from "react";
-import "./app.css";
-import "./profile.css";
+import { Link } from "react-router";
 
 export async function loader({ request }: Route.LoaderArgs) {
   return await requireAuth(request);
@@ -27,12 +26,6 @@ const EMPTY_PROFILE: ProfileForm = {
   summary: "",
 };
 
-/**
- * Resolve the current user's id for ownership-scoped requests.
- *
- * Placeholder until real sessions land (S1-011/S1-015): mirrors the
- * backend's X-User-Id approach by reading an id stored at login.
- */
 function currentUserId(): string {
   if (typeof window === "undefined") {
     return "1";
@@ -62,13 +55,19 @@ export default function Profile() {
           });
         }
       })
-      .catch(() => {
-        // Backend unreachable: keep the empty form so the page still renders.
-      });
+      .catch(() => {});
     return () => {
       active = false;
     };
   }, []);
+
+  const calculateCompletion = (): number => {
+    const fields: (keyof ProfileForm)[] = ["full_name", "email", "phone", "location", "summary"];
+    const filledFields = fields.filter(field => form[field] && form[field].trim() !== "");
+    return Math.round((filledFields.length / fields.length) * 100);
+  };
+
+  const completionPercentage = calculateCompletion();
 
   function updateField(field: keyof ProfileForm, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -98,114 +97,94 @@ export default function Profile() {
     }
   }
 
+  const inputStyle = {
+    width: "100%",
+    padding: "10px",
+    borderRadius: "6px",
+    border: "1px solid #4a5568",
+    backgroundColor: "#1a202c",
+    color: "#ffffff",
+    boxSizing: "border-box" as const,
+    marginTop: "6px"
+  };
+
   return (
-    <div className="page-container">
-      <header className="banner">
-        <h1>Dragon Application</h1>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#1a202c", color: "#ffffff", fontFamily: "sans-serif" }}>
+      <header style={{ backgroundColor: "#2d3748", padding: "16px 24px", fontSize: "20px", fontWeight: "bold", borderBottom: "1px solid #4a5568", color: "#06B6D4" }}>
+        Dragon Application
       </header>
 
-      <div className="content-layout">
-        <aside className="sidebar">
-          <nav>
-            <ul className="menu-list">
-              <li>
-                <a href="/">Dashboard</a>
-              </li>
-              <li>
-                <a href="/profile">Profile</a>
-              </li>
-              <li>
-                <a href="/settings">Settings</a>
-              </li>
-            </ul>
-          </nav>
+      <div style={{ display: "flex", flex: 1 }}>
+        <aside style={{ width: "240px", backgroundColor: "#2d3748", borderRight: "1px solid #4a5568", padding: "24px 16px" }}>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
+            <li>
+              <Link to="/" style={{ display: "block", padding: "10px 16px", borderRadius: "8px", color: "#a0aec0", textDecoration: "none" }}>
+                Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link to="/profile" style={{ display: "block", padding: "10px 16px", borderRadius: "8px", backgroundColor: "#06B6D4", color: "#ffffff", textDecoration: "none", fontWeight: "bold" }}>
+                Profile
+              </Link>
+            </li>
+            <li>
+              <Link to="/settings" style={{ display: "block", padding: "10px 16px", borderRadius: "8px", color: "#a0aec0", textDecoration: "none" }}>
+                Settings
+              </Link>
+            </li>
+          </ul>
         </aside>
 
-        <main className="main-content">
-          <h2>Profile</h2>
-          <p className="profile-subtitle">
-            Your identity, contact details, and summary.
-          </p>
-
-          <form className="profile-form" onSubmit={handleSave} noValidate>
-            <div className="field">
-              <label htmlFor="full_name">Full name</label>
-              <input
-                id="full_name"
-                name="full_name"
-                type="text"
-                value={form.full_name}
-                onChange={(event) =>
-                  updateField("full_name", event.target.value)
-                }
-              />
+        <main style={{ flex: 1, padding: "40px" }}>
+          <div style={{ maxWidth: "600px" }}>
+            <h2 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px" }}>Profile</h2>
+            <p style={{ color: "#a0aec0", marginBottom: "24px" }}>Your identity, contact details, and summary.</p>
+            <div style={{ backgroundColor: "#2d3748", padding: "16px 20px", borderRadius: "10px", border: "1px solid #4a5568", marginBottom: "32px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", fontWeight: "bold", marginBottom: "8px" }}>
+                <span style={{ color: "#e2e8f0" }}>Profile Setup Progress</span>
+                <span style={{ color: "#06B6D4" }}>{completionPercentage}% Complete</span>
+              </div>
+              <div style={{ width: "100%", height: "10px", backgroundColor: "#1a202c", borderRadius: "5px", overflow: "hidden" }}>
+                <div style={{ width: `${completionPercentage}%`, height: "100%", backgroundColor: "#06B6D4", transition: "width 0.4s ease-in-out" }} />
+              </div>
             </div>
 
-            <div className="field">
-              <label htmlFor="email">Email</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={(event) => updateField("email", event.target.value)}
-              />
-              {emailError && (
-                <p role="alert" className="error-text">
-                  {emailError}
-                </p>
-              )}
-            </div>
+            <form onSubmit={handleSave} noValidate style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+              <div>
+                <label htmlFor="full_name" style={{ fontSize: "14px", color: "#e2e8f0" }}>Full name</label>
+                <input id="full_name" name="full_name" type="text" value={form.full_name} onChange={(event) => updateField("full_name", event.target.value)} style={inputStyle} />
+              </div>
 
-            <div className="field">
-              <label htmlFor="phone">Phone</label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                value={form.phone}
-                onChange={(event) => updateField("phone", event.target.value)}
-              />
-            </div>
+              <div>
+                <label htmlFor="email" style={{ fontSize: "14px", color: "#e2e8f0" }}>Email</label>
+                <input id="email" name="email" type="email" value={form.email} onChange={(event) => updateField("email", event.target.value)} style={inputStyle} />
+                {emailError && <p role="alert" style={{ color: "#f56565", fontSize: "14px", marginTop: "6px", margin: 0 }}>{emailError}</p>}
+              </div>
 
-            <div className="field">
-              <label htmlFor="location">Location</label>
-              <input
-                id="location"
-                name="location"
-                type="text"
-                value={form.location}
-                onChange={(event) =>
-                  updateField("location", event.target.value)
-                }
-              />
-            </div>
+              <div>
+                <label htmlFor="phone" style={{ fontSize: "14px", color: "#e2e8f0" }}>Phone</label>
+                <input id="phone" name="phone" type="tel" value={form.phone} onChange={(event) => updateField("phone", event.target.value)} style={inputStyle} />
+              </div>
 
-            <div className="field">
-              <label htmlFor="summary">Summary</label>
-              <textarea
-                id="summary"
-                name="summary"
-                rows={4}
-                value={form.summary}
-                onChange={(event) => updateField("summary", event.target.value)}
-              />
-            </div>
+              <div>
+                <label htmlFor="location" style={{ fontSize: "14px", color: "#e2e8f0" }}>Location</label>
+                <input id="location" name="location" type="text" value={form.location} onChange={(event) => updateField("location", event.target.value)} style={inputStyle} />
+              </div>
 
-            <div className="form-actions">
-              <button type="submit">Save profile</button>
-              {status === "saved" && (
-                <span role="status" className="success-text">
-                  Profile saved.
-                </span>
-              )}
-              {status === "error" && (
-                <span role="alert" className="error-text">
-                  Could not save. Try again.
-                </span>
-              )}
-            </div>
-          </form>
+              <div>
+                <label htmlFor="summary" style={{ fontSize: "14px", color: "#e2e8f0" }}>Summary</label>
+                <textarea id="summary" name="summary" rows={4} value={form.summary} onChange={(event) => updateField("summary", event.target.value)} style={{ ...inputStyle, resize: "vertical" }} />
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "8px" }}>
+                <button type="submit" style={{ padding: "10px 20px", borderRadius: "6px", border: "none", backgroundColor: "#06B6D4", color: "#ffffff", fontWeight: "bold", cursor: "pointer" }}>
+                  Save profile
+                </button>
+                {status === "saved" && <span role="status" style={{ color: "#48bb78", fontSize: "14px", fontWeight: "bold" }}>✓ Profile saved successfully.</span>}
+                {status === "error" && <span role="alert" style={{ color: "#f56565", fontSize: "14px", fontWeight: "bold" }}>⚠ Could not save. Try again.</span>}
+              </div>
+            </form>
+          </div>
         </main>
       </div>
     </div>

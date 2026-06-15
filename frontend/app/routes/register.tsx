@@ -79,7 +79,7 @@ export default function Register() {
           </button>
         </form>
         <p className="auth-footer">
-          Already have an account? <a href="/">Log In</a>
+          Already have an account? <a href="/login">Log In</a>
         </p>
       </div>
     </div>

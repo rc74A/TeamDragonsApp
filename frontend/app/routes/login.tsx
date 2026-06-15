@@ -41,68 +41,54 @@ export default function Login() {
   };
 
   return (
-    <div className="page-container">
-      <header className="banner">
-        <h1>Dragon Application</h1>
-      </header>
+    <div className="register-page">
+      <div className="auth-card">
+        
+        <h1 className="auth-title">Welcome Back</h1>
+        <p className="auth-subtitle">Log in to your Dragon Application account</p>
 
-      <div className="content-layout">
-        <aside className="sidebar">
-          <nav>
-            <ul className="menu-list">
-              <li>
-                <a href="/register">Register</a>
-              </li>
-            </ul>
-          </nav>
-        </aside>
-      </div>
-
-      {/* Ugly now, we can make it look better late */}
-      <main className="flex justify-center items-center">
-        <div className="bg-[#06B6D4] rounded-md h-xl w-xl shadow-md p-8">
-          <form onSubmit={submitLogin} className="font-bold text-2xl">
-            <label htmlFor="username">Email:</label>
-            <br />
+        {/* Dynamic Error Banner displays only if error state fires */}
+        {error && <div className="error-banner">{error}</div>}
+        
+        <form onSubmit={submitLogin}>
+          
+          <div className="form-group">
+            <label className="input-label" htmlFor="username">Email Address</label>
             <input
               value={username}
               onChange={handleUsernameChange}
-              className="bg-white text-black"
               type="text"
               id="username"
               name="username"
+              required
+              placeholder="you@example.com"
             />
-            <br />
-            <label htmlFor="password">Password:</label>
-            <br />
+          </div>
+          
+          <div className="form-group-last">
+            <label className="input-label" htmlFor="password">Password</label>
             <input
               value={password}
               onChange={handlePasswordChange}
-              className="bg-white text-black"
               type="password"
               id="password"
               name="password"
+              required
+              placeholder="••••••••"
             />
-            <br />
-
-            <button
-              type="submit"
-              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Log In
-            </button>
-            {error && <p className="text-red-500">{error}</p>}
-          </form>
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
+          </div>
+          
+          {/* Reuses your global button component definitions */}
+          <button type="submit" style={{ width: "100%" }}>
+            Log In
+          </button>
+        </form>
+        
+        <div className="auth-footer">
+          Don't have an account? <a href="/register">Register here</a>
         </div>
-      </main>
+        
+      </div>
     </div>
   );
 }

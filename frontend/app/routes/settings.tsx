@@ -1,8 +1,7 @@
 import type { Route } from "./+types/settings";
 import { requireAuth } from "../lib/auth";
 import { useEffect, useState, type FormEvent } from "react";
-import "./app.css";
-import "./settings.css";
+import { Link } from "react-router";
 
 const STORAGE_KEY = "tdAccountSettings";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,14 +60,9 @@ export default function Settings() {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    // Load persisted values after hydration. A lazy useState initializer
-    // would read localStorage during the server render and cause a
-    // hydration mismatch, so syncing here is intentional.
     const stored = loadAccountSettings();
-    /* eslint-disable react-hooks/set-state-in-effect */
     setDisplayName(stored.displayName);
     setEmail(stored.email);
-    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   function handleSave(event: FormEvent<HTMLFormElement>) {
@@ -84,104 +78,125 @@ export default function Settings() {
     setSaved(true);
   }
 
+  const inputStyle = {
+    width: "100%",
+    padding: "10px",
+    borderRadius: "6px",
+    border: "1px solid #4a5568",
+    backgroundColor: "#1a202c",
+    color: "#ffffff",
+    boxSizing: "border-box" as const,
+    marginTop: "6px"
+  };
+
   return (
-    <div className="page-container">
-      <header className="banner">
-        <h1>Dragon Application</h1>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "#1a202c", color: "#ffffff", fontFamily: "sans-serif" }}>
+      
+      {/* Top App Header */}
+      <header style={{ backgroundColor: "#2d3748", padding: "16px 24px", fontSize: "20px", fontWeight: "bold", borderBottom: "1px solid #4a5568", color: "#06B6D4" }}>
+        Dragon Application
       </header>
 
-      <div className="content-layout">
-        <aside className="sidebar">
-          <nav>
-            <ul className="menu-list">
-              <li>
-                <a href="/">Dashboard</a>
-              </li>
-              <li>
-                <a href="/profile">Profile</a>
-              </li>
-              <li>
-                <a href="/settings">Settings</a>
-              </li>
-            </ul>
-          </nav>
+      {/* Main Split Layout Container */}
+      <div style={{ display: "flex", flex: 1 }}>
+        
+        {/* Left Side Navigation Sidebar */}
+        <aside style={{ width: "240px", backgroundColor: "#2d3748", borderRight: "1px solid #4a5568", padding: "24px 16px" }}>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
+            <li>
+              <Link to="/" style={{ display: "block", padding: "10px 16px", borderRadius: "8px", color: "#a0aec0", textDecoration: "none" }}>
+                Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link to="/profile" style={{ display: "block", padding: "10px 16px", borderRadius: "8px", color: "#a0aec0", textDecoration: "none" }}>
+                Profile
+              </Link>
+            </li>
+            {/* 🟢 Keep it visible and highlighted since we are on this route copy */}
+            <li>
+              <Link to="/settings" style={{ display: "block", padding: "10px 16px", borderRadius: "8px", backgroundColor: "#06B6D4", color: "#ffffff", textDecoration: "none", fontWeight: "bold" }}>
+                Settings
+              </Link>
+            </li>
+          </ul>
         </aside>
 
-        <main className="main-content">
-          <h2>Settings</h2>
-          <p className="settings-subtitle">Manage your account settings.</p>
+        {/* Right Side Core Content Area */}
+        <main style={{ flex: 1, padding: "40px" }}>
+          <div style={{ maxWidth: "600px" }}>
+            
+            <h2 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px" }}>Settings</h2>
+            <p style={{ color: "#a0aec0", marginBottom: "32px" }}>Manage your account settings.</p>
 
-          <section
-            className="settings-section"
-            aria-labelledby="account-heading"
-          >
-            <h3 id="account-heading">Account</h3>
-            <form className="settings-form" onSubmit={handleSave} noValidate>
-              <div className="field">
-                <label htmlFor="displayName">Display name</label>
-                <input
-                  id="displayName"
-                  name="displayName"
-                  type="text"
-                  value={displayName}
-                  onChange={(event) => setDisplayName(event.target.value)}
-                />
-                {errors.displayName && (
-                  <p role="alert" className="error-text">
-                    {errors.displayName}
-                  </p>
-                )}
-              </div>
+            {/* Core Account Options Form Section */}
+            <section style={{ backgroundColor: "#2d3748", padding: "24px", borderRadius: "12px", border: "1px solid #4a5568", marginBottom: "32px" }}>
+              <h3 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "16px", color: "#06B6D4", marginTop: 0 }}>Account Details</h3>
+              
+              <form onSubmit={handleSave} noValidate style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                <div>
+                  <label htmlFor="displayName" style={{ fontSize: "14px", color: "#e2e8f0" }}>Display name</label>
+                  <input
+                    id="displayName"
+                    name="displayName"
+                    type="text"
+                    value={displayName}
+                    onChange={(event) => setDisplayName(event.target.value)}
+                    style={inputStyle}
+                  />
+                  {errors.displayName && (
+                    <p role="alert" style={{ color: "#f56565", fontSize: "14px", marginTop: "6px", margin: 0 }}>{errors.displayName}</p>
+                  )}
+                </div>
 
-              <div className="field">
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                />
-                {errors.email && (
-                  <p role="alert" className="error-text">
-                    {errors.email}
-                  </p>
-                )}
-              </div>
+                <div>
+                  <label htmlFor="email" style={{ fontSize: "14px", color: "#e2e8f0" }}>Email</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    style={inputStyle}
+                  />
+                  {errors.email && (
+                    <p role="alert" style={{ color: "#f56565", fontSize: "14px", marginTop: "6px", margin: 0 }}>{errors.email}</p>
+                  )}
+                </div>
 
-              <div className="form-actions">
-                <button type="submit" className="btn-primary">
-                  Save
-                </button>
-                {saved && (
-                  <span role="status" className="success-text">
-                    Saved.
-                  </span>
-                )}
-              </div>
-            </form>
-          </section>
+                <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "4px" }}>
+                  <button 
+                    type="submit" 
+                    style={{ padding: "10px 20px", borderRadius: "6px", border: "none", backgroundColor: "#06B6D4", color: "#ffffff", fontWeight: "bold", cursor: "pointer" }}
+                  >
+                    Save Options
+                  </button>
+                  {saved && (
+                    <span role="status" style={{ color: "#48bb78", fontSize: "14px", fontWeight: "bold" }}>✓ Settings saved.</span>
+                  )}
+                </div>
+              </form>
+            </section>
 
-          <section className="settings-section" aria-labelledby="more-heading">
-            <h3 id="more-heading" className="visually-hidden">
-              More settings
-            </h3>
-            <ul className="coming-soon-list">
+            {/* Coming Soon Features Section */}
+            <section style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {COMING_SOON.map((item) => (
-                <li
+                <div 
                   key={item.title}
-                  className="coming-soon"
-                  aria-disabled="true"
+                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px", backgroundColor: "#2d3748", borderRadius: "12px", border: "1px solid #4a5568", opacity: 0.7 }}
                 >
                   <div>
-                    <h4>{item.title}</h4>
-                    <p>{item.description}</p>
+                    <h4 style={{ fontSize: "16px", fontWeight: "bold", margin: "0 0 4px 0", color: "#e2e8f0" }}>{item.title}</h4>
+                    <p style={{ fontSize: "14px", color: "#a0aec0", margin: 0 }}>{item.description}</p>
                   </div>
-                  <span className="badge">Coming soon</span>
-                </li>
+                  <span style={{ fontSize: "12px", fontWeight: "bold", padding: "4px 8px", backgroundColor: "#4a5568", borderRadius: "4px", color: "#cbd5e0" }}>
+                    Coming soon
+                  </span>
+                </div>
               ))}
-            </ul>
-          </section>
+            </section>
+
+          </div>
         </main>
       </div>
     </div>
