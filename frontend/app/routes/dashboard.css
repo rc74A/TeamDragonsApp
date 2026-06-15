@@ -1,0 +1,236 @@
+/* Structural Layout Frames */
+.db-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #1a202c;
+  color: #ffffff;
+  font-family: sans-serif;
+}
+
+.db-header {
+  background-color: #2d3748;
+  padding: 16px 24px;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 1px solid #4a5568;
+  color: #06B6D4;
+}
+
+.db-workspace {
+  display: flex;
+  flex: 1;
+}
+
+.db-sidebar {
+  width: 240px;
+  background-color: #2d3748;
+  border-right: 1px solid #4a5568;
+  padding: 24px 16px;
+}
+
+.db-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.db-link {
+  display: block;
+  padding: 10px 16px;
+  border-radius: 8px;
+  color: #a0aec0;
+  text-decoration: none;
+}
+
+.db-link-active {
+  display: block;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: #06B6D4;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.db-main {
+  flex: 1;
+  padding: 40px;
+}
+
+.db-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.db-caption {
+  color: #a0aec0;
+  margin-bottom: 32px;
+}
+
+/* Subsection Grid Headers */
+.db-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #2d3748;
+  padding-bottom: 8px;
+}
+
+.db-section-header h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.db-btn-circle {
+  background-color: #06B6D4;
+  color: #ffffff;
+  border: none;
+  width: 36px;
+  height: 36px;
+  borderRadius: 50%;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Application Kanban Cards */
+.db-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.db-card {
+  padding: 24px;
+  background-color: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.db-card h4 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #06B6D4;
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+
+.db-card-company {
+  font-size: 14px;
+  color: #e2e8f0;
+  margin-bottom: 4px;
+}
+
+.db-card-status {
+  font-size: 12px;
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #1a202c;
+  border-radius: 4px;
+  color: #e2e8f0;
+}
+
+.db-btn-edit {
+  background-color: #4a5568;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 16px;
+  width: fit-content;
+  font-size: 13px;
+}
+
+/* Modals & Forms */
+.db-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.db-modal-content {
+  background-color: #2d3748;
+  padding: 32px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 450px;
+  border: 1px solid #4a5568;
+}
+
+.db-modal-content h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #06B6D4;
+  margin-top: 0;
+}
+
+.db-error {
+  color: #f56565;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.db-form-group {
+  margin-bottom: 16px;
+}
+
+.db-form-group label {
+  display: block;
+  font-size: 14px;
+  color: #e2e8f0;
+  margin-bottom: 6px;
+}
+
+.db-form-group input,
+.db-form-group select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #4a5568;
+  background-color: #1a202c;
+  color: #ffffff;
+  box-sizing: border-box;
+}
+
+.db-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.db-btn-cancel {
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: 1px solid #4a5568;
+  background-color: transparent;
+  color: #a0aec0;
+  cursor: pointer;
+}
+
+.db-btn-submit {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  background-color: #06B6D4;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+}
