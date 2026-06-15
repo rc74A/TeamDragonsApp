@@ -8,11 +8,19 @@ interface AccountSettings {
   displayName: string;
   email: string;
 }
-*/ 
+*/
 
 const COMING_SOON = [
-  { title: "Two-Factor Authentication (2FA)", description: "Secure your login sequence with an authenticator app token wrapper." },
-  { title: "Webhook Notifications", description: "Dispatch raw JSON event frames to custom Discord or Slack endpoints on data mutations." }
+  {
+    title: "Two-Factor Authentication (2FA)",
+    description:
+      "Secure your login sequence with an authenticator app token wrapper.",
+  },
+  {
+    title: "Webhook Notifications",
+    description:
+      "Dispatch raw JSON event frames to custom Discord or Slack endpoints on data mutations.",
+  },
 ];
 
 /*
@@ -42,7 +50,7 @@ function validate(settings: AccountSettings): FieldErrors {
   }
   return errors;
 }
-*/ 
+*/
 
 export default function Settings() {
   /* Commented out redundant state handlers to maintain clear linter parameters
@@ -62,23 +70,40 @@ export default function Settings() {
 
   return (
     <div className="settings-root-layout">
-      <header className="settings-top-bar">
-        Dragon Application
-      </header>
+      <header className="settings-top-bar">Dragon Application</header>
 
       <div className="settings-split-pane">
         <aside className="settings-sidebar-nav">
           <ul>
-            <li><Link to="/">Dashboard</Link></li>
-            <li><Link to="/profile">Profile</Link></li>
-            <li><Link to="/settings" className="active-link">Settings</Link></li>
+            <li>
+              <Link to="/">Dashboard</Link>
+            </li>
+            <li>
+              <Link to="/profile">Profile</Link>
+            </li>
+            <li>
+              <Link to="/settings" className="active-link">
+                Settings
+              </Link>
+            </li>
           </ul>
         </aside>
 
         <main className="settings-main-viewport">
           <div className="settings-constrained-box">
-            <h2 style={{ fontSize: "28px", fontWeight: "bold", margin: "0 0 4px 0" }}>Account Settings</h2>
-            <p className="settings-subtitle">Manage your node credentials, security preferences, and system automation configurations.</p>
+            <h2
+              style={{
+                fontSize: "28px",
+                fontWeight: "bold",
+                margin: "0 0 4px 0",
+              }}
+            >
+              Account Settings
+            </h2>
+            <p className="settings-subtitle">
+              Manage your node credentials, security preferences, and system
+              automation configurations.
+            </p>
 
             <section className="settings-section">
               <h3>Security Extensions</h3>

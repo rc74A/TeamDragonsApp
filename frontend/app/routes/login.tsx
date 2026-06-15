@@ -33,7 +33,7 @@ export async function action({ request }: { request: Request }) {
     }
 
     return redirectDocument("/");
-  } catch{
+  } catch {
     return { error: "Network error, please try again" };
   }
 }
@@ -46,9 +46,10 @@ export default function Login() {
   return (
     <div className="register-page">
       <div className="auth-card">
-        
         <h1 className="auth-title">Welcome Back</h1>
-        <p className="auth-subtitle">Log in to your Dragon Application account</p>
+        <p className="auth-subtitle">
+          Log in to your Dragon Application account
+        </p>
 
         <div className="content-layout">
           <aside className="sidebar">
@@ -64,7 +65,6 @@ export default function Login() {
 
         <main className="flex justify-center items-center">
           <div className="bg-[#06B6D4] rounded-md h-xl w-xl shadow-md p-8">
-            
             <Form method="post" className="font-bold text-2xl">
               <div className="form-group">
                 <label htmlFor="username">Email:</label>
@@ -78,9 +78,11 @@ export default function Login() {
                   placeholder="you@example.com"
                 />
               </div>
-              
+
               <div className="form-group-last login-password-spacing">
-                <label className="input-label" htmlFor="password">Password</label>
+                <label className="input-label" htmlFor="password">
+                  Password
+                </label>
                 <input
                   className="bg-white text-black"
                   type="password"
@@ -109,10 +111,8 @@ export default function Login() {
             <div className="auth-footer login-footer-styling">
               Do not have an account? <a href="/register">Register here</a>
             </div>
-
           </div>
         </main>
-        
       </div>
     </div>
   );

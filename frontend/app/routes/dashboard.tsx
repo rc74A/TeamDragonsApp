@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLoaderData, Link, useNavigate } from "react-router";
-import "./dashboard.css"; 
+import "./dashboard.css";
 
 interface Job {
   id: number;
@@ -18,24 +18,51 @@ export async function loader(): Promise<DashboardData> {
   try {
     const [userRes, jobsRes] = await Promise.all([
       fetch("http://localhost:8000/api/current-user"),
-      fetch("http://localhost:8000/api/jobs", { headers: { "X-User-Id": "1" } })
+      fetch("http://localhost:8000/api/jobs", {
+        headers: { "X-User-Id": "1" },
+      }),
     ]);
-    const usernameData = userRes.ok ? await userRes.json() : { username: "Joshua" };
+    const usernameData = userRes.ok
+      ? await userRes.json()
+      : { username: "Joshua" };
     const jobsData = jobsRes.ok ? await jobsRes.json() : [];
 
     const fallbackJobs = [
-      { id: 1, title: "Software Engineer Intern", company: "Google", stage: "Interviewing" },
-      { id: 2, title: "Frontend Developer Co-op", company: "Vercel", stage: "Applied" }
+      {
+        id: 1,
+        title: "Software Engineer Intern",
+        company: "Google",
+        stage: "Interviewing",
+      },
+      {
+        id: 2,
+        title: "Frontend Developer Co-op",
+        company: "Vercel",
+        stage: "Applied",
+      },
     ];
-    return { username: usernameData.username, jobs: jobsData.length > 0 ? jobsData : fallbackJobs };
+    return {
+      username: usernameData.username,
+      jobs: jobsData.length > 0 ? jobsData : fallbackJobs,
+    };
   } catch (error) {
     console.error("Error connecting to backend API:", error);
     return {
       username: "Joshua",
       jobs: [
-        { id: 1, title: "Software Engineer Intern", company: "Google", stage: "Interviewing" },
-        { id: 2, title: "Frontend Developer Co-op", company: "Vercel", stage: "Applied" }
-      ]
+        {
+          id: 1,
+          title: "Software Engineer Intern",
+          company: "Google",
+          stage: "Interviewing",
+        },
+        {
+          id: 2,
+          title: "Frontend Developer Co-op",
+          company: "Vercel",
+          stage: "Applied",
+        },
+      ],
     };
   }
 }
@@ -46,7 +73,11 @@ export default function Dashboard() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingJobId, setEditingJobId] = useState<number | null>(null);
-  const [jobForm, setJobForm] = useState({ title: "", company: "", stage: "Wishlist" });
+  const [jobForm, setJobForm] = useState({
+    title: "",
+    company: "",
+    stage: "Wishlist",
+  });
   const [formError, setFormError] = useState("");
 
   const openCreateModal = () => {
@@ -66,14 +97,16 @@ export default function Dashboard() {
     setFormError("");
 
     const isEditing = editingJobId !== null;
-    const url = isEditing ? `http://localhost:8000/api/jobs/${editingJobId}` : "http://localhost:8000/api/jobs";
+    const url = isEditing
+      ? `http://localhost:8000/api/jobs/${editingJobId}`
+      : "http://localhost:8000/api/jobs";
     const method = isEditing ? "PUT" : "POST";
 
     try {
       const response = await fetch(url, {
         method: method,
         headers: { "Content-Type": "application/json", "X-User-Id": "1" },
-        body: JSON.stringify(jobForm)
+        body: JSON.stringify(jobForm),
       });
 
       if (!response.ok) {
@@ -92,9 +125,7 @@ export default function Dashboard() {
 
   return (
     <div className="db-root">
-      <header className="db-header">
-        Dragon Application
-      </header>
+      <header className="db-header">Dragon Application</header>
 
       <div className="db-workspace">
         <aside className="db-sidebar">
@@ -115,27 +146,31 @@ export default function Dashboard() {
         <main className="db-main">
           <div className="db-container">
             <h2>Welcome, {username}</h2>
-            <p className="db-caption">Explore open listings matching your profile workspace.</p>
-            
+            <p className="db-caption">
+              Explore open listings matching your profile workspace.
+            </p>
+
             <div className="db-section-header">
               <h3>Available Opportunities</h3>
-              <button type="button" onClick={openCreateModal} className="db-btn-circle">
+              <button
+                type="button"
+                onClick={openCreateModal}
+                className="db-btn-circle"
+              >
                 +
               </button>
             </div>
-            
+
             <div className="db-grid">
               {jobs.map((job) => (
                 <div key={job.id} className="db-card">
                   <div>
                     <h4>{job.title}</h4>
                     <p className="db-card-company">🏢 {job.company}</p>
-                    <p className="db-card-status">
-                      📋 Status: {job.stage}
-                    </p>
+                    <p className="db-card-status">📋 Status: {job.stage}</p>
                   </div>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => openEditModal(job)}
                     className="db-btn-edit"
                   >
@@ -152,37 +187,45 @@ export default function Dashboard() {
         <div className="db-modal-overlay">
           <div className="db-modal-content">
             <h3>
-              {editingJobId ? "Edit Position Details" : "Post a New Tracking Entry"}
+              {editingJobId
+                ? "Edit Position Details"
+                : "Post a New Tracking Entry"}
             </h3>
             {formError && <p className="db-error">{formError}</p>}
-            
+
             <form onSubmit={handleFormSubmit}>
               <div className="db-form-group">
                 <label>Job Title</label>
-                <input 
-                  type="text" 
-                  title="Job Title Input" 
-                  required 
-                  value={jobForm.title} 
-                  onChange={(e) => setJobForm({ ...jobForm, title: e.target.value })} 
+                <input
+                  type="text"
+                  title="Job Title Input"
+                  required
+                  value={jobForm.title}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, title: e.target.value })
+                  }
                 />
               </div>
               <div className="db-form-group">
                 <label>Company</label>
-                <input 
-                  type="text" 
-                  title="Company Name Input" 
-                  required 
-                  value={jobForm.company} 
-                  onChange={(e) => setJobForm({ ...jobForm, company: e.target.value })} 
+                <input
+                  type="text"
+                  title="Company Name Input"
+                  required
+                  value={jobForm.company}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, company: e.target.value })
+                  }
                 />
               </div>
               <div className="db-form-group">
                 <label>Tracking Stage</label>
-                <select 
+                <select
                   title="Tracking Stage Dropdown"
-                  value={jobForm.stage} 
-                  onChange={(e) => setJobForm({ ...jobForm, stage: e.target.value })}
+                  value={jobForm.stage}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, stage: e.target.value })
+                  }
                 >
                   <option value="Wishlist">Wishlist</option>
                   <option value="Applied">Applied</option>
@@ -192,7 +235,13 @@ export default function Dashboard() {
                 </select>
               </div>
               <div className="db-form-actions">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="db-btn-cancel">Cancel</button>
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="db-btn-cancel"
+                >
+                  Cancel
+                </button>
                 <button type="submit" className="db-btn-submit">
                   {editingJobId ? "Save Changes" : "Track Job"}
                 </button>

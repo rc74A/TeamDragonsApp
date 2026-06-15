@@ -7,12 +7,12 @@ const API_BASE = import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Profile() {
-  const [profile, setProfile] = useState({ 
+  const [profile, setProfile] = useState({
     full_name: "", // Changed to full_name to match the API blueprint layout
-    email: "", 
-    phone: "", 
-    location: "", 
-    summary: "" 
+    email: "",
+    phone: "",
+    location: "",
+    summary: "",
   });
 
   const [errors, setErrors] = useState({ email: "", phone: "" });
@@ -30,7 +30,7 @@ export default function Profile() {
             email: data.email || "",
             phone: data.phone || "",
             location: data.location || "",
-            summary: data.summary || ""
+            summary: data.summary || "",
           });
         }
       } catch {
@@ -41,7 +41,9 @@ export default function Profile() {
   }, []);
 
   const totalFields = Object.keys(profile).length;
-  const filledFields = Object.values(profile).filter(value => value.trim() !== "").length;
+  const filledFields = Object.values(profile).filter(
+    (value) => value.trim() !== "",
+  ).length;
   const completionPercentage = Math.round((filledFields / totalFields) * 100);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -88,24 +90,44 @@ export default function Profile() {
       <div className="profile-workspace">
         <aside className="profile-sidebar">
           <ul className="profile-nav-list">
-            <li><Link to="/" className="profile-nav-link">Dashboard</Link></li>
-            <li><Link to="/profile" className="profile-nav-link active">Profile</Link></li>
-            <li><Link to="/settings" className="profile-nav-link">Settings</Link></li>
+            <li>
+              <Link to="/" className="profile-nav-link">
+                Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link to="/profile" className="profile-nav-link active">
+                Profile
+              </Link>
+            </li>
+            <li>
+              <Link to="/settings" className="profile-nav-link">
+                Settings
+              </Link>
+            </li>
           </ul>
         </aside>
 
         <main className="profile-main">
           <div className="profile-content-box">
             <h2>Profile</h2>
-            <p className="settings-subtitle">Keep your structural summary records updated for matching pipeline discovery.</p>
-            
+            <p className="settings-subtitle">
+              Keep your structural summary records updated for matching pipeline
+              discovery.
+            </p>
+
             <div className="progress-container">
               <div className="progress-header-text">
                 <span>Setup Completion Progress</span>
                 <span>{completionPercentage}%</span>
               </div>
               <div className="progress-track">
-                  <progress className="progress-fill-bar" max="100" value={completionPercentage} title="Profile Setup Completion Bar"/>
+                <progress
+                  className="progress-fill-bar"
+                  max="100"
+                  value={completionPercentage}
+                  title="Profile Setup Completion Bar"
+                />
               </div>
             </div>
 
@@ -114,35 +136,88 @@ export default function Profile() {
               <form className="settings-form" onSubmit={handleSave}>
                 <div className="field">
                   <label htmlFor="full_name">Full name</label>
-                  <input id="full_name" type="text" value={profile.full_name} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} placeholder="John Doe" />
+                  <input
+                    id="full_name"
+                    type="text"
+                    value={profile.full_name}
+                    onChange={(e) =>
+                      setProfile({ ...profile, full_name: e.target.value })
+                    }
+                    placeholder="John Doe"
+                  />
                 </div>
-                
+
                 <div className="field">
                   <label htmlFor="email">Email</label>
-                  <input id="email" type="text" value={profile.email} onChange={(e) => setProfile({ ...profile, email: e.target.value })} placeholder="john@example.com" />
-                  {errors.email && <span className="error-text">{errors.email}</span>}
+                  <input
+                    id="email"
+                    type="text"
+                    value={profile.email}
+                    onChange={(e) =>
+                      setProfile({ ...profile, email: e.target.value })
+                    }
+                    placeholder="john@example.com"
+                  />
+                  {errors.email && (
+                    <span className="error-text">{errors.email}</span>
+                  )}
                 </div>
-                
+
                 <div className="field">
                   <label htmlFor="phone">Phone</label>
-                  <input id="phone" type="text" value={profile.phone} onChange={(e) => setProfile({ ...profile, phone: e.target.value })} placeholder="(555) 000-0000" />
-                  {errors.phone && <span className="error-text">{errors.phone}</span>}
+                  <input
+                    id="phone"
+                    type="text"
+                    value={profile.phone}
+                    onChange={(e) =>
+                      setProfile({ ...profile, phone: e.target.value })
+                    }
+                    placeholder="(555) 000-0000"
+                  />
+                  {errors.phone && (
+                    <span className="error-text">{errors.phone}</span>
+                  )}
                 </div>
 
                 <div className="field">
                   <label htmlFor="location">Location</label>
-                  <input id="location" type="text" value={profile.location} onChange={(e) => setProfile({ ...profile, location: e.target.value })} placeholder="City, NJ" />
+                  <input
+                    id="location"
+                    type="text"
+                    value={profile.location}
+                    onChange={(e) =>
+                      setProfile({ ...profile, location: e.target.value })
+                    }
+                    placeholder="City, NJ"
+                  />
                 </div>
 
                 <div className="field">
                   <label htmlFor="summary">Summary</label>
-                  <input id="summary" type="text" value={profile.summary} onChange={(e) => setProfile({ ...profile, summary: e.target.value })} placeholder="Brief background..." />
+                  <input
+                    id="summary"
+                    type="text"
+                    value={profile.summary}
+                    onChange={(e) =>
+                      setProfile({ ...profile, summary: e.target.value })
+                    }
+                    placeholder="Brief background..."
+                  />
                 </div>
 
                 <div className="form-actions">
                   {/* 🟢 Button name text matches test expectations exactly */}
-                  <button type="submit" className="btn-primary">Save profile</button>
-                  {successMessage && <span className="success-text" style={{ marginLeft: "10px", color: "green" }}>{successMessage}</span>}
+                  <button type="submit" className="btn-primary">
+                    Save profile
+                  </button>
+                  {successMessage && (
+                    <span
+                      className="success-text"
+                      style={{ marginLeft: "10px", color: "green" }}
+                    >
+                      {successMessage}
+                    </span>
+                  )}
                 </div>
               </form>
             </section>

@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router"; 
+import { MemoryRouter } from "react-router";
 import Profile from "./profile";
 
 type ProfileResponse = {
@@ -44,11 +44,11 @@ afterEach(() => {
 describe("Profile page", () => {
   it("renders the profile form inside the app shell", async () => {
     vi.stubGlobal("fetch", mockFetch());
-    
+
     render(
       <MemoryRouter>
         <Profile />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(
@@ -74,11 +74,11 @@ describe("Profile page", () => {
         email: "joel@example.com",
       }),
     );
-    
+
     render(
       <MemoryRouter>
         <Profile />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(await screen.findByDisplayValue("Joel Walker")).toBeInTheDocument();
@@ -89,11 +89,11 @@ describe("Profile page", () => {
     const fetchMock = mockFetch();
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
-    
+
     render(
       <MemoryRouter>
         <Profile />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
 
@@ -115,11 +115,11 @@ describe("Profile page", () => {
     const fetchMock = mockFetch();
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
-    
+
     render(
       <MemoryRouter>
         <Profile />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     fetchMock.mockClear();
@@ -127,9 +127,7 @@ describe("Profile page", () => {
     await user.type(screen.getByLabelText("Email"), "not-an-email");
     await user.click(screen.getByRole("button", { name: "Save profile" }));
 
-    expect(
-      screen.getByText("Enter a valid email address"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Enter a valid email address")).toBeInTheDocument();
     const putCalls = fetchMock.mock.calls.filter(
       ([, options]) => options?.method === "PUT",
     );
