@@ -1,5 +1,10 @@
 import React from "react";
-import { Form, redirect, useActionData, useNavigation } from "react-router";
+import {
+  Form,
+  redirectDocument,
+  useActionData,
+  useNavigation,
+} from "react-router";
 import "./app.css";
 
 export async function action({ request }: { request: Request }) {
@@ -28,7 +33,7 @@ export async function action({ request }: { request: Request }) {
       }
     }
 
-    return redirect("/");
+    return redirectDocument("/");
   } catch (err) {
     return { error: "Network error, please try again" };
   }
