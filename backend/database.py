@@ -1,7 +1,7 @@
 import os
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, sessionmaker 
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 
 def build_database_url() -> str:
@@ -37,8 +37,10 @@ engine = create_engine(
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
+
 class Base(DeclarativeBase):
     """Declarative base for all ORM models."""
+
 
 def get_db():
     """
@@ -52,4 +54,3 @@ def get_db():
         yield db
     finally:
         db.close()
-

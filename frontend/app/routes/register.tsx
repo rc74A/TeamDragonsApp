@@ -39,22 +39,39 @@ export default function Register() {
     <div className="register-page">
       <div className="auth-card">
         <h2 className="auth-title">Create Your Account</h2>
-        <p className="auth-subtitle">Get started instantly with just your email.</p>
+        <p className="auth-subtitle">
+          Get started instantly with just your email.
+        </p>
         {actionData?.error && (
           <div className="error-banner">{actionData.error}</div>
         )}
         <form method="post">
           <div className="form-group">
             <label className="input-label">Email Address</label>
-            <input name="email" type="email" required placeholder="name@njit.edu" />
+            <input
+              name="email"
+              type="email"
+              required
+              placeholder="name@njit.edu"
+            />
           </div>
           <div className="form-group">
             <label className="input-label">Password</label>
-            <input name="password" type="password" required placeholder="••••••••" />
+            <input
+              name="password"
+              type="password"
+              required
+              placeholder="••••••••"
+            />
           </div>
           <div className="form-group-last">
             <label className="input-label">Confirm Password</label>
-            <input name="confirmPassword" type="password" required placeholder="••••••••" />
+            <input
+              name="confirmPassword"
+              type="password"
+              required
+              placeholder="••••••••"
+            />
           </div>
           <button type="submit" style={{ width: "100%" }}>
             Sign Up Free
