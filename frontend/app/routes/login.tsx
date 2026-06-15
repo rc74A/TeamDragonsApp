@@ -33,7 +33,7 @@ export default function Login() {
         setError(data.detail || "Login failed");
         return;
       }
-      navigate("/"); 
+      navigate("/");
     } catch (err) {
       setError("Network error, please try again");
     } finally {
