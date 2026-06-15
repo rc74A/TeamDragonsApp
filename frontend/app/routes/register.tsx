@@ -8,13 +8,14 @@ export async function action({ request }: Route.ActionArgs) {
   const email = formData.get("email")?.toString().trim();
   const password = formData.get("password")?.toString();
   const confirmPassword = formData.get("confirmPassword")?.toString();
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
   if (password !== confirmPassword) {
     return { error: "Passwords do not match." };
   }
 
   try {
-    const response = await fetch("http://localhost:8000/api/auth/register", {
+    const response = await fetch(API_URL + "/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ uname: email, email: email, pwd: password }),
