@@ -12,7 +12,7 @@ export async function action({ request }: { request: Request }) {
   try {
     const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
       method: "POST",
-      credentials: "include", 
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -29,7 +29,6 @@ export async function action({ request }: { request: Request }) {
     }
 
     return redirect("/");
-
   } catch (err) {
     return { error: "Network error, please try again" };
   }
@@ -67,7 +66,7 @@ export default function Login() {
               className="bg-white text-black"
               type="text"
               id="username"
-              name="username" 
+              name="username"
               required
             />
             <br />
@@ -89,7 +88,7 @@ export default function Login() {
             >
               {isSubmitting ? "Logging In..." : "Log In"}
             </button>
-            
+
             {actionData?.error && (
               <p className="text-red-500 mt-4 text-xl font-bold bg-white p-2 rounded border border-red-500 text-center">
                 {actionData.error}
@@ -101,4 +100,3 @@ export default function Login() {
     </div>
   );
 }
-
