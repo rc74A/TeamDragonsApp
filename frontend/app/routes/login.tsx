@@ -1,45 +1,44 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import React from "react";
+import { Form, redirect, useActionData, useNavigation } from "react-router";
 import "./app.css";
 
-export default function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const loginLink = `${import.meta.env.VITE_API_URL}/api/auth/login`;
+export async function action({ request }: { request: Request }) {
+  const formData = await request.formData();
+  const username = formData.get("username");
+  const password = formData.get("password");
 
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  };
+  const BACKEND_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+      method: "POST",
+      credentials: "include", 
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ uname: username, pwd: password }),
+    });
 
-  const submitLogin = async (e) => {
-    e.preventDefault();
-    setError("");
-    try {
-      const response = await fetch(loginLink, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ uname: username, pwd: password }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        setError(data.detail || "Login failed");
-        return;
+    if (!response.ok) {
+      try {
+        const data = await response.json();
+        return { error: data.detail || "Invalid username or password" };
+      } catch {
+        return { error: "Invalid username or password" };
       }
-      navigate("/");
-    } catch (err) {
-      setError("Network error, please try again");
-    } finally {
-      setPassword("");
     }
-  };
+
+    return redirect("/");
+
+  } catch (err) {
+    return { error: "Network error, please try again" };
+  }
+}
+
+export default function Login() {
+  const actionData = useActionData() as { error?: string } | undefined;
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
 
   return (
     <div className="page-container">
@@ -59,51 +58,47 @@ export default function Login() {
         </aside>
       </div>
 
-      {/* Ugly now, we can make it look better late */}
       <main className="flex justify-center items-center">
         <div className="bg-[#06B6D4] rounded-md h-xl w-xl shadow-md p-8">
-          <form onSubmit={submitLogin} className="font-bold text-2xl">
+          <Form method="post" className="font-bold text-2xl">
             <label htmlFor="username">Email:</label>
             <br />
             <input
-              value={username}
-              onChange={handleUsernameChange}
               className="bg-white text-black"
               type="text"
               id="username"
-              name="username"
+              name="username" 
+              required
             />
             <br />
             <label htmlFor="password">Password:</label>
             <br />
             <input
-              value={password}
-              onChange={handlePasswordChange}
               className="bg-white text-black"
               type="password"
               id="password"
               name="password"
+              required
             />
             <br />
 
             <button
               type="submit"
-              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+              disabled={isSubmitting}
+              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
             >
-              Log In
+              {isSubmitting ? "Logging In..." : "Log In"}
             </button>
-            {error && <p className="text-red-500">{error}</p>}
-          </form>
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
+            
+            {actionData?.error && (
+              <p className="text-red-500 mt-4 text-xl font-bold bg-white p-2 rounded border border-red-500 text-center">
+                {actionData.error}
+              </p>
+            )}
+          </Form>
         </div>
       </main>
     </div>
   );
 }
+
