@@ -4,11 +4,8 @@ import type { Route } from "./+types/dashboard";
 import { requireAuth } from "../lib/auth";
 import "./dashboard.css";
 
-interface Job {
-  id: number;
-  title: string;
-  company: string;
-  stage: string;
+export async function loader({ request }: Route.LoaderArgs) {
+  return await requireAuth(request);
 }
 
 interface DashboardData {
@@ -97,6 +94,12 @@ export default function Dashboard() {
                 Profile
               </Link>
             </li>
+            {/* 🟢 Restored from main: Settings menu nav element */}
+            <li>
+              <Link to="/settings" className="db-link">
+                Settings
+              </Link>
+            </li>
           </ul>
         </aside>
 
@@ -145,9 +148,9 @@ export default function Dashboard() {
                     <button
                       type="button"
                       onClick={() => handleDeleteJob(job.id)}
-                      className="db-btn-delete db-btn-disabled"
+                      className="db-btn-delete"
                     >
-                      Delete (Coming Soon)
+                      Delete
                     </button>
                   </div>
                 </div>
