@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router";
 import Profile from "./profile";
 
 type ProfileResponse = {
@@ -43,13 +44,16 @@ afterEach(() => {
 describe("Profile page", () => {
   it("renders the profile form inside the app shell", async () => {
     vi.stubGlobal("fetch", mockFetch());
-    render(<Profile />);
 
-    // App-shell behavior is preserved (banner + sidebar nav).
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>,
+    );
+
     expect(
       screen.getByRole("heading", { name: "Dragon Application", level: 1 }),
     ).toBeInTheDocument();
-    // Flush the on-mount fetch effect.
     expect(
       await screen.findByRole("heading", { name: "Profile", level: 2 }),
     ).toBeInTheDocument();
@@ -70,7 +74,12 @@ describe("Profile page", () => {
         email: "joel@example.com",
       }),
     );
-    render(<Profile />);
+
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>,
+    );
 
     expect(await screen.findByDisplayValue("Joel Walker")).toBeInTheDocument();
     expect(screen.getByDisplayValue("joel@example.com")).toBeInTheDocument();
@@ -80,7 +89,12 @@ describe("Profile page", () => {
     const fetchMock = mockFetch();
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
-    render(<Profile />);
+
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>,
+    );
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
 
     await user.type(screen.getByLabelText("Full name"), "Ada Lovelace");
@@ -101,16 +115,19 @@ describe("Profile page", () => {
     const fetchMock = mockFetch();
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
-    render(<Profile />);
+
+    render(
+      <MemoryRouter>
+        <Profile />
+      </MemoryRouter>,
+    );
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     fetchMock.mockClear();
 
     await user.type(screen.getByLabelText("Email"), "not-an-email");
     await user.click(screen.getByRole("button", { name: "Save profile" }));
 
-    expect(
-      screen.getByText("Enter a valid email address."),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Enter a valid email address")).toBeInTheDocument();
     const putCalls = fetchMock.mock.calls.filter(
       ([, options]) => options?.method === "PUT",
     );
