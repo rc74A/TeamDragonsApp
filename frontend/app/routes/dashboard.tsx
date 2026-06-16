@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLoaderData, Link, useNavigate } from "react-router";
 import "./dashboard.css";
-
+//FORCE THE DASHBOARD UPDATE
 interface Job {
   id: number;
   title: string;
