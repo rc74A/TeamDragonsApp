@@ -1,11 +1,6 @@
-<<<<<<< HEAD
 import { requireAuth } from "../lib/auth";
 import type { Route } from "./+types/profile";
 import { useEffect, useState, type FormEvent } from "react";
-=======
-import { useState, useEffect } from "react";
-import { Link } from "react-router";
->>>>>>> 8ef772d9904327cbd10c67d0d2afa326127a0bad
 import "./app.css";
 import "./profile.css";
 

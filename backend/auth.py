@@ -161,6 +161,7 @@ def register_user(creds: RegisterRequest, db: Session = Depends(get_db)):
 
     return {"message": "Registration Successful"}
 
+
 def validate_user_logged_in(request: Request):
     """Verify the request has a valid auth token cookie and return its payload."""
     token = request.cookies.get("token")
@@ -173,6 +174,7 @@ def validate_user_logged_in(request: Request):
             status_code=401, detail="Login expired, please try again"
         ) from None
     return payload
+
 
 @authrouter.get("/me")
 def get_me(payload: dict = Depends(validate_user_logged_in)):
