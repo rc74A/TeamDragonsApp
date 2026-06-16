@@ -1,5 +1,4 @@
 import os
-import re
 from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
@@ -100,12 +99,6 @@ def verify_hashed_login(
             status_code=401, detail=f"User '{creds.uname}' isn't registered"
         )
 
-    if (
-        query.first().username != creds.uname
-        or query.first().hashed_password != creds.pwd
-    ):
-        raise HTTPException(status_code=401, detail="Invalid username or password")
-
     user = query.first()
     if user.username != creds.uname or user.hashed_password != creds.pwd:
         raise HTTPException(status_code=401, detail="Invalid username or password")
@@ -168,18 +161,9 @@ def register_user(creds: RegisterRequest, db: Session = Depends(get_db)):
 
     return {"message": "Registration Successful"}
 
-
 def validate_user_logged_in(request: Request):
     """Verify the request has a valid auth token cookie and return its payload."""
     token = request.cookies.get("token")
-
-    if not token:
-        cookie_header = request.headers.get("cookie") or request.headers.get("Cookie")
-        if cookie_header:
-            match = re.search(r"(?:^|;\s*)token=([^;]*)", cookie_header)
-            if match:
-                token = match.group(1)
-
     if not token:
         raise HTTPException(status_code=401, detail="Not logged in, permission denied.")
     try:
@@ -189,7 +173,6 @@ def validate_user_logged_in(request: Request):
             status_code=401, detail="Login expired, please try again"
         ) from None
     return payload
-
 
 @authrouter.get("/me")
 def get_me(payload: dict = Depends(validate_user_logged_in)):

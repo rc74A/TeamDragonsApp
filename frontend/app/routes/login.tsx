@@ -17,7 +17,6 @@ export async function action({ request }: { request: Request }) {
   try {
     const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
       method: "POST",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -33,7 +32,13 @@ export async function action({ request }: { request: Request }) {
       }
     }
 
-    return redirectDocument("/");
+    const setCookie = response.headers.get("set-cookie");
+    const headers = new Headers();
+    if (setCookie) {
+      headers.append("Set-Cookie", setCookie);
+    }
+
+    return redirectDocument("/", { headers });
   } catch (err) {
     return { error: "Network error, please try again" };
   }
