@@ -1,32 +1,36 @@
-import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
+import { requireAuth } from "../lib/auth";
+import type { Route } from "./+types/settings";
+import { useEffect, useState, type FormEvent } from "react";
 import "./app.css";
 import "./settings.css";
 
-/*
-interface AccountSettings {
+export async function loader({ request }: Route.LoaderArgs) {
+  return await requireAuth(request);
+}
+
+const STORAGE_KEY = "tdAccountSettings";
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+type AccountSettings = {
   displayName: string;
   email: string;
-}
-*/
+};
+
+type FieldErrors = {
+  displayName?: string;
+  email?: string;
+};
 
 const COMING_SOON = [
-  {
-    title: "Two-Factor Authentication (2FA)",
-    description:
-      "Secure your login sequence with an authenticator app token wrapper.",
-  },
-  {
-    title: "Webhook Notifications",
-    description:
-      "Dispatch raw JSON event frames to custom Discord or Slack endpoints on data mutations.",
-  },
+  { title: "Security", description: "Password and login management." },
+  { title: "Notifications", description: "Email and in-app alerts." },
+  { title: "Appearance", description: "Theme and display preferences." },
 ];
 
-/*
 function loadAccountSettings(): AccountSettings {
   if (typeof window === "undefined") {
-    return { displayName: "Joshua Ware", email: "jware@njit.edu" };
+    return { displayName: "", email: "" };
   }
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -50,7 +54,6 @@ function validate(settings: AccountSettings): FieldErrors {
   }
   return errors;
 }
-*/
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -66,10 +69,9 @@ export default function Settings() {
     if (typeof window !== "undefined") {
       window.localStorage.setItem("account_settings", JSON.stringify({ displayName, email }));
     }
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    setSaved(true);
   }
-  */
 
   useEffect(() => {
     async function verifySession() {
@@ -115,57 +117,103 @@ export default function Settings() {
   }
 
   return (
-    <div className="settings-root-layout">
-      <header className="settings-top-bar">Dragon Application</header>
+    <div className="page-container">
+      <header className="banner">
+        <h1>Dragon Application</h1>
+      </header>
 
-      <div className="settings-split-pane">
-        <aside className="settings-sidebar-nav">
-          <ul>
-            <li>
-              <Link to="/">Dashboard</Link>
-            </li>
-            <li>
-              <Link to="/profile">Profile</Link>
-            </li>
-            <li>
-              <Link to="/settings" className="active-link">
-                Settings
-              </Link>
-            </li>
-          </ul>
+      <div className="content-layout">
+        <aside className="sidebar">
+          <nav>
+            <ul className="menu-list">
+              <li>
+                <a href="/">Dashboard</a>
+              </li>
+              <li>
+                <a href="/profile">Profile</a>
+              </li>
+              <li>
+                <a href="/settings">Settings</a>
+              </li>
+            </ul>
+          </nav>
         </aside>
 
-        <main className="settings-main-viewport">
-          <div className="settings-constrained-box">
-            <h2
-              style={{
-                fontSize: "28px",
-                fontWeight: "bold",
-                margin: "0 0 4px 0",
-              }}
-            >
-              Account Settings
-            </h2>
-            <p className="settings-subtitle">
-              Manage your node credentials, security preferences, and system
-              automation configurations.
-            </p>
+        <main className="main-content">
+          <h2>Account Settings</h2>
+          <p className="settings-subtitle">Manage your account settings.</p>
 
-            <section className="settings-section">
-              <h3>Security Extensions</h3>
-              <ul className="coming-soon-list">
-                {COMING_SOON.map((item, index) => (
-                  <li key={index} className="coming-soon">
-                    <div className="coming-soon-info">
-                      <h4>{item.title}</h4>
-                      <p>{item.description}</p>
-                    </div>
-                    <span className="badge">Coming soon</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          </div>
+          <section
+            className="settings-section"
+            aria-labelledby="account-heading"
+          >
+            <h3 id="account-heading">Account</h3>
+            <form className="settings-form" onSubmit={handleSave} noValidate>
+              <div className="field">
+                <label htmlFor="displayName">Display name</label>
+                <input
+                  id="displayName"
+                  name="displayName"
+                  type="text"
+                  value={displayName}
+                  onChange={(event) => setDisplayName(event.target.value)}
+                />
+                {errors.displayName && (
+                  <p role="alert" className="error-text">
+                    {errors.displayName}
+                  </p>
+                )}
+              </div>
+
+              <div className="field">
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                />
+                {errors.email && (
+                  <p role="alert" className="error-text">
+                    {errors.email}
+                  </p>
+                )}
+              </div>
+
+              <div className="form-actions">
+                <button type="submit" className="btn-primary">
+                  Save
+                </button>
+                {saved && (
+                  <span role="status" className="success-text">
+                    Saved.
+                  </span>
+                )}
+              </div>
+            </form>
+          </section>
+
+          <section className="settings-section" aria-labelledby="more-heading">
+            <h3 id="more-heading" className="visually-hidden">
+              More settings
+            </h3>
+            <ul className="coming-soon-list">
+              {COMING_SOON.map((item) => (
+                <li
+                  key={item.title}
+                  className="coming-soon"
+                  aria-disabled="true"
+                >
+                  <div>
+                    <h4>{item.title}</h4>
+                    <p>{item.description}</p>
+                  </div>
+                  <span className="badge">Coming soon</span>
+                </li>
+              ))}
+            </ul>
+          </section>
         </main>
       </div>
     </div>

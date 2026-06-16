@@ -14,7 +14,6 @@ export async function requireAuth(request: Request) {
   }
 
   const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       Cookie: clientCookie,

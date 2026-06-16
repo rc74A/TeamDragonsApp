@@ -25,16 +25,17 @@ export default function Login() {
         body: JSON.stringify({ uname: username, pwd: password }),
       });
 
-      if (!response.ok) {
-        setIsSubmitting(false);
-        try {
-          const data = await response.json();
-          setError(data.detail || "Invalid username or password");
-        } catch {
-          setError("Invalid username or password");
-        }
-        return;
-      }
+    const setCookie = response.headers.get("set-cookie");
+    const headers = new Headers();
+    if (setCookie) {
+      headers.append("Set-Cookie", setCookie);
+    }
+
+    return redirectDocument("/", { headers });
+  } catch (err) {
+    return { error: "Network error, please try again" };
+  }
+}
 
       window.location.href = "http://localhost:5173/";
     } catch {

@@ -4,11 +4,8 @@ import type { Route } from "./+types/dashboard";
 import { requireAuth } from "../lib/auth";
 import "./dashboard.css";
 
-interface Job {
-  id: number;
-  title: string;
-  company: string;
-  stage: string;
+export async function loader({ request }: Route.LoaderArgs) {
+  return await requireAuth(request);
 }
 
 interface DashboardData {
