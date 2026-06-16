@@ -116,8 +116,8 @@ def verify_hashed_login(
         key="token",
         value=token,
         httponly=True,
-        secure=True,
-        samesite="none",
+        secure=False,   
+        samesite="lax", 
         max_age=60 * 60 * 24,  # 24 hours
     )
 
