@@ -1,7 +1,12 @@
+import { requireAuth } from "../lib/auth";
 import type { Route } from "./+types/settings";
 import { useEffect, useState, type FormEvent } from "react";
 import "./app.css";
 import "./settings.css";
+
+export async function loader({ request }: Route.LoaderArgs) {
+  return await requireAuth(request);
+}
 
 const STORAGE_KEY = "tdAccountSettings";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -1,5 +1,10 @@
+import { requireAuth } from "../lib/auth";
 import type { Route } from "./+types/dashboard";
 import "./app.css";
+
+export async function loader({ request }: Route.LoaderArgs) {
+  return await requireAuth(request);
+}
 
 export default function App() {
   return (
