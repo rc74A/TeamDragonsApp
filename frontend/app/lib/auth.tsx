@@ -2,8 +2,9 @@ import { redirect } from "react-router";
 
 export async function requireAuth(request: Request) {
   // Read the cookie from incoming server headers
-  let clientCookie = request.headers.get("Cookie") || request.headers.get("cookie") || "";
-  
+  let clientCookie =
+    request.headers.get("Cookie") || request.headers.get("cookie") || "";
+
   if (!clientCookie && typeof document !== "undefined") {
     clientCookie = document.cookie || "";
   }
@@ -23,6 +24,6 @@ export async function requireAuth(request: Request) {
   if (!response.ok) {
     throw redirect("/login");
   }
-  
+
   return response.json();
 }

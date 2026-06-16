@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLoaderData, Link, useNavigate } from "react-router";
-import type { Route } from "./+types/dashboard"; 
-import { requireAuth } from "../lib/auth";       
+import type { Route } from "./+types/dashboard";
+import { requireAuth } from "../lib/auth";
 import "./dashboard.css";
 
 interface Job {
@@ -14,59 +14,71 @@ interface Job {
 interface DashboardData {
   username: string;
   jobs: Job[];
+  userId: string;
 }
 
-export async function loader({ request }: Route.LoaderArgs): Promise<DashboardData> {
+export async function loader({
+  request,
+}: Route.LoaderArgs): Promise<DashboardData> {
   const authUser = await requireAuth(request);
-  const userId = authUser?.id || "1"; 
+  const userId = authUser?.id || "1";
 
   try {
     const response = await fetch(`http://localhost:8000/api/jobs`, {
-      headers: { "X-User-Id": String(userId) },
+      headers: { "x-user-id": String(userId) },
     });
     const jobsData = response.ok ? await response.json() : [];
 
     return {
       username: authUser?.username || "Joshua",
+      userId: String(userId),
       jobs: jobsData.length > 0 ? jobsData : getFallbackJobs(),
     };
-  } catch (error) {
+  } catch {
     return {
       username: authUser?.username || "Joshua",
+      userId: String(userId),
       jobs: getFallbackJobs(),
     };
   }
 }
 
 export default function Dashboard() {
-  const { username, jobs } = useLoaderData() as DashboardData;
+  const { userId, jobs } = useLoaderData() as DashboardData;
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingJobId, setEditingJobId] = useState<number | null>(null);
-  const [jobForm, setJobForm] = useState({ title: "", company: "", stage: "Wishlist" });
+  const [jobForm, setJobForm] = useState({
+    title: "",
+    company: "",
+    stage: "Wishlist",
+  });
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isEditing = editingJobId !== null;
-    const url = isEditing ? `http://localhost:8000/api/jobs/${editingJobId}` : "http://localhost:8000/api/jobs";
-    
+    const url = isEditing
+      ? `http://localhost:8000/api/jobs/${editingJobId}`
+      : "http://localhost:8000/api/jobs";
+
     await fetch(url, {
       method: isEditing ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json", "X-User-Id": "1" },
+      headers: { "Content-Type": "application/json", "x-user-id": userId },
       body: JSON.stringify(jobForm),
     });
     setIsModalOpen(false);
-    navigate(".", { replace: true }); 
+    navigate(".", { replace: true });
   };
 
   const handleDeleteJob = async (jobId: number) => {
-    if (!confirm("Are you sure you want to delete this tracking entry?")) return;
+    if (!confirm("Are you sure you want to delete this tracking entry?"))
+      return;
     await fetch(`http://localhost:8000/api/jobs/${jobId}`, {
       method: "DELETE",
-      headers: { "X-User-Id": "1" },
+      headers: { "x-user-id": userId },
     });
-    navigate(".", { replace: true }); 
+    navigate(".", { replace: true });
   };
 
   return (
@@ -75,22 +87,36 @@ export default function Dashboard() {
       <div className="db-workspace">
         <aside className="db-sidebar">
           <ul>
-            <li><Link to="/" className="db-link-active">Dashboard</Link></li>
-            <li><Link to="/profile" className="db-link">Profile</Link></li>
+            <li>
+              <Link to="/" className="db-link-active">
+                Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link to="/profile" className="db-link">
+                Profile
+              </Link>
+            </li>
           </ul>
         </aside>
 
         <main className="db-main">
           <div className="db-container">
             <h2>Welcome!</h2>
-            <p className="db-caption">Explore open listings matching your profile workspace.</p>
-          <div className="db-section-header">
-            <h3>Job Applications</h3>
-              <button type="button" onClick={() => setIsModalOpen(true)} className="db-btn-add-job" >
-            <span className="plus-icon">+</span>
-            <span>Add Job</span>
+            <p className="db-caption">
+              Explore open listings matching your profile workspace.
+            </p>
+            <div className="db-section-header">
+              <h3>Job Applications</h3>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(true)}
+                className="db-btn-add-job"
+              >
+                <span className="plus-icon">+</span>
+                <span>Add Job</span>
               </button>
-          </div>
+            </div>
 
             <div className="db-grid">
               {jobs.map((job) => (
@@ -101,13 +127,28 @@ export default function Dashboard() {
                     <p className="db-card-status">📋 Status: {job.stage}</p>
                   </div>
                   <div className="db-card-actions">
-                    <button type="button" onClick={() => {setEditingJobId(job.id); setJobForm({ title: job.title, company: job.company, stage: job.stage }); setIsModalOpen(true); }} 
-                      className="db-btn-edit" >
-                        Edit Tracking
-                      </button>
-                      <button type="button" disabled className="db-btn-delete db-btn-disabled">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingJobId(job.id);
+                        setJobForm({
+                          title: job.title,
+                          company: job.company,
+                          stage: job.stage,
+                        });
+                        setIsModalOpen(true);
+                      }}
+                      className="db-btn-edit"
+                    >
+                      Edit Tracking
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteJob(job.id)}
+                      className="db-btn-delete db-btn-disabled"
+                    >
                       Delete (Coming Soon)
-                      </button>
+                    </button>
                   </div>
                 </div>
               ))}
@@ -119,19 +160,47 @@ export default function Dashboard() {
       {isModalOpen && (
         <div className="db-modal-overlay">
           <div className="db-modal-content">
-            <h3>{editingJobId ? "Edit Position Details" : "Post a New Tracking Entry"}</h3>
+            <h3>
+              {editingJobId
+                ? "Edit Position Details"
+                : "Post a New Tracking Entry"}
+            </h3>
             <form onSubmit={handleFormSubmit}>
               <div className="db-form-group">
                 <label>Job Title</label>
-                <input type="text" id="modalJobTitle" required placeholder="e.g. Software Engineer" value={jobForm.title} onChange={(e) => setJobForm({ ...jobForm, title: e.target.value })} />
+                <input
+                  type="text"
+                  id="modalJobTitle"
+                  required
+                  placeholder="e.g. Software Engineer"
+                  value={jobForm.title}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, title: e.target.value })
+                  }
+                />
               </div>
               <div className="db-form-group">
                 <label>Company</label>
-                <input type="text" id="modalCompany" required placeholder="e.g. Google" value={jobForm.company} onChange={(e) => setJobForm({ ...jobForm, company: e.target.value })} />
+                <input
+                  type="text"
+                  id="modalCompany"
+                  required
+                  placeholder="e.g. Google"
+                  value={jobForm.company}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, company: e.target.value })
+                  }
+                />
               </div>
               <div className="db-form-group">
                 <label htmlFor="modalStage">Tracking Stage</label>
-                <select id="modalStage" value={jobForm.stage} onChange={(e) => setJobForm({ ...jobForm, stage: e.target.value })}>
+                <select
+                  id="modalStage"
+                  value={jobForm.stage}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, stage: e.target.value })
+                  }
+                >
                   <option value="Wishlist">Wishlist</option>
                   <option value="Applied">Applied</option>
                   <option value="Interviewing">Interviewing</option>
@@ -140,8 +209,16 @@ export default function Dashboard() {
                 </select>
               </div>
               <div className="db-form-actions">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="db-btn-cancel">Cancel</button>
-                <button type="submit" className="db-btn-submit">{editingJobId ? "Save Changes" : "Track Job"}</button>
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="db-btn-cancel"
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="db-btn-submit">
+                  {editingJobId ? "Save Changes" : "Track Job"}
+                </button>
               </div>
             </form>
           </div>
@@ -153,7 +230,17 @@ export default function Dashboard() {
 
 function getFallbackJobs(): Job[] {
   return [
-    { id: 1, title: "Software Engineer Intern", company: "Google", stage: "Interviewing" },
-    { id: 2, title: "Frontend Developer Co-op", company: "Vercel", stage: "Applied" },
+    {
+      id: 1,
+      title: "Software Engineer Intern",
+      company: "Google",
+      stage: "Interviewing",
+    },
+    {
+      id: 2,
+      title: "Frontend Developer Co-op",
+      company: "Vercel",
+      stage: "Applied",
+    },
   ];
 }

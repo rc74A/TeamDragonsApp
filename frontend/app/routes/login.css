@@ -16,9 +16,9 @@
   border: 1px solid #4a5568;
   border-radius: 1px;
   width: 100%;
-  max-width: 576px;      /* Holds a beautiful wide container layout profile */
-  min-height: 650px;     /* 🟢 FORCES the card to be much taller vertically */
-  padding: 80px 56px;    /* 🟢 Heavy internal breathing room top and bottom */
+  max-width: 576px; /* Holds a beautiful wide container layout profile */
+  min-height: 650px; /* 🟢 FORCES the card to be much taller vertically */
+  padding: 80px 56px; /* 🟢 Heavy internal breathing room top and bottom */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -28,7 +28,7 @@
 
 /* Header Text formatting nodes */
 .login-header-group {
-  margin-bottom: 56px;   /* 🟢 Huge gap between title and fields */
+  margin-bottom: 56px; /* 🟢 Huge gap between title and fields */
   text-align: center;
 }
 
@@ -50,9 +50,9 @@
 .login-field-row {
   display: grid;
   grid-template-columns: 1fr;
-  justify-items: center; 
+  justify-items: center;
   width: 100%;
-  margin-bottom: 24px;   /* 🟢 FIXED: Reduced from 40px to cut the empty space down */
+  margin-bottom: 24px; /* 🟢 FIXED: Reduced from 40px to cut the empty space down */
 }
 
 .login-input-wrapper {
@@ -66,12 +66,12 @@
   font-weight: 600;
   letter-spacing: 0.05em;
   color: #e2e8f0;
-  margin-bottom: 16px;   /* 🟢 Lifts the label comfortably off the text field */
+  margin-bottom: 16px; /* 🟢 Lifts the label comfortably off the text field */
 }
 
 .login-input-wrapper input {
   width: 100%;
-  padding: 18px;         /* 🟢 Extra tall, chunky text fields */
+  padding: 18px; /* 🟢 Extra tall, chunky text fields */
   border-radius: 8px;
   border: 1px solid #4a5568;
   background-color: #1a202c;
@@ -100,7 +100,7 @@
   display: block;
   text-align: center;
   letter-spacing: 0.05em;
-  margin-top: 56px;      /* 🟢 Heavy gap pushing the button away from password */
+  margin-top: 56px; /* 🟢 Heavy gap pushing the button away from password */
 }
 
 .login-submit-anchor:hover {
@@ -127,7 +127,7 @@
 
 /* Footer Link Area separator elements */
 .login-footer-row {
-  margin-top: 56px;      /* 🟢 Generous spacing before the line break */
+  margin-top: 56px; /* 🟢 Generous spacing before the line break */
   padding-top: 32px;
   border-top: 1px solid #4a5568;
   font-size: 14px;

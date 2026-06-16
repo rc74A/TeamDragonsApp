@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router"; 
+import { Link, useNavigate } from "react-router";
 import "./app.css";
 import "./profile.css";
 
@@ -7,11 +7,11 @@ const API_BASE = import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Profile() {
-  const navigate = useNavigate(); 
-  const [isLoadingAuth, setIsLoadingAuth] = useState(true); 
+  const navigate = useNavigate();
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
   const [profile, setProfile] = useState({
-    full_name: "", 
+    full_name: "",
     email: "",
     phone: "",
     location: "",
@@ -27,7 +27,7 @@ export default function Profile() {
         // 1. Verify the cookie session with the backend first
         const authRes = await fetch(`${API_BASE}/api/auth/me`, {
           method: "GET",
-          credentials: "include", 
+          credentials: "include",
         });
 
         if (!authRes.ok) {
@@ -39,7 +39,7 @@ export default function Profile() {
           method: "GET",
           headers: { "X-User-Id": "1" },
         });
-        
+
         if (res.ok) {
           const data = await res.json();
           setProfile({
@@ -50,13 +50,13 @@ export default function Profile() {
             summary: data.summary || "",
           });
         }
-        
-        setIsLoadingAuth(false); 
+
+        setIsLoadingAuth(false);
       } catch {
         navigate("/login", { replace: true });
       }
     }
-    
+
     verifyAndLoad();
   }, [navigate]);
 
@@ -88,9 +88,9 @@ export default function Profile() {
       try {
         const res = await fetch(`${API_BASE}/api/profile`, {
           method: "PUT",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
-            "X-User-Id": "1" 
+            "X-User-Id": "1",
           },
           body: JSON.stringify(profile),
         });
@@ -99,11 +99,20 @@ export default function Profile() {
           setSuccessMessage("Profile saved.");
           setTimeout(() => setSuccessMessage(""), 3000);
         } else {
-          setErrors((prev) => ({ ...prev, server: "Failed to save profile details." }));
-          setTimeout(() => setErrors((prev) => ({ ...prev, server: "" })), 3000);
+          setErrors((prev) => ({
+            ...prev,
+            server: "Failed to save profile details.",
+          }));
+          setTimeout(
+            () => setErrors((prev) => ({ ...prev, server: "" })),
+            3000,
+          );
         }
       } catch {
-        setErrors((prev) => ({ ...prev, server: "Network communication failure." }));
+        setErrors((prev) => ({
+          ...prev,
+          server: "Network communication failure.",
+        }));
         setTimeout(() => setErrors((prev) => ({ ...prev, server: "" })), 3000);
       }
     }
@@ -245,7 +254,7 @@ export default function Profile() {
                   <button type="submit" className="btn-primary">
                     Save profile
                   </button>
-                  
+
                   {successMessage && (
                     <span className="success-text ml-2.5 text-green-600 font-medium">
                       {successMessage}

@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"; 
-import { Link, useNavigate } from "react-router"; 
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router";
 import "./app.css";
 import "./settings.css";
 
@@ -53,8 +53,8 @@ function validate(settings: AccountSettings): FieldErrors {
 */
 
 export default function Settings() {
-  const navigate = useNavigate(); 
-  const [isLoadingAuth, setIsLoadingAuth] = useState(true); 
+  const navigate = useNavigate();
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
   /* Commented out redundant state handlers to maintain clear linter parameters
   const [displayName, setDisplayName] = useState("Test User");
@@ -73,7 +73,8 @@ export default function Settings() {
 
   useEffect(() => {
     async function verifySession() {
-      const BACKEND_URL = import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
+      const BACKEND_URL =
+        import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
       try {
         const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
           method: "GET",
@@ -86,7 +87,7 @@ export default function Settings() {
         } else {
           setIsLoadingAuth(false); // Valid user session -> lift the curtain
         }
-      } catch (err) {
+      } catch {
         // Backend offline/network error -> Safe fallback kick
         navigate("/login", { replace: true });
       }
@@ -97,8 +98,18 @@ export default function Settings() {
 
   if (isLoadingAuth) {
     return (
-      <div className="settings-root-layout" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-        <h2 style={{ color: "#06B6D4", fontFamily: "sans-serif" }}>Verifying secure session...</h2>
+      <div
+        className="settings-root-layout"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <h2 style={{ color: "#06B6D4", fontFamily: "sans-serif" }}>
+          Verifying secure session...
+        </h2>
       </div>
     );
   }
