@@ -108,7 +108,7 @@ export default function Settings() {
         </aside>
 
         <main className="main-content">
-          <h2>Settings</h2>
+          <h2>Account Settings</h2>
           <p className="settings-subtitle">Manage your account settings.</p>
 
           <section
