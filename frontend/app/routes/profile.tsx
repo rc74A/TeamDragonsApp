@@ -1,5 +1,6 @@
 import { requireAuth } from "../lib/auth";
 import type { Route } from "./+types/profile";
+import { Link } from "react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import "./app.css";
 import "./profile.css";
