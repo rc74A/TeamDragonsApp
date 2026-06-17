@@ -34,7 +34,6 @@ function mockFetch(getBody: ProfileResponse = EMPTY) {
 }
 
 beforeEach(() => {
-  window.localStorage.clear();
 });
 
 afterEach(() => {
@@ -51,6 +50,9 @@ describe("Profile page", () => {
       </MemoryRouter>,
     );
 
+    expect(
+      screen.getByRole("heading", { name: "Dragon Application", level: 1 }),
+    ).toBeInTheDocument();
     expect(
       await screen.findByRole("heading", { name: "Profile", level: 2 }),
     ).toBeInTheDocument();

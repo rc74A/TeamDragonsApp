@@ -11,7 +11,12 @@ const STORAGE_KEY = "tdAccountSettings";
 
 describe("Settings page", () => {
   beforeEach(() => {
-    window.localStorage.clear();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({ ok: true, json: async () => ({}) }) as unknown as Response),
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it("renders inside the app shell with coming-soon sections", () => {
