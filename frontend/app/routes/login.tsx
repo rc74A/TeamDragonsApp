@@ -8,22 +8,13 @@ export default function Login() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-const handleLoginSubmit = async (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
 
-   const BACKEND_URL =
-  import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
-try {
-  const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ uname: username, pwd: password }),
-  });
-}
+    const BACKEND_URL =
+      import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
 
     try {
       const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
@@ -33,31 +24,19 @@ try {
         },
         body: JSON.stringify({ uname: username, pwd: password }),
       });
-      
-if (!response.ok) {
-      setIsSubmitting(false);
-      try {
-        const data = await response.json();
-        setError(data.detail || "Invalid username or password");
-      } catch {
-        setError("Invalid username or password");
+
+      if (!response.ok) {
+        setIsSubmitting(false);
+        try {
+          const data = await response.json();
+          setError(data.detail || "Invalid username or password");
+        } catch {
+          setError("Invalid username or password");
+        }
+        return;
       }
-      return;
-    }
 
-    // Success path from main follows right after
-    const setCookie = response.headers.get("set-cookie");
-    const headers = new Headers();
-    if (setCookie) {
-      headers.append("Set-Cookie", setCookie);
-    }
-
-    return redirectDocument("/", { headers });
-  } catch (err) {
-    return { error: "Network error, please try again" };
-  }
-}
-
+      // Handle cookies and redirect securely on success
       const setCookie = response.headers.get("set-cookie");
       const headers = new Headers();
       if (setCookie) {
@@ -65,15 +44,13 @@ if (!response.ok) {
       }
 
       return redirectDocument("/", { headers });
-      
+
     } catch (err) {
-      console.error("Login submission error:", err);
+      console.error("Login submission error:", err);      
       setIsSubmitting(false);
       setError("Network error, please try again");
     }
-  }; 
-
-
+  };
 
   return (
     <div className="login-viewport">
@@ -134,4 +111,4 @@ if (!response.ok) {
       </div>
     </div>
   );
-}
+} // 🟢 This closing bracket seals the Login component and fixes the structural sync!
