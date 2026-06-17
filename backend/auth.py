@@ -1,6 +1,7 @@
 import os
 from datetime import UTC, datetime, timedelta
 
+import bcrypt
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from jose import jwt
 from pydantic import BaseModel
@@ -88,11 +89,9 @@ def verify_hashed_login(
             or the password does not match.
     """
     if creds.uname == "" or creds.pwd == "":
-        raise HTTPException(
-            status_code=401, detail="Username or password cannot be empty"
-        )
+        raise HTTPException(status_code=401, detail="Email or password cannot be empty")
 
-    query = db.query(User).filter(User.username == creds.uname)
+    query = db.query(User).filter(User.email == creds.uname)
 
     if query.count() == 0:
         raise HTTPException(
@@ -100,8 +99,11 @@ def verify_hashed_login(
         )
 
     user = query.first()
-    if user.username != creds.uname or user.hashed_password != creds.pwd:
-        raise HTTPException(status_code=401, detail="Invalid username or password")
+    encoded_input = creds.pwd.encode("utf-8")
+    same_password = bcrypt.checkpw(encoded_input, user.hashed_password)
+
+    if user.email != creds.uname or not same_password:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
 
     token = create_access_token(data={"sub": creds.uname})
 
@@ -138,22 +140,22 @@ def register_user(creds: RegisterRequest, db: Session = Depends(get_db)):
             status_code=401, detail="Username or password cannot be empty"
         )
 
-    query = db.query(User).filter(User.username == creds.uname)
+    query = db.query(User).filter(User.email == creds.uname)
 
     if query.count() != 0:
         raise HTTPException(
-            status_code=401, detail=f"Username {creds.uname} is already registered"
+            status_code=401, detail=f"Email {creds.uname} is already registered"
         )
 
-    # Check if password secure enough
-    # Don't forget to unencrypt using the same hashing algorithm
-    # Don't forget to store the salt along with the password
+    password_bytes = creds.pwd.encode("utf-8")
+
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password_bytes, salt)
 
     user = User(
         # Id auto assigned
-        username=creds.uname,
         email=creds.email,
-        hashed_password=creds.pwd,
+        hashed_password=hashed,
     )
     db.add(user)
     db.commit()
@@ -178,5 +180,5 @@ def validate_user_logged_in(request: Request):
 
 @authrouter.get("/me")
 def get_me(payload: dict = Depends(validate_user_logged_in)):
-    """Return the username of the currently authenticated user."""
+    """Return the email of the currently authenticated user."""
     return {"username": payload["sub"]}

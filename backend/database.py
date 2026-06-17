@@ -1,8 +1,8 @@
 import os
 
-from sqlalchemy.pool import StaticPool
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy.pool import StaticPool
 
 
 def build_database_url() -> str:
@@ -39,7 +39,8 @@ if DATABASE_URL.startswith("sqlite"):
     engine = create_engine(
         DATABASE_URL,
         connect_args={"check_same_thread": False},
-        poolclass=StaticPool,  # 🟢 Tells SQLAlchemy to safely reuse the single thread connection
+        # 🟢 Tells SQLAlchemy to safely reuse the single thread connection
+        poolclass=StaticPool,
     )
 else:
     engine = create_engine(DATABASE_URL)
