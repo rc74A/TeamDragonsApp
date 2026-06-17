@@ -1,5 +1,6 @@
 import os
 
+from sqlalchemy.pool import StaticPool
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
@@ -34,6 +35,15 @@ engine = create_engine(
     if DATABASE_URL.startswith("sqlite")
     else {},
 )
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,  # 🟢 Tells SQLAlchemy to safely reuse the single thread connection
+    )
+else:
+    engine = create_engine(DATABASE_URL)
+
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 

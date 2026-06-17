@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { redirectDocument } from "react-router";
-import "./login.css";
+import "./login.css"; 
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -10,15 +9,15 @@ export default function Login() {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setError("");
+    setIsSubmitting(true);
 
-    const BACKEND_URL =
-      import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
+    const BACKEND_URL = import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
 
     try {
       const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: "POST",
+        credentials: "include", 
         headers: {
           "Content-Type": "application/json",
         },
@@ -36,17 +35,8 @@ export default function Login() {
         return;
       }
 
-      // Handle cookies and redirect securely on success
-      const setCookie = response.headers.get("set-cookie");
-      const headers = new Headers();
-      if (setCookie) {
-        headers.append("Set-Cookie", setCookie);
-      }
-
-      return redirectDocument("/", { headers });
-
-    } catch (err) {
-      console.error("Login submission error:", err);      
+window.location.href = "/";
+    } catch {
       setIsSubmitting(false);
       setError("Network error, please try again");
     }
@@ -55,12 +45,14 @@ export default function Login() {
   return (
     <div className="login-viewport">
       <div className="login-card-expanded">
+        
         <div className="login-header-group">
           <h1>Welcome Back</h1>
           <p>Log in to your Dragon Application account</p>
         </div>
 
         <form onSubmit={handleLoginSubmit}>
+          
           {/* Email Address Block Row */}
           <div className="login-field-row">
             <div className="login-input-wrapper">
@@ -108,7 +100,8 @@ export default function Login() {
         <div className="login-footer-row">
           Do you not have an account? <a href="/register">Register here</a>
         </div>
+
       </div>
     </div>
   );
-} // 🟢 This closing bracket seals the Login component and fixes the structural sync!
+}

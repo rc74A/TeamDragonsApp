@@ -118,14 +118,9 @@ export default function Dashboard() {
                 type="button" 
                 onClick={handleLogout} 
                 className="db-btn-logout"
-                >
+              >
                 🚪 Logout
               </button>
-            </li>
-            <li>
-              <Link to="/settings" className="db-link">
-                Settings
-              </Link>
             </li>
           </ul>
         </aside>
@@ -175,9 +170,9 @@ export default function Dashboard() {
                     <button
                       type="button"
                       onClick={() => handleDeleteJob(job.id)}
-                      className="db-btn-delete"
+                      className="db-btn-delete db-btn-disabled"
                     >
-                      Delete
+                      Delete (Coming Soon)
                     </button>
                   </div>
                 </div>
