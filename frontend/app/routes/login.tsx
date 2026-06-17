@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { redirectDocument } from "react-router";
 import "./login.css";
 
 export default function Login() {
@@ -7,10 +8,10 @@ export default function Login() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleLoginSubmit = async (e: React.FormEvent) => {
+const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setIsSubmitting(true);
+    setError("");
 
     const BACKEND_URL =
       import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
@@ -18,7 +19,6 @@ export default function Login() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: "POST",
-        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -36,12 +36,22 @@ export default function Login() {
         return;
       }
 
-      window.location.href = "http://localhost:5173/";
-    } catch {
+      const setCookie = response.headers.get("set-cookie");
+      const headers = new Headers();
+      if (setCookie) {
+        headers.append("Set-Cookie", setCookie);
+      }
+
+      return redirectDocument("/", { headers });
+      
+    } catch (err) {
+      console.error("Login submission error:", err);
       setIsSubmitting(false);
       setError("Network error, please try again");
     }
-  };
+  }; 
+
+
 
   return (
     <div className="login-viewport">

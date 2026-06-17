@@ -81,6 +81,22 @@ export default function Dashboard() {
     navigate(".", { replace: true });
   };
 
+  const handleLogout = async () => {
+    const BACKEND_URL =
+      import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
+    
+    try {
+      await fetch(`${BACKEND_URL}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include", 
+      });
+    } catch (error) {
+      console.error("Backend logout failed:", error);
+    } finally {
+      navigate("/login", { replace: true });
+    }
+  };
+
   return (
     <div className="db-root">
       <header className="db-header">Dragon Application</header>
@@ -96,6 +112,15 @@ export default function Dashboard() {
               <Link to="/profile" className="db-link">
                 Profile
               </Link>
+            </li>
+            <li className="db-logout-item">
+              <button 
+                type="button" 
+                onClick={handleLogout} 
+                className="db-btn-logout"
+              >
+                🚪 Logout
+              </button>
             </li>
           </ul>
         </aside>

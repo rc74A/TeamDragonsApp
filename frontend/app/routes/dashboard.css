@@ -296,3 +296,26 @@
   font-size: 11px !important;
   pointer-events: none !important;
 }
+
+.db-logout-item {
+  margin-top: auto; 
+  padding-top: 2rem;
+}
+
+.db-btn-logout {
+  width: 100%;
+  background: none;
+  border: 1px solid #ef4444; 
+  color: #ef4444;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  text-align: left;
+  transition: all 0.2s ease-in-out;
+}
+
+.db-btn-logout:hover {
+  background-color: #ef4444; 
+  color: #ffffff;
+}

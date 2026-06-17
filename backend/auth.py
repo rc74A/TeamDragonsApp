@@ -109,9 +109,7 @@ def verify_hashed_login(
     user = query.first()
     if user.username != creds.uname or user.hashed_password != creds.pwd:
         raise HTTPException(status_code=401, detail="Invalid username or password")
-
     token = create_access_token(data={"sub": creds.uname})
-
     response.set_cookie(
         key="token",
         value=token,
@@ -120,7 +118,6 @@ def verify_hashed_login(
         samesite="lax", 
         max_age=60 * 60 * 24,  # 24 hours
     )
-
     return {"message": "Login successful"}
 
 
