@@ -13,8 +13,17 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
     setIsSubmitting(true);
     setError("");
 
-    const BACKEND_URL =
-      import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
+   const BACKEND_URL =
+  import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
+try {
+  const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ uname: username, pwd: password }),
+  });
+}
 
     try {
       const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
@@ -24,17 +33,30 @@ const handleLoginSubmit = async (e: React.FormEvent) => {
         },
         body: JSON.stringify({ uname: username, pwd: password }),
       });
-
-      if (!response.ok) {
-        setIsSubmitting(false);
-        try {
-          const data = await response.json();
-          setError(data.detail || "Invalid username or password");
-        } catch {
-          setError("Invalid username or password");
-        }
-        return;
+      
+if (!response.ok) {
+      setIsSubmitting(false);
+      try {
+        const data = await response.json();
+        setError(data.detail || "Invalid username or password");
+      } catch {
+        setError("Invalid username or password");
       }
+      return;
+    }
+
+    // Success path from main follows right after
+    const setCookie = response.headers.get("set-cookie");
+    const headers = new Headers();
+    if (setCookie) {
+      headers.append("Set-Cookie", setCookie);
+    }
+
+    return redirectDocument("/", { headers });
+  } catch (err) {
+    return { error: "Network error, please try again" };
+  }
+}
 
       const setCookie = response.headers.get("set-cookie");
       const headers = new Headers();
