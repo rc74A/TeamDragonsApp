@@ -149,7 +149,7 @@ export default function Settings() {
                       <h4>{item.title}</h4>
                       <p>{item.description}</p>
                     </div>
-                    <span className="badge">Coming soon</span>
+                    <span className="badge">Coming Soon</span>
                   </li>
                 ))}
               </ul>
