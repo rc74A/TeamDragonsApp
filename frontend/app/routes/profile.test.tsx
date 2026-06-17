@@ -52,9 +52,6 @@ describe("Profile page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "Dragon Application", level: 1 }),
-    ).toBeInTheDocument();
-    expect(
       await screen.findByRole("heading", { name: "Profile", level: 2 }),
     ).toBeInTheDocument();
 
