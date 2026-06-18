@@ -11,6 +11,10 @@ interface Job {
   stage: string;
 }
 
+
+const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+
+
 interface DashboardData {
   username: string;
   jobs: Job[];
@@ -24,7 +28,7 @@ export async function loader({
   const userId = authUser?.id || "1";
 
   try {
-    const response = await fetch(`http://localhost:8000/api/jobs`, {
+    const response = await fetch(`${BACKEND_URL}/api/jobs`, {
       headers: { "x-user-id": String(userId) },
     });
     const jobsData = response.ok ? await response.json() : [];
@@ -59,8 +63,8 @@ export default function Dashboard() {
     e.preventDefault();
     const isEditing = editingJobId !== null;
     const url = isEditing
-      ? `http://localhost:8000/api/jobs/${editingJobId}`
-      : "http://localhost:8000/api/jobs";
+      ? `${BACKEND_URL}/api/jobs/${editingJobId}`
+      : `${BACKEND_URL}/api/jobs`;
 
     await fetch(url, {
       method: isEditing ? "PUT" : "POST",
@@ -74,7 +78,7 @@ export default function Dashboard() {
   const handleDeleteJob = async (jobId: number) => {
     if (!confirm("Are you sure you want to delete this tracking entry?"))
       return;
-    await fetch(`http://localhost:8000/api/jobs/${jobId}`, {
+    await fetch(`${BACKEND_URL}/api/jobs/${jobId}`, {
       method: "DELETE",
       headers: { "x-user-id": userId },
     });
@@ -83,7 +87,7 @@ export default function Dashboard() {
 
   const handleLogout = async () => {
     const BACKEND_URL =
-      import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
+      import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
     try {
       await fetch(`${BACKEND_URL}/api/auth/logout`, {
