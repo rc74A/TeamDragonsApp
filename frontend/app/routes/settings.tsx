@@ -78,7 +78,7 @@ export default function Settings() {
   useEffect(() => {
     async function verifySession() {
       const BACKEND_URL =
-        import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
+        import.meta.env.VITE_API_URL ?? "http://localhost:8000";
       try {
         const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
           method: "GET",
