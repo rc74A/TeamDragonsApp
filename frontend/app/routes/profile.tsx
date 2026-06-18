@@ -1,6 +1,6 @@
 import { requireAuth } from "../lib/auth";
 import type { Route } from "./+types/profile";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import "./app.css";
 import "./profile.css";
@@ -13,22 +13,39 @@ const API_BASE = import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Profile() {
+  const navigate = useNavigate();
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+
   const [profile, setProfile] = useState({
-    full_name: "", // Changed to full_name to match the API blueprint layout
+    full_name: "",
     email: "",
     phone: "",
     location: "",
     summary: "",
   });
 
-  const [errors, setErrors] = useState({ email: "", phone: "" });
+  const [errors, setErrors] = useState({ email: "", phone: "", server: "" });
   const [successMessage, setSuccessMessage] = useState("");
 
-  // 🟢 Satisfies the load call expectation in tests 1, 2, 3, and 4
   useEffect(() => {
-    async function loadData() {
+    async function verifyAndLoad() {
       try {
-        const res = await fetch(`${API_BASE}/api/v1/profile`);
+        // 1. Verify the cookie session with the backend first
+        const authRes = await fetch(`${API_BASE}/api/auth/me`, {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!authRes.ok) {
+          navigate("/login", { replace: true });
+          return;
+        }
+
+        const res = await fetch(`${API_BASE}/api/profile`, {
+          method: "GET",
+          headers: { "X-User-Id": "1" },
+        });
+
         if (res.ok) {
           const data = await res.json();
           setProfile({
@@ -39,12 +56,15 @@ export default function Profile() {
             summary: data.summary || "",
           });
         }
+
+        setIsLoadingAuth(false);
       } catch {
-        // Fallback trace
+        navigate("/login", { replace: true });
       }
     }
-    loadData();
-  }, []);
+
+    verifyAndLoad();
+  }, [navigate]);
 
   const totalFields = Object.keys(profile).length;
   const filledFields = Object.values(profile).filter(
@@ -55,7 +75,7 @@ export default function Profile() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     let valid = true;
-    const newErrors = { email: "", phone: "" };
+    const newErrors = { email: "", phone: "", server: "" };
 
     if (profile.email.trim() && !EMAIL_PATTERN.test(profile.email)) {
       newErrors.email = "Enter a valid email address";
@@ -72,25 +92,50 @@ export default function Profile() {
 
     if (valid) {
       try {
-        const res = await fetch(`${API_BASE}/api/v1/profile`, {
+        const res = await fetch(`${API_BASE}/api/profile`, {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "X-User-Id": "1",
+          },
           body: JSON.stringify(profile),
         });
+
         if (res.ok) {
           setSuccessMessage("Profile saved.");
           setTimeout(() => setSuccessMessage(""), 3000);
+        } else {
+          setErrors((prev) => ({
+            ...prev,
+            server: "Failed to save profile details.",
+          }));
+          setTimeout(
+            () => setErrors((prev) => ({ ...prev, server: "" })),
+            3000,
+          );
         }
       } catch {
-        setSuccessMessage("Profile saved.");
-        setTimeout(() => setSuccessMessage(""), 3000);
+        setErrors((prev) => ({
+          ...prev,
+          server: "Network communication failure.",
+        }));
+        setTimeout(() => setErrors((prev) => ({ ...prev, server: "" })), 3000);
       }
     }
   };
 
+  if (isLoadingAuth) {
+    return (
+      <div className="profile-root flex justify-center items-center h-screen">
+        <h2 className="text-cyan-400 font-sans font-bold text-xl">
+          Verifying secure session...
+        </h2>
+      </div>
+    );
+  }
+
   return (
     <div className="profile-root">
-      {/* 🟢 Heading changed to level 1 to pass test layout checks */}
       <h1 className="profile-header">Dragon Application</h1>
 
       <div className="profile-workspace">
@@ -212,16 +257,19 @@ export default function Profile() {
                 </div>
 
                 <div className="form-actions">
-                  {/* 🟢 Button name text matches test expectations exactly */}
                   <button type="submit" className="btn-primary">
                     Save profile
                   </button>
+
                   {successMessage && (
-                    <span
-                      className="success-text"
-                      style={{ marginLeft: "10px", color: "green" }}
-                    >
+                    <span className="success-text ml-2.5 text-green-600 font-medium">
                       {successMessage}
+                    </span>
+                  )}
+
+                  {errors.server && (
+                    <span className="error-text ml-2.5 text-red-500 font-bold">
+                      {errors.server}
                     </span>
                   )}
                 </div>

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import Profile from "./profile";
@@ -25,17 +25,17 @@ const EMPTY: ProfileResponse = {
 
 function mockFetch(getBody: ProfileResponse = EMPTY) {
   return vi.fn(
-    async (_url: string, options?: RequestInit): Promise<Response> =>
-      ({
+    async (url: string, options?: RequestInit): Promise<Response> => {
+      if (url.includes("/auth/me")) {
+        return { ok: true, json: async () => ({}) } as unknown as Response;
+      }
+      return {
         ok: true,
-        json: async () => (options?.method === "PUT" ? getBody : getBody),
-      }) as unknown as Response,
+        json: async () => getBody,
+      } as unknown as Response;
+    },
   );
 }
-
-beforeEach(() => {
-  window.localStorage.clear();
-});
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -45,11 +45,13 @@ describe("Profile page", () => {
   it("renders the profile form inside the app shell", async () => {
     vi.stubGlobal("fetch", mockFetch());
 
-    render(
-      <MemoryRouter>
-        <Profile />
-      </MemoryRouter>,
-    );
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <Profile />
+        </MemoryRouter>,
+      );
+    });
 
     expect(
       screen.getByRole("heading", { name: "Dragon Application", level: 1 }),

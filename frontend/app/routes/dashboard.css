@@ -87,16 +87,31 @@
   margin: 0;
 }
 
-.db-btn-circle {
+.db-btn-add-job {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background-color: #06b6d4;
   color: #ffffff;
-  border: none;
-  width: 36px;
-  height: 36px;
-  borderradius: 50%;
-  font-size: 22px;
+  font-size: 14px;
   font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: none;
   cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.15s ease;
+}
+
+.db-btn-add-job:hover {
+  background-color: #0891b2;
+}
+
+.db-btn-add-job .plus-icon {
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: -2px;
 }
 
 /* Application Kanban Cards */
@@ -140,8 +155,8 @@
 }
 
 .db-btn-edit {
-  background-color: #4a5568;
-  color: #ffffff;
+  background-color: #06b6d4;
+  color: #0f172a;
   border: none;
   padding: 8px 12px;
   border-radius: 6px;
@@ -149,6 +164,11 @@
   margin-top: 16px;
   width: fit-content;
   font-size: 13px;
+  font-weight: bold;
+}
+
+.db-btn-edit:hover {
+  background-color: #0891b2;
 }
 
 /* Modals & Forms */
@@ -233,4 +253,69 @@
   color: #ffffff;
   font-weight: bold;
   cursor: pointer;
+}
+
+/* Card Button Action Tray Configurations */
+.db-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+/* Force buttons to share the container grid evenly */
+.db-card-actions .db-btn-edit,
+.db-card-actions .db-btn-delete {
+  flex: 1;
+  margin-top: 0;
+  width: auto;
+  text-align: center;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+}
+
+/* Elegant lint-safe delete button styling architecture */
+.db-btn-delete {
+  background-color: #e53e3e;
+  color: #ffffff;
+  transition: background-color 0.15s ease;
+}
+
+.db-btn-delete:hover {
+  background-color: #c53030;
+}
+
+.db-btn-delete.db-btn-disabled {
+  background-color: #1a202c !important;
+  color: #718096 !important;
+  border: 1px solid #4a5568 !important;
+  cursor: not-allowed !important;
+  font-size: 11px !important;
+  pointer-events: none !important;
+}
+
+.db-logout-item {
+  margin-top: auto;
+  padding-top: 2rem;
+}
+
+.db-btn-logout {
+  width: 100%;
+  background: none;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  text-align: left;
+  transition: all 0.2s ease-in-out;
+}
+
+.db-btn-logout:hover {
+  background-color: #ef4444;
+  color: #ffffff;
 }

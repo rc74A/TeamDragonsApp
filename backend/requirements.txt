@@ -4,6 +4,7 @@ pydantic
 sqlalchemy
 pymysql
 python-jose 
+bcrypt
 
 # Testing (kept here so CI installs them and runs pytest)
 pytest

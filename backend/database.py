@@ -2,6 +2,7 @@ import os
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy.pool import StaticPool
 
 
 def build_database_url() -> str:
@@ -34,6 +35,16 @@ engine = create_engine(
     if DATABASE_URL.startswith("sqlite")
     else {},
 )
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args={"check_same_thread": False},
+        # 🟢 Tells SQLAlchemy to safely reuse the single thread connection
+        poolclass=StaticPool,
+    )
+else:
+    engine = create_engine(DATABASE_URL)
+
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 

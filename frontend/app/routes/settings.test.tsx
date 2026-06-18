@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 /* Commented out unused userEvent since we are bypassing form interactions for now
 import userEvent from "@testing-library/user-event";
 */
@@ -11,15 +11,26 @@ const STORAGE_KEY = "tdAccountSettings";
 
 describe("Settings page", () => {
   beforeEach(() => {
-    window.localStorage.clear();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () =>
+          ({ ok: true, json: async () => ({}) }) as unknown as Response,
+      ),
+    );
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
-  it("renders inside the app shell with coming-soon sections", () => {
-    render(
-      <MemoryRouter>
-        <Settings />
-      </MemoryRouter>,
-    );
+  it("renders inside the app shell with coming-soon sections", async () => {
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <Settings />
+        </MemoryRouter>,
+      );
+    });
 
     // App-shell behavior is preserved (banner + sidebar nav).
     expect(screen.getByText("Dragon Application")).toBeInTheDocument();
@@ -30,11 +41,14 @@ describe("Settings page", () => {
       screen.getByRole("heading", { name: "Account Settings", level: 2 }),
     ).toBeInTheDocument();
 
-    // Coming-soon sections present on the page.
-    expect(screen.getByText("Security")).toBeInTheDocument();
-    expect(screen.getByText("Notifications")).toBeInTheDocument();
+    // Verify your custom advanced features text blocks load successfully
+    expect(
+      screen.getByText("Two-Factor Authentication (2FA)"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Webhook Notifications")).toBeInTheDocument();
+    expect(screen.getAllByText("Coming Soon")).toHaveLength(3);
     expect(screen.getByText("Appearance")).toBeInTheDocument();
-    expect(screen.getAllByText("Coming soon")).toHaveLength(3);
+    // Coming-soon sections present on the page.
   });
 
   /* Commented out legacy form testing logic to stay aligned with your structural UI changes

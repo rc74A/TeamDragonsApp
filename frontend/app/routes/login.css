@@ -1,0 +1,148 @@
+/* Core viewport centering canvas */
+.login-viewport {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a202c;
+  padding: 40px;
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+
+/* 🟢 The Expanded Background Card Framework */
+.login-card-expanded {
+  background-color: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 1px;
+  width: 100%;
+  max-width: 576px; /* Holds a beautiful wide container layout profile */
+  min-height: 650px; /* 🟢 FORCES the card to be much taller vertically */
+  padding: 80px 56px; /* 🟢 Heavy internal breathing room top and bottom */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+/* Header Text formatting nodes */
+.login-header-group {
+  margin-bottom: 56px; /* 🟢 Huge gap between title and fields */
+  text-align: center;
+}
+
+.login-header-group h1 {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  color: #ffffff;
+  margin: 0;
+}
+
+.login-header-group p {
+  font-size: 14px;
+  color: #a0aec0;
+  margin-top: 16px;
+}
+
+/* Centered structural form rows */
+.login-field-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  width: 100%;
+  margin-bottom: 24px; /* 🟢 FIXED: Reduced from 40px to cut the empty space down */
+}
+
+.login-input-wrapper {
+  width: 100%;
+  max-width: 384px; /* 🟢 FIXED: Valid CSS declaration (equivalent to max-w-sm) */
+}
+
+.login-input-wrapper label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #e2e8f0;
+  margin-bottom: 16px; /* 🟢 Lifts the label comfortably off the text field */
+}
+
+.login-input-wrapper input {
+  width: 100%;
+  padding: 18px; /* 🟢 Extra tall, chunky text fields */
+  border-radius: 8px;
+  border: 1px solid #4a5568;
+  background-color: #1a202c;
+  color: #ffffff;
+  font-size: 18px;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.login-input-wrapper input:focus {
+  outline: none;
+  border-color: #06b6d4;
+}
+
+/* Solid Anchored Action button styling */
+.login-submit-anchor {
+  width: 100%;
+  background-color: #06b6d4;
+  color: #0f172a;
+  font-weight: 900;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  display: block;
+  text-align: center;
+  letter-spacing: 0.05em;
+  margin-top: 56px; /* 🟢 Heavy gap pushing the button away from password */
+}
+
+.login-submit-anchor:hover {
+  background-color: #0891b2;
+}
+
+.login-submit-anchor:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Error banner mapping profiles */
+.login-error-banner {
+  color: #f87171;
+  margin-top: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  background-color: #1a202c;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  text-center: center;
+}
+
+/* Footer Link Area separator elements */
+.login-footer-row {
+  margin-top: 56px; /* 🟢 Generous spacing before the line break */
+  padding-top: 32px;
+  border-top: 1px solid #4a5568;
+  font-size: 14px;
+  text-align: center;
+  color: #a0aec0;
+  font-weight: 500;
+}
+
+.login-footer-row a {
+  color: #06b6d4;
+  text-decoration: none;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+.login-footer-row a:hover {
+  text-decoration: underline;
+}
