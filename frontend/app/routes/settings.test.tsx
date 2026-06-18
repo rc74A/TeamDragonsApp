@@ -14,6 +14,7 @@ describe("Settings page", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => ({ ok: true, json: async () => ({}) }) as unknown as Response),
+    );
   });
   afterEach(() => {
     vi.unstubAllGlobals();

@@ -25,16 +25,17 @@ const EMPTY: ProfileResponse = {
 
 function mockFetch(getBody: ProfileResponse = EMPTY) {
   return vi.fn(
-    async (_url: string, options?: RequestInit): Promise<Response> =>
-      ({
+    async (url: string, options?: RequestInit): Promise<Response> => {
+      if (url.includes("/auth/me")) {
+        return { ok: true, json: async () => ({}) } as unknown as Response;
+      }
+      return {
         ok: true,
-        json: async () => (options?.method === "PUT" ? getBody : getBody),
-      }) as unknown as Response,
+        json: async () => getBody,
+      } as unknown as Response;
+    },
   );
 }
-
-beforeEach(() => {
-});
 
 afterEach(() => {
   vi.unstubAllGlobals();
