@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 /* Commented out unused userEvent since we are bypassing form interactions for now
 import userEvent from "@testing-library/user-event";
 */
@@ -13,7 +13,10 @@ describe("Settings page", () => {
   beforeEach(() => {
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () => ({ ok: true, json: async () => ({}) }) as unknown as Response),
+      vi.fn(
+        async () =>
+          ({ ok: true, json: async () => ({}) }) as unknown as Response,
+      ),
     );
   });
   afterEach(() => {
@@ -21,11 +24,13 @@ describe("Settings page", () => {
   });
 
   it("renders inside the app shell with coming-soon sections", () => {
-    render(
-      <MemoryRouter>
-        <Settings />
-      </MemoryRouter>,
-    );
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <Settings />
+        </MemoryRouter>,
+      );
+    });
 
     // App-shell behavior is preserved (banner + sidebar nav).
     expect(screen.getByText("Dragon Application")).toBeInTheDocument();
@@ -41,7 +46,7 @@ describe("Settings page", () => {
       screen.getByText("Two-Factor Authentication (2FA)"),
     ).toBeInTheDocument();
     expect(screen.getByText("Webhook Notifications")).toBeInTheDocument();
-    expect(screen.getAllByText("Coming soon")).toHaveLength(2);
+    expect(screen.getAllByText("Coming Soon")).toHaveLength(2);
   });
 
   /* Commented out legacy form testing logic to stay aligned with your structural UI changes
