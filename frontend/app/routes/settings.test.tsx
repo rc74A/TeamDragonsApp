@@ -23,7 +23,7 @@ describe("Settings page", () => {
     vi.unstubAllGlobals();
   });
 
-  it("renders inside the app shell with coming-soon sections", () => {
+  it("renders inside the app shell with coming-soon sections", async () => {
     await act(async () => {
       render(
         <MemoryRouter>

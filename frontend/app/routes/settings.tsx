@@ -23,8 +23,7 @@ const COMING_SOON = [
   },
   {
     title: "Appearance",
-    description:
-      "Light/Dark mode, and other custom appearance options.",
+    description: "Light/Dark mode, and other custom appearance options.",
   },
 ];
 
