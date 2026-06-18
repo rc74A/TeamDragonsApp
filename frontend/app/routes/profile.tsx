@@ -9,7 +9,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   return await requireAuth(request);
 }
 
-const API_BASE = import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Profile() {
