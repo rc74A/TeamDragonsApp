@@ -11,9 +11,7 @@ interface Job {
   stage: string;
 }
 
-
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
-
 
 interface DashboardData {
   username: string;
@@ -86,8 +84,7 @@ export default function Dashboard() {
   };
 
   const handleLogout = async () => {
-    const BACKEND_URL =
-      import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+    const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
     try {
       await fetch(`${BACKEND_URL}/api/auth/logout`, {
