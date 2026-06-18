@@ -134,14 +134,13 @@ export default function Profile() {
     );
   }
 
-  return (
-    <div className="profile-root">
-      <div className="profile-workspace">
-        <aside className="profile-sidebar">
-          <h1 className="profile-header">
-            Dragon Application
-          </h1>
-          
+ return (
+    <div className="settings-root-layout profile-root">
+      <h1 className="settings-top-bar profile-header">
+        Dragon Application
+      </h1>
+      <div className="settings-split-pane profile-workspace">
+        <aside className="settings-sidebar-nav profile-sidebar">
           <ul className="profile-nav-list">
             <li>
               <Link to="/" className="profile-nav-link">
@@ -160,11 +159,9 @@ export default function Profile() {
             </li>
           </ul>
         </aside>
-
-        <main className="profile-main">
+        <main className="settings-main-viewport profile-main">
           {isLoadingAuth ? (
-            /* Secure fallback state scoped strictly inside the viewport container */
-            <div className="flex justify-center items-center h-64">
+            <div className="profile-root flex justify-center items-center h-screen">
               <h2 className="text-cyan-400 font-sans font-bold text-xl">
                 Verifying secure session...
               </h2>
@@ -176,7 +173,6 @@ export default function Profile() {
                 Keep your structural summary records updated for matching pipeline
                 discovery.
               </p>
-
               <div className="progress-container">
                 <div className="progress-header-text">
                   <span>Setup Completion Progress</span>

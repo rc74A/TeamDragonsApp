@@ -128,13 +128,11 @@ return (
 
         <main className="settings-main-viewport profile-main">
           {isLoadingAuth ? (
-            /* 🟢 CLEANED: Pure class name, no inline styles */
             <div className="settings-loading-container">
               <h2 className="settings-loading-text">Verifying secure session...</h2>
             </div>
           ) : (
             <div className="settings-constrained-box">
-              /* 🟢 CLEANED: Pure class name, no inline styles */
               <h2 className="settings-view-title">
                 Account Settings
               </h2>
