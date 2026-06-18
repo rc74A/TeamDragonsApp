@@ -136,10 +136,14 @@ export default function Profile() {
 
   return (
     <div className="profile-root">
-      <h1 className="profile-header">Dragon Application</h1>
-
+      {/* 🟢 FIXED: Kept the global layout consistent across your pipeline views */}
       <div className="profile-workspace">
         <aside className="profile-sidebar">
+          {/* Main App Heading wrapped securely inside the shell boundary container */}
+          <h1 className="profile-header" style={{ margin: "0 0 1.5rem 0", fontSize: "1.5rem" }}>
+            Dragon Application
+          </h1>
+          
           <ul className="profile-nav-list">
             <li>
               <Link to="/" className="profile-nav-link">

@@ -103,10 +103,11 @@ export default function Settings() {
     );
   }
 
-  return (
+ return (
     <div className="settings-root-layout">
-      <header className="settings-top-bar">Dragon Application</header>
-
+      <h1 className="settings-top-bar">
+        Dragon Application
+      </h1>
       <div className="settings-split-pane">
         <aside className="settings-sidebar-nav">
           <ul>
