@@ -176,3 +176,22 @@
   font-size: 12px;
   white-space: nowrap;
 }
+
+.settings-loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+
+.settings-loading-text {
+  color: #06b6d4;
+  font-family: sans-serif;
+}
+
+/* Core Form Content Title Header Override */
+.settings-view-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0 0 4px 0;
+}

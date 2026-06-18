@@ -103,59 +103,62 @@ export default function Settings() {
     );
   }
 
- return (
-    <div className="settings-root-layout">
-      <h1 className="settings-top-bar">
+return (
+    <div className="settings-root-layout profile-root">
+      <h1 className="settings-top-bar profile-header">
         Dragon Application
       </h1>
-      <div className="settings-split-pane">
-        <aside className="settings-sidebar-nav">
-          <ul>
+      
+      <div className="settings-split-pane profile-workspace">
+        <aside className="settings-sidebar-nav profile-sidebar">
+          <ul className="profile-nav-list">
             <li>
-              <Link to="/">Dashboard</Link>
+              <Link to="/" className="profile-nav-link">Dashboard</Link>
             </li>
             <li>
-              <Link to="/profile">Profile</Link>
+              <Link to="/profile" className="profile-nav-link">Profile</Link>
             </li>
             <li>
-              <Link to="/settings" className="active-link">
+              <Link to="/settings" className="profile-nav-link active">
                 Settings
               </Link>
             </li>
           </ul>
         </aside>
 
-        <main className="settings-main-viewport">
-          <div className="settings-constrained-box">
-            <h2
-              style={{
-                fontSize: "28px",
-                fontWeight: "bold",
-                margin: "0 0 4px 0",
-              }}
-            >
-              Account Settings
-            </h2>
-            <p className="settings-subtitle">
-              Manage your node credentials, security preferences, and system
-              automation configurations.
-            </p>
+        <main className="settings-main-viewport profile-main">
+          {isLoadingAuth ? (
+            /* 🟢 CLEANED: Pure class name, no inline styles */
+            <div className="settings-loading-container">
+              <h2 className="settings-loading-text">Verifying secure session...</h2>
+            </div>
+          ) : (
+            <div className="settings-constrained-box">
+              /* 🟢 CLEANED: Pure class name, no inline styles */
+              <h2 className="settings-view-title">
+                Account Settings
+              </h2>
+              <p className="settings-subtitle">
+                Manage your node credentials, security preferences, and system
+                automation configurations.
+              </p>
 
-            <section className="settings-section">
-              <h3>Security Extensions</h3>
-              <ul className="coming-soon-list">
-                {COMING_SOON.map((item, index) => (
-                  <li key={index} className="coming-soon">
-                    <div className="coming-soon-info">
-                      <h4>{item.title}</h4>
-                      <p>{item.description}</p>
-                    </div>
-                    <span className="badge">Coming Soon</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          </div>
+              <section className="settings-section">
+                <h3>Security Extensions</h3>
+                <ul className="coming-soon-list">
+                  {COMING_SOON.map((item, index) => (
+                    <li key={index} className="coming-soon">
+                      <div className="coming-soon-info">
+                        <h4>{item.title}</h4>
+                        <p>{item.description}</p>
+                      </div>
+                      <span className="badge">Coming Soon</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </div>
+          )}
         </main>
       </div>
     </div>

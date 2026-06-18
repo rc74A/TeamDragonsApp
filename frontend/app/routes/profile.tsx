@@ -136,11 +136,9 @@ export default function Profile() {
 
   return (
     <div className="profile-root">
-      {/* 🟢 FIXED: Kept the global layout consistent across your pipeline views */}
       <div className="profile-workspace">
         <aside className="profile-sidebar">
-          {/* Main App Heading wrapped securely inside the shell boundary container */}
-          <h1 className="profile-header" style={{ margin: "0 0 1.5rem 0", fontSize: "1.5rem" }}>
+          <h1 className="profile-header">
             Dragon Application
           </h1>
           
@@ -164,122 +162,131 @@ export default function Profile() {
         </aside>
 
         <main className="profile-main">
-          <div className="profile-content-box">
-            <h2>Profile</h2>
-            <p className="settings-subtitle">
-              Keep your structural summary records updated for matching pipeline
-              discovery.
-            </p>
-
-            <div className="progress-container">
-              <div className="progress-header-text">
-                <span>Setup Completion Progress</span>
-                <span>{completionPercentage}%</span>
-              </div>
-              <div className="progress-track">
-                <progress
-                  className="progress-fill-bar"
-                  max="100"
-                  value={completionPercentage}
-                  title="Profile Setup Completion Bar"
-                />
-              </div>
+          {isLoadingAuth ? (
+            /* Secure fallback state scoped strictly inside the viewport container */
+            <div className="flex justify-center items-center h-64">
+              <h2 className="text-cyan-400 font-sans font-bold text-xl">
+                Verifying secure session...
+              </h2>
             </div>
+          ) : (
+            <div className="profile-content-box">
+              <h2>Profile</h2>
+              <p className="settings-subtitle">
+                Keep your structural summary records updated for matching pipeline
+                discovery.
+              </p>
 
-            <section className="settings-section">
-              <h3>Personal Identifiers</h3>
-              <form className="settings-form" onSubmit={handleSave}>
-                <div className="field">
-                  <label htmlFor="full_name">Full name</label>
-                  <input
-                    id="full_name"
-                    type="text"
-                    value={profile.full_name}
-                    onChange={(e) =>
-                      setProfile({ ...profile, full_name: e.target.value })
-                    }
-                    placeholder="John Doe"
+              <div className="progress-container">
+                <div className="progress-header-text">
+                  <span>Setup Completion Progress</span>
+                  <span>{completionPercentage}%</span>
+                </div>
+                <div className="progress-track">
+                  <progress
+                    className="progress-fill-bar"
+                    max="100"
+                    value={completionPercentage}
+                    title="Profile Setup Completion Bar"
                   />
                 </div>
+              </div>
 
-                <div className="field">
-                  <label htmlFor="email">Email</label>
-                  <input
-                    id="email"
-                    type="text"
-                    value={profile.email}
-                    onChange={(e) =>
-                      setProfile({ ...profile, email: e.target.value })
-                    }
-                    placeholder="john@example.com"
-                  />
-                  {errors.email && (
-                    <span className="error-text">{errors.email}</span>
-                  )}
-                </div>
+              <section className="settings-section">
+                <h3>Personal Identifiers</h3>
+                <form className="settings-form" onSubmit={handleSave}>
+                  <div className="field">
+                    <label htmlFor="full_name">Full name</label>
+                    <input
+                      id="full_name"
+                      type="text"
+                      value={profile.full_name}
+                      onChange={(e) =>
+                        setProfile({ ...profile, full_name: e.target.value })
+                      }
+                      placeholder="John Doe"
+                    />
+                  </div>
 
-                <div className="field">
-                  <label htmlFor="phone">Phone</label>
-                  <input
-                    id="phone"
-                    type="text"
-                    value={profile.phone}
-                    onChange={(e) =>
-                      setProfile({ ...profile, phone: e.target.value })
-                    }
-                    placeholder="(555) 000-0000"
-                  />
-                  {errors.phone && (
-                    <span className="error-text">{errors.phone}</span>
-                  )}
-                </div>
+                  <div className="field">
+                    <label htmlFor="email">Email</label>
+                    <input
+                      id="email"
+                      type="text"
+                      value={profile.email}
+                      onChange={(e) =>
+                        setProfile({ ...profile, email: e.target.value })
+                      }
+                      placeholder="john@example.com"
+                    />
+                    {errors.email && (
+                      <span className="error-text">{errors.email}</span>
+                    )}
+                  </div>
 
-                <div className="field">
-                  <label htmlFor="location">Location</label>
-                  <input
-                    id="location"
-                    type="text"
-                    value={profile.location}
-                    onChange={(e) =>
-                      setProfile({ ...profile, location: e.target.value })
-                    }
-                    placeholder="City, NJ"
-                  />
-                </div>
+                  <div className="field">
+                    <label htmlFor="phone">Phone</label>
+                    <input
+                      id="phone"
+                      type="text"
+                      value={profile.phone}
+                      onChange={(e) =>
+                        setProfile({ ...profile, phone: e.target.value })
+                      }
+                      placeholder="(555) 000-0000"
+                    />
+                    {errors.phone && (
+                      <span className="error-text">{errors.phone}</span>
+                    )}
+                  </div>
 
-                <div className="field">
-                  <label htmlFor="summary">Summary</label>
-                  <input
-                    id="summary"
-                    type="text"
-                    value={profile.summary}
-                    onChange={(e) =>
-                      setProfile({ ...profile, summary: e.target.value })
-                    }
-                    placeholder="Brief background..."
-                  />
-                </div>
+                  <div className="field">
+                    <label htmlFor="location">Location</label>
+                    <input
+                      id="location"
+                      type="text"
+                      value={profile.location}
+                      onChange={(e) =>
+                        setProfile({ ...profile, location: e.target.value })
+                      }
+                      placeholder="City, NJ"
+                    />
+                  </div>
 
-                <div className="form-actions">
-                  <button type="submit" className="btn-primary">
-                    Save profile
-                  </button>
+                  <div className="field">
+                    <label htmlFor="summary">Summary</label>
+                    <input
+                      id="summary"
+                      type="text"
+                      value={profile.summary}
+                      onChange={(e) =>
+                        setProfile({ ...profile, summary: e.target.value })
+                      }
+                      placeholder="Brief background..."
+                    />
+                  </div>
 
-                  {successMessage && (
-                    <span className="success-text ml-2.5 text-green-600 font-medium">
-                      {successMessage}
-                    </span>
-                  )}
+                  <div className="form-actions">
+                    <button type="submit" className="btn-primary">
+                      Save profile
+                    </button>
 
-                  {errors.server && (
-                    <span className="error-text ml-2.5 text-red-500 font-bold">
-                      {errors.server}
-                    </span>
-                  )}
-                </div>
-              </form>
-            </section>
-          </div>
+                    {successMessage && (
+                      <span className="success-text ml-2.5 text-green-600 font-medium">
+                        {successMessage}
+                      </span>
+                    )}
+
+                    {errors.server && (
+                      <span className="error-text ml-2.5 text-red-500 font-bold">
+                        {errors.server}
+                      </span>
+                    )}
+                  </div>
+                </form>
+              </section>
+            </div>
+          )}
         </main>
       </div>
     </div>
