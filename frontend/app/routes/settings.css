@@ -11,10 +11,11 @@
 .settings-top-bar {
   background-color: #2d3748;
   padding: 16px 24px;
-  font-size: 20px;
+  font-size: 1.5rem;
   font-weight: bold;
   border-bottom: 1px solid #4a5568;
   color: #06b6d4;
+  margin: 0;
 }
 
 .settings-split-pane {
@@ -174,4 +175,23 @@
   padding: 4px 10px;
   font-size: 12px;
   white-space: nowrap;
+}
+
+.settings-loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+
+.settings-loading-text {
+  color: #06b6d4;
+  font-family: sans-serif;
+}
+
+/* Core Form Content Title Header Override */
+.settings-view-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0 0 4px 0;
 }
