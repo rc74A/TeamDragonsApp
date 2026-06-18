@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./login.css"; 
+import "./login.css";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -12,12 +12,13 @@ export default function Login() {
     setError("");
     setIsSubmitting(true);
 
-    const BACKEND_URL = import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
+    const BACKEND_URL =
+      import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
 
     try {
       const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: "POST",
-        credentials: "include", 
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -35,7 +36,7 @@ export default function Login() {
         return;
       }
 
-window.location.href = "/";
+      window.location.href = "/";
     } catch {
       setIsSubmitting(false);
       setError("Network error, please try again");
@@ -45,14 +46,12 @@ window.location.href = "/";
   return (
     <div className="login-viewport">
       <div className="login-card-expanded">
-        
         <div className="login-header-group">
           <h1>Welcome Back</h1>
           <p>Log in to your Dragon Application account</p>
         </div>
 
         <form onSubmit={handleLoginSubmit}>
-          
           {/* Email Address Block Row */}
           <div className="login-field-row">
             <div className="login-input-wrapper">
@@ -100,7 +99,6 @@ window.location.href = "/";
         <div className="login-footer-row">
           Do you not have an account? <a href="/register">Register here</a>
         </div>
-
       </div>
     </div>
   );

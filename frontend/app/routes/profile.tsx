@@ -134,11 +134,9 @@ export default function Profile() {
     );
   }
 
- return (
+  return (
     <div className="settings-root-layout profile-root">
-      <h1 className="settings-top-bar profile-header">
-        Dragon Application
-      </h1>
+      <h1 className="settings-top-bar profile-header">Dragon Application</h1>
       <div className="settings-split-pane profile-workspace">
         <aside className="settings-sidebar-nav profile-sidebar">
           <ul className="profile-nav-list">
@@ -170,8 +168,8 @@ export default function Profile() {
             <div className="profile-content-box">
               <h2>Profile</h2>
               <p className="settings-subtitle">
-                Keep your structural summary records updated for matching pipeline
-                discovery.
+                Keep your structural summary records updated for matching
+                pipeline discovery.
               </p>
               <div className="progress-container">
                 <div className="progress-header-text">

@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"; 
-import { Link, useNavigate } from "react-router"; 
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router";
 import "./app.css";
 import "./settings.css";
 
@@ -53,8 +53,8 @@ function validate(settings: AccountSettings): FieldErrors {
 */
 
 export default function Settings() {
-  const navigate = useNavigate(); 
-  const [isLoadingAuth, setIsLoadingAuth] = useState(true); 
+  const navigate = useNavigate();
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
   /* Commented out redundant state handlers to maintain clear linter parameters
   const [displayName, setDisplayName] = useState("Test User");
@@ -73,7 +73,8 @@ export default function Settings() {
 
   useEffect(() => {
     async function verifySession() {
-      const BACKEND_URL = import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
+      const BACKEND_URL =
+        import.meta.env.VITE_ATS_API_URL ?? "http://localhost:8000";
       try {
         const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
           method: "GET",
@@ -97,26 +98,38 @@ export default function Settings() {
 
   if (isLoadingAuth) {
     return (
-      <div className="settings-root-layout" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-        <h2 style={{ color: "#06B6D4", fontFamily: "sans-serif" }}>Verifying secure session...</h2>
+      <div
+        className="settings-root-layout"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <h2 style={{ color: "#06B6D4", fontFamily: "sans-serif" }}>
+          Verifying secure session...
+        </h2>
       </div>
     );
   }
 
-return (
+  return (
     <div className="settings-root-layout profile-root">
-      <h1 className="settings-top-bar profile-header">
-        Dragon Application
-      </h1>
-      
+      <h1 className="settings-top-bar profile-header">Dragon Application</h1>
+
       <div className="settings-split-pane profile-workspace">
         <aside className="settings-sidebar-nav profile-sidebar">
           <ul className="profile-nav-list">
             <li>
-              <Link to="/" className="profile-nav-link">Dashboard</Link>
+              <Link to="/" className="profile-nav-link">
+                Dashboard
+              </Link>
             </li>
             <li>
-              <Link to="/profile" className="profile-nav-link">Profile</Link>
+              <Link to="/profile" className="profile-nav-link">
+                Profile
+              </Link>
             </li>
             <li>
               <Link to="/settings" className="profile-nav-link active">
@@ -129,13 +142,13 @@ return (
         <main className="settings-main-viewport profile-main">
           {isLoadingAuth ? (
             <div className="settings-loading-container">
-              <h2 className="settings-loading-text">Verifying secure session...</h2>
+              <h2 className="settings-loading-text">
+                Verifying secure session...
+              </h2>
             </div>
           ) : (
             <div className="settings-constrained-box">
-              <h2 className="settings-view-title">
-                Account Settings
-              </h2>
+              <h2 className="settings-view-title">Account Settings</h2>
               <p className="settings-subtitle">
                 Manage your node credentials, security preferences, and system
                 automation configurations.
