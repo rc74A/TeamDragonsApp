@@ -1,103 +1,126 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import {
+  Form,
+  redirectDocument,
+  useActionData,
+  useNavigation,
+} from "react-router";
 import "./login.css";
 
-export default function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleLoginSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsSubmitting(true);
+export async function action({ request }: { request: Request }) {
+  const formData = await request.formData();
+  const username = formData.get("username");
+  const password = formData.get("password");
 
-    const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ uname: username, pwd: password }),
-      });
+  const BACKEND_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-      if (!response.ok) {
-        setIsSubmitting(false);
-        try {
-          const data = await response.json();
-          setError(data.detail || "Invalid username or password");
-        } catch {
-          setError("Invalid username or password");
-        }
-        return;
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ uname: username, pwd: password }),
+    });
+
+    if (!response.ok) {
+      try {
+        const data = await response.json();
+        return { error: data.detail || "Invalid username or password" };
+      } catch {
+        return { error: "Invalid username or password" };
       }
-
-      navigate("/");
-    } catch {
-      setIsSubmitting(false);
-      setError("Network error, please try again");
     }
-  };
+
+    const setCookie = response.headers.get("set-cookie");
+    const headers = new Headers();
+    if (setCookie) {
+      headers.append("Set-Cookie", setCookie);
+    }
+
+    return redirectDocument("/", { headers });
+  } catch (err) {
+    return { error: "Network error, please try again" };
+  }
+}
+
+
+export default function Login() {
+  const actionData = useActionData() as { error?: string } | undefined;
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
 
   return (
-    <div className="login-viewport">
-      <div className="login-card-expanded">
-        <div className="login-header-group">
-          <h1>Welcome Back</h1>
-          <p>Log in to your Dragon Application account</p>
+    <div className="register-page">
+      <div className="auth-card">
+        <h1 className="auth-title">Welcome Back</h1>
+        <p className="auth-subtitle">
+          Log in to your Dragon Application account
+        </p>
+
+        <div className="content-layout">
+          <aside className="sidebar">
+            <nav>
+              <ul className="menu-list">
+                <li>
+                  <a href="/register">Register</a>
+                </li>
+              </ul>
+            </nav>
+          </aside>
         </div>
 
-        <form onSubmit={handleLoginSubmit}>
-          {/* Email Address Block Row */}
-          <div className="login-field-row">
-            <div className="login-input-wrapper">
-              <label htmlFor="username">Email Address</label>
-              <input
-                type="text"
-                id="username"
-                required
-                placeholder="you@example.com"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
+        <main className="flex justify-center items-center">
+          <div className="bg-[#06B6D4] rounded-md h-xl w-xl shadow-md p-8">
+            <Form method="post" className="font-bold text-2xl">
+              <div className="form-group">
+                <label htmlFor="username">Email:</label>
+                <br />
+                <input
+                  className="bg-white text-black"
+                  type="text"
+                  id="username"
+                  name="username"
+                  required
+                  placeholder="you@example.com"
+                />
+              </div>
+
+              <div className="form-group-last login-password-spacing">
+                <label className="input-label" htmlFor="password">
+                  Password
+                </label>
+                <input
+                  className="bg-white text-black"
+                  type="password"
+                  id="password"
+                  name="password"
+                  required
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50 login-submit-btn"
+              >
+                {isSubmitting ? "Logging In..." : "Log In"}
+              </button>
+
+              {actionData?.error && (
+                <p className="text-red-500 mt-4 text-xl font-bold bg-white p-2 rounded border border-red-500 text-center">
+                  {actionData.error}
+                </p>
+              )}
+            </Form>
+
+            <div className="auth-footer login-footer-styling">
+              Do not have an account? <a href="/register">Register here</a>
             </div>
           </div>
-
-          {/* Password Block Row */}
-          <div className="login-field-row">
-            <div className="login-input-wrapper">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                required
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* Core Submit Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="login-submit-anchor"
-          >
-            {isSubmitting ? "Verifying Credentials..." : "Log In"}
-          </button>
-
-          {/* Error banner handler block */}
-          {error && <p className="login-error-banner">⚠️ {error}</p>}
-        </form>
-
-        {/* Dynamic bottom registration navigation text */}
-        <div className="login-footer-row">
-          Do you not have an account? <a href="/register">Register here</a>
-        </div>
+        </main>
       </div>
     </div>
   );
