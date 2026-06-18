@@ -21,6 +21,11 @@ const COMING_SOON = [
     description:
       "Dispatch raw JSON event frames to custom Discord or Slack endpoints on data mutations.",
   },
+  {
+    title: "Appearance",
+    description:
+      "Light/Dark mode, and other custom appearance options.",
+  },
 ];
 
 /*

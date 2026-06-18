@@ -47,6 +47,8 @@ describe("Settings page", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Webhook Notifications")).toBeInTheDocument();
     expect(screen.getAllByText("Coming Soon")).toHaveLength(2);
+    expect(screen.getByText("Appearance")).toBeInTheDocument();
+    // Coming-soon sections present on the page.
   });
 
   /* Commented out legacy form testing logic to stay aligned with your structural UI changes
