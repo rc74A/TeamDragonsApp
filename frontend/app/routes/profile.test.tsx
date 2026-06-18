@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import Profile from "./profile";
@@ -45,11 +45,13 @@ describe("Profile page", () => {
   it("renders the profile form inside the app shell", async () => {
     vi.stubGlobal("fetch", mockFetch());
 
-    render(
-      <MemoryRouter>
-        <Profile />
-      </MemoryRouter>,
-    );
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <Profile />
+        </MemoryRouter>,
+      );
+    });
 
     expect(
       screen.getByRole("heading", { name: "Dragon Application", level: 1 }),

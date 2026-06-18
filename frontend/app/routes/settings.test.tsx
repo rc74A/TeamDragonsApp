@@ -46,7 +46,7 @@ describe("Settings page", () => {
       screen.getByText("Two-Factor Authentication (2FA)"),
     ).toBeInTheDocument();
     expect(screen.getByText("Webhook Notifications")).toBeInTheDocument();
-    expect(screen.getAllByText("Coming Soon")).toHaveLength(2);
+    expect(screen.getAllByText("Coming Soon")).toHaveLength(3);
     expect(screen.getByText("Appearance")).toBeInTheDocument();
     // Coming-soon sections present on the page.
   });
