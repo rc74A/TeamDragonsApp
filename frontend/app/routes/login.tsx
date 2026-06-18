@@ -7,7 +7,6 @@ import {
 } from "react-router";
 import "./login.css";
 
-
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData();
   const username = formData.get("username");
@@ -44,7 +43,6 @@ export async function action({ request }: { request: Request }) {
     return { error: "Network error, please try again" };
   }
 }
-
 
 export default function Login() {
   const actionData = useActionData() as { error?: string } | undefined;
