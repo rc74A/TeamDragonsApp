@@ -30,12 +30,11 @@ describe("Settings page", () => {
       screen.getByRole("heading", { name: "Account Settings", level: 2 }),
     ).toBeInTheDocument();
 
-    // Verify your custom advanced features text blocks load successfully
-    expect(
-      screen.getByText("Two-Factor Authentication (2FA)"),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Webhook Notifications")).toBeInTheDocument();
-    expect(screen.getAllByText("Coming soon")).toHaveLength(2);
+    // Coming-soon sections present on the page.
+    expect(screen.getByText("Security")).toBeInTheDocument();
+    expect(screen.getByText("Notifications")).toBeInTheDocument();
+    expect(screen.getByText("Appearance")).toBeInTheDocument();
+    expect(screen.getAllByText("Coming soon")).toHaveLength(3);
   });
 
   /* Commented out legacy form testing logic to stay aligned with your structural UI changes
