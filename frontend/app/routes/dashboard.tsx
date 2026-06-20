@@ -23,7 +23,13 @@ export async function loader({
   request,
 }: Route.LoaderArgs): Promise<DashboardData> {
   const authUser = await requireAuth(request);
-  const userId = authUser?.id || "1";
+
+  if(!authUser || !authUser.id)
+  {
+    throw new Response("Unauthorized Session", { status: 401 });
+  }
+  
+  const userId = authUser.id
 
   try {
     const response = await fetch(`${BACKEND_URL}/api/jobs`, {
@@ -32,13 +38,13 @@ export async function loader({
     const jobsData = response.ok ? await response.json() : [];
 
     return {
-      username: authUser?.username || "Joshua",
+      username: authUser?.username || "User",
       userId: String(userId),
       jobs: jobsData.length > 0 ? jobsData : getFallbackJobs(),
     };
   } catch {
     return {
-      username: authUser?.username || "Joshua",
+      username: authUser?.username || "User",
       userId: String(userId),
       jobs: getFallbackJobs(),
     };
@@ -46,7 +52,7 @@ export async function loader({
 }
 
 export default function Dashboard() {
-  const { userId, jobs } = useLoaderData() as DashboardData;
+  const { userId, jobs, username } = useLoaderData() as DashboardData;
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -128,7 +134,7 @@ export default function Dashboard() {
 
         <main className="db-main">
           <div className="db-container">
-            <h2>Welcome!</h2>
+            <h2>Welcome, {username}!</h2>
             <p className="db-caption">
               Explore open listings matching your profile workspace.
             </p>
@@ -136,7 +142,11 @@ export default function Dashboard() {
               <h3>Job Applications</h3>
               <button
                 type="button"
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  setEditingJobId(null);
+                  setJobForm({ title: "", company: "", stage: "WishList" });      
+                  setIsModalOpen(true);
+                }}
                 className="db-btn-add-job"
               >
                 <span className="plus-icon">+</span>
@@ -171,9 +181,9 @@ export default function Dashboard() {
                     <button
                       type="button"
                       onClick={() => handleDeleteJob(job.id)}
-                      className="db-btn-delete db-btn-disabled"
+                      className="db-btn-delete"
                     >
-                      Delete (Coming Soon)
+                      Delete
                     </button>
                   </div>
                 </div>
