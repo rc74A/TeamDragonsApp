@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useLoaderData, Link, useNavigate } from "react-router";
+import { getAuth } from "@clerk/react-router/server";
+import { SignOutButton } from '@clerk/react-router';
+import { useLoaderData, Link, useNavigate, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
-import { requireAuth } from "../lib/auth";
 import "./dashboard.css";
 
 interface Job {
@@ -19,11 +20,11 @@ interface DashboardData {
   userId: string;
 }
 
-export async function loader({
-  request,
-}: Route.LoaderArgs): Promise<DashboardData> {
-  const authUser = await requireAuth(request);
-  const userId = authUser?.id || "1";
+export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
+  const { userId, sessionClaims } = await getAuth(args);
+  if (!userId) throw redirect("/login");
+
+    const username = sessionClaims?.email ?? "Joshua"; // 👈 replaces authUser
 
   try {
     const response = await fetch(`${BACKEND_URL}/api/jobs`, {
@@ -32,13 +33,13 @@ export async function loader({
     const jobsData = response.ok ? await response.json() : [];
 
     return {
-      username: authUser?.username || "Joshua",
+      username,
       userId: String(userId),
       jobs: jobsData.length > 0 ? jobsData : getFallbackJobs(),
     };
   } catch {
     return {
-      username: authUser?.username || "Joshua",
+      username,
       userId: String(userId),
       jobs: getFallbackJobs(),
     };
@@ -83,20 +84,6 @@ export default function Dashboard() {
     navigate(".", { replace: true });
   };
 
-  const handleLogout = async () => {
-    const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
-
-    try {
-      await fetch(`${BACKEND_URL}/api/auth/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch (error) {
-      console.error("Backend logout failed:", error);
-    } finally {
-      navigate("/login", { replace: true });
-    }
-  };
 
   return (
     <div className="db-root">
@@ -115,13 +102,11 @@ export default function Dashboard() {
               </Link>
             </li>
             <li className="db-logout-item">
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="db-btn-logout"
-              >
-                🚪 Logout
-              </button>
+              <SignOutButton redirectUrl="/login">
+                <button className="bg-red-500 text-white px-4 py-2 rounded">
+                  Sign Out
+                </button>
+              </SignOutButton>
             </li>
           </ul>
         </aside>
