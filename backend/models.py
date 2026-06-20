@@ -39,16 +39,6 @@ class Job(Base):
     )
 
 
-class User(Base):
-    """A user that has been registered to the database"""
-
-    __tablename__ = "users"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    email: Mapped[str] = mapped_column(String(128), nullable=False)
-    hashed_password: Mapped[str] = mapped_column(String(256), nullable=False)
-
-
 class Profile(Base):
     """
     A user's baseline profile: identity/contact fields and a summary.

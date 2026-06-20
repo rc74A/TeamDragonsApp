@@ -5,7 +5,6 @@ import { useEffect, useState, type FormEvent } from "react";
 import "./app.css";
 import "./profile.css";
 
-
 export async function loader(args: Route.LoaderArgs) {
   const { userId } = await getAuth(args);
   if (!userId) throw redirect("/login");
@@ -45,7 +44,6 @@ export default function Profile() {
           summary: data.summary || "",
         });
       }
-
     }
 
     verifyAndLoad();
@@ -136,8 +134,8 @@ export default function Profile() {
           <div className="profile-content-box">
             <h2>Profile</h2>
             <p className="settings-subtitle">
-              Keep your structural summary records updated for matching
-              pipeline discovery.
+              Keep your structural summary records updated for matching pipeline
+              discovery.
             </p>
             <div className="progress-container">
               <div className="progress-header-text">

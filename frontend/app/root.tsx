@@ -9,7 +9,6 @@ import {
 import { ClerkProvider } from "@clerk/react-router";
 import { clerkMiddleware, rootAuthLoader } from "@clerk/react-router/server";
 
-
 import type { Route } from "./+types/root";
 import "./app.css";
 
@@ -44,18 +43,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const middleware: Route.MiddlewareFunction[] = [clerkMiddleware()]
+export const middleware: Route.MiddlewareFunction[] = [clerkMiddleware()];
 
 export async function loader(args: Route.LoaderArgs) {
-  return rootAuthLoader(args)
+  return rootAuthLoader(args);
 }
 
 export default function App({ loaderData }: Route.ComponentProps) {
-    return ( 
-    <ClerkProvider loaderData={loaderData} publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
+  return (
+    <ClerkProvider
+      loaderData={loaderData}
+      publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}
+    >
       <Outlet />
     </ClerkProvider>
-    )
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

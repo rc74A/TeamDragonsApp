@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getAuth } from "@clerk/react-router/server";
-import { SignOutButton } from '@clerk/react-router';
+import { SignOutButton } from "@clerk/react-router";
 import { useLoaderData, Link, useNavigate, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
 import "./dashboard.css";
@@ -24,7 +24,7 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
   const { userId, sessionClaims } = await getAuth(args);
   if (!userId) throw redirect("/login");
 
-    const username = sessionClaims?.email ?? "Joshua"; // 👈 replaces authUser
+  const username = sessionClaims?.email ?? "Joshua"; // 👈 replaces authUser
 
   try {
     const response = await fetch(`${BACKEND_URL}/api/jobs`, {
@@ -83,7 +83,6 @@ export default function Dashboard() {
     });
     navigate(".", { replace: true });
   };
-
 
   return (
     <div className="db-root">
