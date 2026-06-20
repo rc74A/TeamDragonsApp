@@ -24,6 +24,8 @@ export default function Profile() {
     summary: "",
   });
 
+  const [userId, setUserId] = useState<string | null>(null);
+
   const [errors, setErrors] = useState({ email: "", phone: "", server: "" });
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -41,9 +43,13 @@ export default function Profile() {
           return;
         }
 
+        const authData = await authRes.json();
+        const currentUserId = authData.id;
+        setUserId(currentUserId.toString());
+
         const res = await fetch(`${API_BASE}/api/profile`, {
           method: "GET",
-          headers: { "X-User-Id": "1" },
+          headers: { "X-User-Id": currentUserId.toString() },
         });
 
         if (res.ok) {
@@ -72,8 +78,14 @@ export default function Profile() {
   ).length;
   const completionPercentage = Math.round((filledFields / totalFields) * 100);
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async (e: FormEvent) => {
     e.preventDefault();
+
+    if(!userId) {
+      setErrors((prev) => ({ ...prev, server: "Session Synchronization Error"}));
+      return;
+    }
+    
     let valid = true;
     const newErrors = { email: "", phone: "", server: "" };
 
@@ -96,7 +108,7 @@ export default function Profile() {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "X-User-Id": "1",
+            "X-User-Id": userId,
           },
           body: JSON.stringify(profile),
         });
