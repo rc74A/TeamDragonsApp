@@ -5,8 +5,8 @@ import { Link, useNavigate, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
 import "./findjobs.css";
 
-interface FoundJob { 
-  id: number,
+interface FoundJob {
+  id: number;
   title: string;
   employer: string;
   description: string;
@@ -39,16 +39,22 @@ export default function FindJobs() {
   const handleSearchSubmit = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/findjobs/find_job`, {
-          method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          body: JSON.stringify({
-            title: searchForm.title,
-            employer: searchForm.employer,
-            keywords: searchForm.keywords.split(",").map((k) => k.trim()).filter(Boolean),
-            excluded_words: searchForm.excluded_words.split(",").map((w) => w.trim()).filter(Boolean),
-          }),
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: searchForm.title,
+          employer: searchForm.employer,
+          keywords: searchForm.keywords
+            .split(",")
+            .map((k) => k.trim())
+            .filter(Boolean),
+          excluded_words: searchForm.excluded_words
+            .split(",")
+            .map((w) => w.trim())
+            .filter(Boolean),
+        }),
       });
 
       if (!response.ok) {
@@ -192,9 +198,15 @@ export default function FindJobs() {
                     <h4>{job.title}</h4>
                     <p className="search-card-company">🏢 {job.employer}</p>
                     <p className="search-card-company">🏢 {job.description}</p>
-                    <p className="search-card-company">🏢 {job.employment_type}</p>
-                    <p className="search-card-company">🏢 {job.country}, {job.state}, {job.city}</p>
-                    <p className="search-card-status">📋 salary: {job.salary}</p>
+                    <p className="search-card-company">
+                      🏢 {job.employment_type}
+                    </p>
+                    <p className="search-card-company">
+                      🏢 {job.country}, {job.state}, {job.city}
+                    </p>
+                    <p className="search-card-status">
+                      📋 salary: {job.salary}
+                    </p>
                     <p className="search-card-company">🏢 {job.apply_link}</p>
                   </div>
                   <div className="search-card-actions">
