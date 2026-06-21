@@ -47,7 +47,7 @@ export default function Profile() {
     }
 
     verifyAndLoad();
-  });
+  }, []);
 
   const totalFields = Object.keys(profile).length;
   const filledFields = Object.values(profile).filter(
