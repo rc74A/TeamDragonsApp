@@ -3,7 +3,7 @@ import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton } from "@clerk/react-router";
 import { Link, useNavigate, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
-import "./dashboard.css";
+import "./findjobs.css";
 
 interface FoundJob { 
   id: number,
@@ -25,33 +25,51 @@ export async function loader(args: Route.LoaderArgs) {
   if (!userId) throw redirect("/login");
 }
 
-export default function Dashboard() {
+export default function FindJobs() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [searchForm, setSearchForm] = useState({
     title: "",
     employer: "",
     keywords: "",
-    excluded_works: "",
+    excluded_words: "",
   });
   const [jobs, setJobs] = useState<FoundJob[]>([]);
 
   const handleSearchSubmit = async () => {
-    const response = await fetch(`${BACKEND_URL}/api/findjobs/find_job`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(searchForm),
-    });
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/findjobs/find_job`, {
+          method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          body: JSON.stringify({
+            title: searchForm.title,
+            employer: searchForm.employer,
+            keywords: searchForm.keywords.split(",").map((k) => k.trim()).filter(Boolean),
+            excluded_words: searchForm.excluded_words.split(",").map((w) => w.trim()).filter(Boolean),
+          }),
+      });
 
-    if (!response.ok) {
-      setError("Could not find any jobs with the desired requirements.");
-      return;
+      if (!response.ok) {
+        setError("Could not find any jobs with the desired requirements.");
+        return;
+      }
+
+      const data: FoundJob[] = await response.json();
+
+      if (data.length == 0) {
+        setError("Could not find any jobs with the desired requirements.");
+        return;
+      }
+
+      setJobs(data ?? []);
+      setError("");
+    } catch {
+      setError("Network error while searching for jobs.");
     }
   };
 
-// TODO: Change the class names to match custom page styling
   return (
     <div className="search-root">
       <header className="search-header">Dragon Application</header>
@@ -66,6 +84,11 @@ export default function Dashboard() {
             <li>
               <Link to="/profile" className="search-link">
                 Profile
+              </Link>
+            </li>
+            <li>
+              <Link to="/profile" className="search-link">
+                Settings
               </Link>
             </li>
             <li className="search-logout-item">
@@ -84,6 +107,73 @@ export default function Dashboard() {
             <p className="search-caption">
               Search for new and exciting opportunities!
             </p>
+
+            <section className="search-section">
+              <h3>Search Criteria</h3>
+              <div className="search-form">
+                <div className="field">
+                  <label htmlFor="title">Job title</label>
+                  <input
+                    id="title"
+                    type="text"
+                    value={searchForm.title}
+                    onChange={(e) =>
+                      setSearchForm({ ...searchForm, title: e.target.value })
+                    }
+                    placeholder="Software Engineer"
+                  />
+                </div>
+
+                <div className="field">
+                  <label htmlFor="employer">Employer</label>
+                  <input
+                    id="employer"
+                    type="text"
+                    value={searchForm.employer}
+                    onChange={(e) =>
+                      setSearchForm({ ...searchForm, employer: e.target.value })
+                    }
+                    placeholder="Acme Corp"
+                  />
+                </div>
+
+                <div className="field">
+                  <label htmlFor="keywords">Keywords</label>
+                  <input
+                    id="keywords"
+                    type="text"
+                    value={searchForm.keywords}
+                    onChange={(e) =>
+                      setSearchForm({ ...searchForm, keywords: e.target.value })
+                    }
+                    placeholder="remote, react"
+                  />
+                </div>
+
+                <div className="field">
+                  <label htmlFor="excluded_words">Excluded words</label>
+                  <input
+                    id="excluded_words"
+                    type="text"
+                    value={searchForm.excluded_words}
+                    onChange={(e) =>
+                      setSearchForm({
+                        ...searchForm,
+                        excluded_words: e.target.value,
+                      })
+                    }
+                    placeholder="senior, manager"
+                  />
+                </div>
+              </div>
+            </section>
+
+            {error && (
+              <section className="search-error-section">
+                <p className="error-text">{error}</p>
+              </section>
+            )}
+
             <div className="search-section-header">
               <h3>Job Search</h3>
               <button
@@ -91,7 +181,6 @@ export default function Dashboard() {
                 onClick={() => handleSearchSubmit()}
                 className="search-btn-add-job"
               >
-                <span className="plus-icon">+</span>
                 <span>Search Job</span>
               </button>
             </div>
