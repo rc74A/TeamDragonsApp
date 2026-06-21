@@ -42,6 +42,7 @@ app.add_middleware(
 )
 app.include_router(jobsrouter)
 app.include_router(profilerouter)
+app.include_router(searchrouter)
 
 # ----- API Endpoints -----
 
