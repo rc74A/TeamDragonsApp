@@ -1,106 +1,74 @@
 import { useState } from "react";
 import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton } from "@clerk/react-router";
-import { useLoaderData, Link, useNavigate, redirect } from "react-router";
+import { Link, useNavigate, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
 import "./dashboard.css";
 
-interface Job {
-  id: number;
+interface FoundJob { 
+  id: number,
   title: string;
-  company: string;
-  stage: string;
+  employer: string;
+  description: string;
+  apply_link: string;
+  salary: number;
+  employment_type: string;
+  country: string;
+  state: string;
+  city: string;
 }
 
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
-interface DashboardData {
-  username: string;
-  jobs: Job[];
-  userId: string;
-}
-
-export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
+export async function loader(args: Route.LoaderArgs) {
   const { userId, sessionClaims } = await getAuth(args);
   if (!userId) throw redirect("/login");
-
-  const username = sessionClaims?.email ?? "Joshua"; // 👈 replaces authUser
-
-  try {
-    const response = await fetch(`${BACKEND_URL}/api/jobs`, {
-      headers: { "x-user-id": String(userId) },
-    });
-    const jobsData = response.ok ? await response.json() : [];
-
-    return {
-      username,
-      userId: String(userId),
-      jobs: jobsData.length > 0 ? jobsData : getFallbackJobs(),
-    };
-  } catch {
-    return {
-      username,
-      userId: String(userId),
-      jobs: getFallbackJobs(),
-    };
-  }
 }
 
 export default function Dashboard() {
-  const { userId, jobs } = useLoaderData() as DashboardData;
   const navigate = useNavigate();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingJobId, setEditingJobId] = useState<number | null>(null);
-  const [jobForm, setJobForm] = useState({
+  const [error, setError] = useState("");
+  const [searchForm, setSearchForm] = useState({
     title: "",
-    company: "",
-    stage: "Wishlist",
+    employer: "",
+    keywords: "",
+    excluded_works: "",
   });
+  const [jobs, setJobs] = useState<FoundJob[]>([]);
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const isEditing = editingJobId !== null;
-    const url = isEditing
-      ? `${BACKEND_URL}/api/jobs/${editingJobId}`
-      : `${BACKEND_URL}/api/jobs`;
-
-    await fetch(url, {
-      method: isEditing ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json", "x-user-id": userId },
-      body: JSON.stringify(jobForm),
+  const handleSearchSubmit = async () => {
+    const response = await fetch(`${BACKEND_URL}/api/findjobs/find_job`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(searchForm),
     });
-    setIsModalOpen(false);
-    navigate(".", { replace: true });
-  };
 
-  const handleDeleteJob = async (jobId: number) => {
-    if (!confirm("Are you sure you want to delete this tracking entry?"))
+    if (!response.ok) {
+      setError("Could not find any jobs with the desired requirements.");
       return;
-    await fetch(`${BACKEND_URL}/api/jobs/${jobId}`, {
-      method: "DELETE",
-      headers: { "x-user-id": userId },
-    });
-    navigate(".", { replace: true });
+    }
   };
 
+// TODO: Change the class names to match custom page styling
   return (
-    <div className="db-root">
-      <header className="db-header">Dragon Application</header>
-      <div className="db-workspace">
-        <aside className="db-sidebar">
+    <div className="search-root">
+      <header className="search-header">Dragon Application</header>
+      <div className="search-workspace">
+        <aside className="search-sidebar">
           <ul>
             <li>
-              <Link to="/" className="db-link-active">
+              <Link to="/" className="search-link-active">
                 Dashboard
               </Link>
             </li>
             <li>
-              <Link to="/profile" className="db-link">
+              <Link to="/profile" className="search-link">
                 Profile
               </Link>
             </li>
-            <li className="db-logout-item">
+            <li className="search-logout-item">
               <SignOutButton redirectUrl="/login">
                 <button className="bg-red-500 text-white px-4 py-2 rounded">
                   Sign Out
@@ -110,54 +78,54 @@ export default function Dashboard() {
           </ul>
         </aside>
 
-        <main className="db-main">
-          <div className="db-container">
+        <main className="search-main">
+          <div className="search-container">
             <h2>Welcome!</h2>
-            <p className="db-caption">
-              Explore open listings matching your profile workspace.
+            <p className="search-caption">
+              Search for new and exciting opportunities!
             </p>
-            <div className="db-section-header">
-              <h3>Job Applications</h3>
+            <div className="search-section-header">
+              <h3>Job Search</h3>
               <button
                 type="button"
-                onClick={() => setIsModalOpen(true)}
-                className="db-btn-add-job"
+                onClick={() => handleSearchSubmit()}
+                className="search-btn-add-job"
               >
                 <span className="plus-icon">+</span>
-                <span>Add Job</span>
+                <span>Search Job</span>
               </button>
             </div>
 
-            <div className="db-grid">
-              {jobs.map((job) => (
-                <div key={job.id} className="db-card">
+            <div className="search-grid">
+              {jobs.map((job: FoundJob) => (
+                <div key={job.id} className="search-card">
                   <div>
                     <h4>{job.title}</h4>
-                    <p className="db-card-company">🏢 {job.company}</p>
-                    <p className="db-card-status">📋 Status: {job.stage}</p>
+                    <p className="search-card-company">🏢 {job.employer}</p>
+                    <p className="search-card-company">🏢 {job.description}</p>
+                    <p className="search-card-company">🏢 {job.employment_type}</p>
+                    <p className="search-card-company">🏢 {job.country}, {job.state}, {job.city}</p>
+                    <p className="search-card-status">📋 salary: {job.salary}</p>
+                    <p className="search-card-company">🏢 {job.apply_link}</p>
                   </div>
-                  <div className="db-card-actions">
+                  <div className="search-card-actions">
                     <button
                       type="button"
                       onClick={() => {
-                        setEditingJobId(job.id);
-                        setJobForm({
-                          title: job.title,
-                          company: job.company,
-                          stage: job.stage,
-                        });
-                        setIsModalOpen(true);
+                        // TODO: Open link and add to applied jobs
                       }}
-                      className="db-btn-edit"
+                      className="search-btn-add"
                     >
-                      Edit Tracking
+                      Apply
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleDeleteJob(job.id)}
-                      className="db-btn-delete db-btn-disabled"
+                      onClick={() => {
+                        // TODO: Remove from cards, and put in a denied jobs list
+                      }}
+                      className="search-btn-delete search-btn-disabled"
                     >
-                      Delete (Coming Soon)
+                      Not Interested
                     </button>
                   </div>
                 </div>
@@ -166,74 +134,6 @@ export default function Dashboard() {
           </div>
         </main>
       </div>
-
-      {isModalOpen && (
-        <div className="db-modal-overlay">
-          <div className="db-modal-content">
-            <h3>
-              {editingJobId
-                ? "Edit Position Details"
-                : "Post a New Tracking Entry"}
-            </h3>
-            <form onSubmit={handleFormSubmit}>
-              <div className="db-form-group">
-                <label>Job Title</label>
-                <input
-                  type="text"
-                  id="modalJobTitle"
-                  required
-                  placeholder="e.g. Software Engineer"
-                  value={jobForm.title}
-                  onChange={(e) =>
-                    setJobForm({ ...jobForm, title: e.target.value })
-                  }
-                />
-              </div>
-              <div className="db-form-group">
-                <label>Company</label>
-                <input
-                  type="text"
-                  id="modalCompany"
-                  required
-                  placeholder="e.g. Google"
-                  value={jobForm.company}
-                  onChange={(e) =>
-                    setJobForm({ ...jobForm, company: e.target.value })
-                  }
-                />
-              </div>
-              <div className="db-form-group">
-                <label htmlFor="modalStage">Tracking Stage</label>
-                <select
-                  id="modalStage"
-                  value={jobForm.stage}
-                  onChange={(e) =>
-                    setJobForm({ ...jobForm, stage: e.target.value })
-                  }
-                >
-                  <option value="Wishlist">Wishlist</option>
-                  <option value="Applied">Applied</option>
-                  <option value="Interviewing">Interviewing</option>
-                  <option value="Offer">Offer</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
-              </div>
-              <div className="db-form-actions">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="db-btn-cancel"
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="db-btn-submit">
-                  {editingJobId ? "Save Changes" : "Track Job"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
