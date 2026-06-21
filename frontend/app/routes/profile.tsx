@@ -82,7 +82,7 @@ export default function Profile() {
     e.preventDefault();
 
     if (!userId) {
-      setErrors((prev) => ({ ...prev, server: "Session Synchronization Error"}));
+      setErrors((prev) => ({ ...prev, server: "Session Synchronization Error" }));
       return;
     }
     
