@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from database import Base, engine
 from jobs import jobsrouter
+from search import searchrouter
 
 # ----- FastAPI setup -----
 
