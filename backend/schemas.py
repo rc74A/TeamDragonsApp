@@ -131,3 +131,17 @@ class ProfileOut(BaseModel):
     location: str
     summary: str
     updated_at: datetime
+
+
+# ----- Metrics -----
+
+
+class JobMetrics(BaseModel):
+    """Dashboard metrics computed from a user's jobs (S2-025)."""
+
+    total: int
+    by_stage: dict[str, int]
+    applications: int
+    responses: int
+    offers: int
+    response_rate: float
