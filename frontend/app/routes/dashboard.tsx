@@ -29,7 +29,7 @@ export async function loader({
     throw new Response("Unauthorized Session", { status: 401 });
   }
   
-  const userId = authUser.id
+  const userId = authUser.id;
 
   try {
     const response = await fetch(`${BACKEND_URL}/api/jobs`, {
