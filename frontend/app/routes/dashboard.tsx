@@ -144,7 +144,7 @@ export default function Dashboard() {
                 type="button"
                 onClick={() => {
                   setEditingJobId(null);
-                  setJobForm({ title: "", company: "", stage: "Wishlist" });      
+                  setJobForm({ title: "", company: "", stage: "Wishlist" });
                   setIsModalOpen(true);
                 }}
                 className="db-btn-add-job"
