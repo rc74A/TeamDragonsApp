@@ -169,8 +169,8 @@ def delete_job(
     user_id: Annotated[int, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
-
-"""Deletes a singular job record with guarded ownership checks (S2-015)
+    """
+    Deletes a singular job record with guarded ownership checks (S2-015)
 
     Args:
         job_id (int): The job's primary key
@@ -178,7 +178,8 @@ def delete_job(
         db (Session): Database Session
 
     Returns:
-        None: Returns an empty body with a 204 Error status code on success."""
+        None: Returns an empty body with a 204 Error status code on success.
+    """ 
     job = get_owned_job(db, job_id, user_id)
     db.delete(job)
     db.commit()
