@@ -27,7 +27,7 @@ function mockFetch(getBody: ProfileResponse = EMPTY) {
   return vi.fn(
     async (url: string, options?: RequestInit): Promise<Response> => {
       if (url.includes("/auth/me")) {
-        return { ok: true, json: async () => ({}) } as unknown as Response;
+        return { ok: true, json: async () => ({ id: 1 }) } as unknown as Response;
       }
       return {
         ok: true,
