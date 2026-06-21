@@ -172,10 +172,13 @@ def delete_job(
 
     """
     Deletes a singular job record with guarded ownership checks (S2-015)
+
     Args:
+    
         job_id (int): The job's primary key
         user_id (int): Owner identity resolved securely from the header/session
         db (Session): Database Session
+
     Returns:
         None: Returns an empty body with a 204 Error status code on success.
     """
