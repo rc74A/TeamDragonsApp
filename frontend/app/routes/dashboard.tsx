@@ -24,7 +24,7 @@ export async function loader({
 }: Route.LoaderArgs): Promise<DashboardData> {
   const authUser = await requireAuth(request);
 
-  if(!authUser || !authUser.id)
+  if (!authUser || !authUser.id)
   {
     throw new Response("Unauthorized Session", { status: 401 });
   }
