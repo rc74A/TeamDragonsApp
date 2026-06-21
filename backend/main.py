@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from database import Base, engine
 from jobs import jobsrouter
+from search import searchrouter
 
 # ----- FastAPI setup -----
 
@@ -42,6 +43,7 @@ app.add_middleware(
 )
 app.include_router(jobsrouter)
 app.include_router(profilerouter)
+app.include_router(searchrouter)
 
 # ----- API Endpoints -----
 

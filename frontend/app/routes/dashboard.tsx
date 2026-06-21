@@ -96,6 +96,11 @@ export default function Dashboard() {
               </Link>
             </li>
             <li>
+              <Link to="/findjobs" className="db-link">
+                Find Jobs
+              </Link>
+            </li>
+            <li>
               <Link to="/profile" className="db-link">
                 Profile
               </Link>

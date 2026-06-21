@@ -119,6 +119,11 @@ export default function Profile() {
               </Link>
             </li>
             <li>
+              <Link to="/findjobs" className="db-link">
+                Find Jobs
+              </Link>
+            </li>
+            <li>
               <Link to="/profile" className="profile-nav-link active">
                 Profile
               </Link>
