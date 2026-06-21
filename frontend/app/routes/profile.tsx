@@ -81,7 +81,7 @@ export default function Profile() {
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
 
-    if(!userId) {
+    if (!userId) {
       setErrors((prev) => ({ ...prev, server: "Session Synchronization Error"}));
       return;
     }
