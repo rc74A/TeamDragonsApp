@@ -179,7 +179,7 @@ def delete_job(
 
     Returns:
         None: Returns an empty body with a 204 Error status code on success.
-    """ 
+    """
     job = get_owned_job(db, job_id, user_id)
     db.delete(job)
     db.commit()
