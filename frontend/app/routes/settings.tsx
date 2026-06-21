@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router";
+import type { Route } from "./+types/settings";
+import { getAuth } from "@clerk/react-router/server";
+import { Link, redirect } from "react-router";
 import "./app.css";
 import "./settings.css";
 
@@ -56,68 +57,12 @@ function validate(settings: AccountSettings): FieldErrors {
 }
 */
 
+export async function loader(args: Route.LoaderArgs) {
+  const { userId } = await getAuth(args);
+  if (!userId) throw redirect("/login");
+}
+
 export default function Settings() {
-  const navigate = useNavigate();
-  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
-
-  /* Commented out redundant state handlers to maintain clear linter parameters
-  const [displayName, setDisplayName] = useState("Test User");
-  const [email, setEmail] = useState("test@email.com");
-  const [isSaved, setIsSaved] = useState(false);
-
-  function handleSave(e: FormEvent) {
-    e.preventDefault();
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem("account_settings", JSON.stringify({ displayName, email }));
-    }
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
-  }
-  */
-
-  useEffect(() => {
-    async function verifySession() {
-      const BACKEND_URL =
-        import.meta.env.VITE_API_URL ?? "http://localhost:8000";
-      try {
-        const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
-          method: "GET",
-          credentials: "include", // Passes cookie securely across local ports
-        });
-
-        if (!response.ok) {
-          // Cookie missing or invalid -> Kick out to login page
-          navigate("/login", { replace: true });
-        } else {
-          setIsLoadingAuth(false); // Valid user session -> lift the curtain
-        }
-      } catch (err) {
-        // Backend offline/network error -> Safe fallback kick
-        navigate("/login", { replace: true });
-      }
-    }
-
-    verifySession();
-  }, [navigate]);
-
-  if (isLoadingAuth) {
-    return (
-      <div
-        className="settings-root-layout"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <h2 style={{ color: "#06B6D4", fontFamily: "sans-serif" }}>
-          Verifying secure session...
-        </h2>
-      </div>
-    );
-  }
-
   return (
     <div className="settings-root-layout profile-root">
       <h1 className="settings-top-bar profile-header">Dragon Application</h1>
@@ -144,36 +89,28 @@ export default function Settings() {
         </aside>
 
         <main className="settings-main-viewport profile-main">
-          {isLoadingAuth ? (
-            <div className="settings-loading-container">
-              <h2 className="settings-loading-text">
-                Verifying secure session...
-              </h2>
-            </div>
-          ) : (
-            <div className="settings-constrained-box">
-              <h2 className="settings-view-title">Account Settings</h2>
-              <p className="settings-subtitle">
-                Manage your node credentials, security preferences, and system
-                automation configurations.
-              </p>
+          <div className="settings-constrained-box">
+            <h2 className="settings-view-title">Account Settings</h2>
+            <p className="settings-subtitle">
+              Manage your node credentials, security preferences, and system
+              automation configurations.
+            </p>
 
-              <section className="settings-section">
-                <h3>Security Extensions</h3>
-                <ul className="coming-soon-list">
-                  {COMING_SOON.map((item, index) => (
-                    <li key={index} className="coming-soon">
-                      <div className="coming-soon-info">
-                        <h4>{item.title}</h4>
-                        <p>{item.description}</p>
-                      </div>
-                      <span className="badge">Coming Soon</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            </div>
-          )}
+            <section className="settings-section">
+              <h3>Security Extensions</h3>
+              <ul className="coming-soon-list">
+                {COMING_SOON.map((item, index) => (
+                  <li key={index} className="coming-soon">
+                    <div className="coming-soon-info">
+                      <h4>{item.title}</h4>
+                      <p>{item.description}</p>
+                    </div>
+                    <span className="badge">Coming Soon</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </div>
         </main>
       </div>
     </div>

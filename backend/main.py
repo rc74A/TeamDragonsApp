@@ -4,7 +4,6 @@ from profile import profilerouter
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from auth import authrouter
 from database import Base, engine
 from jobs import jobsrouter
 
@@ -41,7 +40,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(authrouter)
 app.include_router(jobsrouter)
 app.include_router(profilerouter)
 
