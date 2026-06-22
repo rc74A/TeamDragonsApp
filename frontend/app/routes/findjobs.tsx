@@ -6,7 +6,7 @@ import type { Route } from "./+types/dashboard";
 import "./findjobs.css";
 
 interface FoundJob {
-  id: number;
+  id: string;
   title: string;
   employer: string;
   description: string;
@@ -181,7 +181,7 @@ export default function FindJobs() {
             )}
 
             <div className="search-section-header">
-              <h3>Job Search</h3>
+              <h3>Search Results</h3>
               <button
                 type="button"
                 onClick={() => handleSearchSubmit()}
