@@ -35,7 +35,10 @@ export default function ExperienceSection() {
         headers: HEADERS,
       });
       if (res.ok) {
-        setEntries(await res.json());
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setEntries(data);
+        }
       }
     } catch {
       // Backend offline: keep the current list so the page still renders.
