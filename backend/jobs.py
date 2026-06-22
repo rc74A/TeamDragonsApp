@@ -163,6 +163,7 @@ def update_job(
     db.refresh(job)
     return job
 
+
 @jobsrouter.delete("/{job_id}", status_code=204)
 def delete_job(
     job_id: int,
