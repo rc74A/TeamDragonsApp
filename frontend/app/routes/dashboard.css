@@ -319,3 +319,35 @@
   background-color: #ef4444;
   color: #ffffff;
 }
+
+/* Dashboard Metrics (S2-025) */
+.db-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 8px 0 24px;
+}
+
+.db-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 110px;
+  flex: 1;
+  background-color: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.db-metric-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #06b6d4;
+}
+
+.db-metric-label {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #a0aec0;
+}

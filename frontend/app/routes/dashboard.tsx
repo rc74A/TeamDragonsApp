@@ -12,12 +12,31 @@ interface Job {
   stage: string;
 }
 
+interface JobMetrics {
+  total: number;
+  by_stage: Record<string, number>;
+  applications: number;
+  responses: number;
+  offers: number;
+  response_rate: number;
+}
+
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+
+const EMPTY_METRICS: JobMetrics = {
+  total: 0,
+  by_stage: {},
+  applications: 0,
+  responses: 0,
+  offers: 0,
+  response_rate: 0,
+};
 
 interface DashboardData {
   username: string;
   jobs: Job[];
   userId: string;
+  metrics: JobMetrics;
 }
 
 export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
@@ -27,27 +46,32 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
   const username = sessionClaims?.email ?? "Joshua"; // 👈 replaces authUser
 
   try {
-    const response = await fetch(`${BACKEND_URL}/api/jobs`, {
-      headers: { "x-user-id": String(userId) },
-    });
-    const jobsData = response.ok ? await response.json() : [];
+    const headers = { "x-user-id": String(userId) };
+    const [jobsRes, metricsRes] = await Promise.all([
+      fetch(`${BACKEND_URL}/api/jobs`, { headers }),
+      fetch(`${BACKEND_URL}/api/jobs/metrics`, { headers }),
+    ]);
+    const jobsData = jobsRes.ok ? await jobsRes.json() : [];
+    const metrics = metricsRes.ok ? await metricsRes.json() : EMPTY_METRICS;
 
     return {
       username,
       userId: String(userId),
       jobs: jobsData.length > 0 ? jobsData : getFallbackJobs(),
+      metrics,
     };
   } catch {
     return {
       username,
       userId: String(userId),
       jobs: getFallbackJobs(),
+      metrics: EMPTY_METRICS,
     };
   }
 }
 
 export default function Dashboard() {
-  const { userId, jobs } = useLoaderData() as DashboardData;
+  const { userId, jobs, metrics } = useLoaderData() as DashboardData;
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -121,6 +145,32 @@ export default function Dashboard() {
             <p className="db-caption">
               Explore open listings matching your profile workspace.
             </p>
+
+            <section className="db-metrics" aria-label="Dashboard metrics">
+              <div className="db-metric">
+                <span className="db-metric-value">{metrics.total}</span>
+                <span className="db-metric-label">Total Jobs</span>
+              </div>
+              <div className="db-metric">
+                <span className="db-metric-value">{metrics.applications}</span>
+                <span className="db-metric-label">Applications</span>
+              </div>
+              <div className="db-metric">
+                <span className="db-metric-value">{metrics.responses}</span>
+                <span className="db-metric-label">Responses</span>
+              </div>
+              <div className="db-metric">
+                <span className="db-metric-value">{metrics.offers}</span>
+                <span className="db-metric-label">Offers</span>
+              </div>
+              <div className="db-metric">
+                <span className="db-metric-value">
+                  {Math.round(metrics.response_rate * 100)}%
+                </span>
+                <span className="db-metric-label">Response Rate</span>
+              </div>
+            </section>
+
             <div className="db-section-header">
               <h3>Job Applications</h3>
               <button
