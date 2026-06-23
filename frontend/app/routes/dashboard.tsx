@@ -45,6 +45,8 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
 
   const username = sessionClaims?.email ?? "Joshua"; // 👈 replaces authUser
 
+  const authUser = { id: userID };
+
   try {
     const headers = { "x-user-id": String(userId) };
     const [jobsRes, metricsRes] = await Promise.all([
@@ -71,7 +73,7 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
 }
 
 export default function Dashboard() {
-  const { userId, jobs, metrics } = useLoaderData() as DashboardData;
+  const { userId, jobs, username, metrics } = useLoaderData() as DashboardData;
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -141,7 +143,7 @@ export default function Dashboard() {
 
         <main className="db-main">
           <div className="db-container">
-            <h2>Welcome!</h2>
+            <h2>Welcome, {username}!</h2>
             <p className="db-caption">
               Explore open listings matching your profile workspace.
             </p>
@@ -175,7 +177,11 @@ export default function Dashboard() {
               <h3>Job Applications</h3>
               <button
                 type="button"
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  setEditingJobId(null);
+                  setJobForm({ title: "", company: "", stage: "Wishlist" });
+                  setIsModalOpen(true);
+                }}
                 className="db-btn-add-job"
               >
                 <span className="plus-icon">+</span>
@@ -210,9 +216,9 @@ export default function Dashboard() {
                     <button
                       type="button"
                       onClick={() => handleDeleteJob(job.id)}
-                      className="db-btn-delete db-btn-disabled"
+                      className="db-btn-delete"
                     >
-                      Delete (Coming Soon)
+                      Delete
                     </button>
                   </div>
                 </div>

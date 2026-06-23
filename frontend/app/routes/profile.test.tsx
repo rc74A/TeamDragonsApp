@@ -27,7 +27,10 @@ function mockFetch(getBody: ProfileResponse = EMPTY) {
   return vi.fn(
     async (url: string, options?: RequestInit): Promise<Response> => {
       if (url.includes("/auth/me")) {
-        return { ok: true, json: async () => ({}) } as unknown as Response;
+        return {
+          ok: true,
+          json: async () => ({ id: 1 }),
+        } as unknown as Response;
       }
       return {
         ok: true,
@@ -129,7 +132,9 @@ describe("Profile page", () => {
     await user.type(screen.getByLabelText("Email"), "not-an-email");
     await user.click(screen.getByRole("button", { name: "Save profile" }));
 
-    expect(screen.getByText("Enter a valid email address")).toBeInTheDocument();
+    expect(
+      screen.getByText("Enter a valid email address."),
+    ).toBeInTheDocument();
     const putCalls = fetchMock.mock.calls.filter(
       ([, options]) => options?.method === "PUT",
     );

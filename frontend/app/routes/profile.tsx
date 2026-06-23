@@ -25,6 +25,8 @@ export default function Profile() {
     summary: "",
   });
 
+  const [userId, setUserId] = useState<string | null>(null);
+
   const [errors, setErrors] = useState({ email: "", phone: "", server: "" });
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -56,13 +58,16 @@ export default function Profile() {
   ).length;
   const completionPercentage = Math.round((filledFields / totalFields) * 100);
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async (e: FormEvent) => {
     e.preventDefault();
+
+    const activeUserId = userId || "1";
+
     let valid = true;
     const newErrors = { email: "", phone: "", server: "" };
 
     if (profile.email.trim() && !EMAIL_PATTERN.test(profile.email)) {
-      newErrors.email = "Enter a valid email address";
+      newErrors.email = "Enter a valid email address.";
       valid = false;
     }
 
@@ -80,7 +85,7 @@ export default function Profile() {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "X-User-Id": "1",
+            "X-User-Id": userId,
           },
           body: JSON.stringify(profile),
         });

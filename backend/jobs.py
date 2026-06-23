@@ -187,3 +187,26 @@ def update_job(
     db.commit()
     db.refresh(job)
     return job
+
+
+@jobsrouter.delete("/{job_id}", status_code=204)
+def delete_job(
+    job_id: int,
+    user_id: Annotated[int, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """
+    Deletes a singular job record with guarded ownership checks (S2-015)
+
+    Args:
+        job_id (int): The job's primary key
+        user_id (int): Owner identity resolved securely from the header/session
+        db (Session): Database Session
+
+    Returns:
+        None: Returns an empty body with a 204 Error status code on success.
+    """
+    job = get_owned_job(db, job_id, user_id)
+    db.delete(job)
+    db.commit()
+    return None
