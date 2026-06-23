@@ -39,16 +39,6 @@ class Job(Base):
     )
 
 
-class User(Base):
-    """A user that has been registered to the database"""
-
-    __tablename__ = "users"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    email: Mapped[str] = mapped_column(String(128), nullable=False)
-    hashed_password: Mapped[str] = mapped_column(String(256), nullable=False)
-
-
 class Profile(Base):
     """
     A user's baseline profile: identity/contact fields and a summary.
@@ -72,4 +62,30 @@ class Profile(Base):
     summary: Mapped[str] = mapped_column(Text, nullable=False, default="")
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=utc_now, onupdate=utc_now
+    )
+
+
+class Experience(Base):
+    """
+    An employment or project entry on a user's profile (S2-016).
+
+    Owned by one user (S1-BR-006). Entries are ordered by `position` so
+    the user can reorder them (S2-BR-017).
+    """
+
+    __tablename__ = "experiences"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    owner_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
+    entry_type: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="employment"
+    )
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    organization: Mapped[str] = mapped_column(String(200), nullable=False, default="")
+    start_date: Mapped[str] = mapped_column(String(40), nullable=False, default="")
+    end_date: Mapped[str] = mapped_column(String(40), nullable=False, default="")
+    description: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    position: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=utc_now
     )

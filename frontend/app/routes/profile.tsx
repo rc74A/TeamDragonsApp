@@ -1,12 +1,14 @@
-import { requireAuth } from "../lib/auth";
 import type { Route } from "./+types/profile";
-import { Link, useNavigate } from "react-router";
+import { getAuth } from "@clerk/react-router/server";
+import { Link, useNavigate, redirect } from "react-router";
 import { useEffect, useState, type FormEvent } from "react";
+import ExperienceSection from "../components/ExperienceSection";
 import "./app.css";
 import "./profile.css";
 
-export async function loader({ request }: Route.LoaderArgs) {
-  return await requireAuth(request);
+export async function loader(args: Route.LoaderArgs) {
+  const { userId } = await getAuth(args);
+  if (!userId) throw redirect("/login");
 }
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
@@ -14,7 +16,6 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Profile() {
   const navigate = useNavigate();
-  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
   const [profile, setProfile] = useState({
     full_name: "",
@@ -29,42 +30,25 @@ export default function Profile() {
 
   useEffect(() => {
     async function verifyAndLoad() {
-      try {
-        // 1. Verify the cookie session with the backend first
-        const authRes = await fetch(`${API_BASE}/api/auth/me`, {
-          method: "GET",
-          credentials: "include",
+      const res = await fetch(`${API_BASE}/api/profile`, {
+        method: "GET",
+        headers: { "X-User-Id": "1" },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setProfile({
+          full_name: data.full_name || "",
+          email: data.email || "",
+          phone: data.phone || "",
+          location: data.location || "",
+          summary: data.summary || "",
         });
-
-        if (!authRes.ok) {
-          navigate("/login", { replace: true });
-          return;
-        }
-
-        const res = await fetch(`${API_BASE}/api/profile`, {
-          method: "GET",
-          headers: { "X-User-Id": "1" },
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          setProfile({
-            full_name: data.full_name || "",
-            email: data.email || "",
-            phone: data.phone || "",
-            location: data.location || "",
-            summary: data.summary || "",
-          });
-        }
-
-        setIsLoadingAuth(false);
-      } catch {
-        navigate("/login", { replace: true });
       }
     }
 
     verifyAndLoad();
-  }, [navigate]);
+  }, []);
 
   const totalFields = Object.keys(profile).length;
   const filledFields = Object.values(profile).filter(
@@ -124,16 +108,6 @@ export default function Profile() {
     }
   };
 
-  if (isLoadingAuth) {
-    return (
-      <div className="profile-root flex justify-center items-center h-screen">
-        <h2 className="text-cyan-400 font-sans font-bold text-xl">
-          Verifying secure session...
-        </h2>
-      </div>
-    );
-  }
-
   return (
     <div className="settings-root-layout profile-root">
       <h1 className="settings-top-bar profile-header">Dragon Application</h1>
@@ -143,6 +117,11 @@ export default function Profile() {
             <li>
               <Link to="/" className="profile-nav-link">
                 Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link to="/findjobs" className="db-link">
+                Find Jobs
               </Link>
             </li>
             <li>
@@ -158,129 +137,123 @@ export default function Profile() {
           </ul>
         </aside>
         <main className="settings-main-viewport profile-main">
-          {isLoadingAuth ? (
-            <div className="profile-root flex justify-center items-center h-screen">
-              <h2 className="text-cyan-400 font-sans font-bold text-xl">
-                Verifying secure session...
-              </h2>
+          <div className="profile-content-box">
+            <h2>Profile</h2>
+            <p className="settings-subtitle">
+              Keep your structural summary records updated for matching pipeline
+              discovery.
+            </p>
+            <div className="progress-container">
+              <div className="progress-header-text">
+                <span>Setup Completion Progress</span>
+                <span>{completionPercentage}%</span>
+              </div>
+              <div className="progress-track">
+                <progress
+                  className="progress-fill-bar"
+                  max="100"
+                  value={completionPercentage}
+                  title="Profile Setup Completion Bar"
+                />
+              </div>
             </div>
-          ) : (
-            <div className="profile-content-box">
-              <h2>Profile</h2>
-              <p className="settings-subtitle">
-                Keep your structural summary records updated for matching
-                pipeline discovery.
-              </p>
-              <div className="progress-container">
-                <div className="progress-header-text">
-                  <span>Setup Completion Progress</span>
-                  <span>{completionPercentage}%</span>
-                </div>
-                <div className="progress-track">
-                  <progress
-                    className="progress-fill-bar"
-                    max="100"
-                    value={completionPercentage}
-                    title="Profile Setup Completion Bar"
+
+            <section className="settings-section">
+              <h3>Personal Identifiers</h3>
+              <form className="settings-form" onSubmit={handleSave}>
+                <div className="field">
+                  <label htmlFor="full_name">Full name</label>
+                  <input
+                    id="full_name"
+                    type="text"
+                    value={profile.full_name}
+                    onChange={(e) =>
+                      setProfile({ ...profile, full_name: e.target.value })
+                    }
+                    placeholder="John Doe"
                   />
                 </div>
-              </div>
 
-              <section className="settings-section">
-                <h3>Personal Identifiers</h3>
-                <form className="settings-form" onSubmit={handleSave}>
-                  <div className="field">
-                    <label htmlFor="full_name">Full name</label>
-                    <input
-                      id="full_name"
-                      type="text"
-                      value={profile.full_name}
-                      onChange={(e) =>
-                        setProfile({ ...profile, full_name: e.target.value })
-                      }
-                      placeholder="John Doe"
-                    />
-                  </div>
+                <div className="field">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    id="email"
+                    type="text"
+                    value={profile.email}
+                    onChange={(e) =>
+                      setProfile({ ...profile, email: e.target.value })
+                    }
+                    placeholder="john@example.com"
+                  />
+                  {errors.email && (
+                    <span className="error-text">{errors.email}</span>
+                  )}
+                </div>
 
-                  <div className="field">
-                    <label htmlFor="email">Email</label>
-                    <input
-                      id="email"
-                      type="text"
-                      value={profile.email}
-                      onChange={(e) =>
-                        setProfile({ ...profile, email: e.target.value })
-                      }
-                      placeholder="john@example.com"
-                    />
-                    {errors.email && (
-                      <span className="error-text">{errors.email}</span>
-                    )}
-                  </div>
+                <div className="field">
+                  <label htmlFor="phone">Phone</label>
+                  <input
+                    id="phone"
+                    type="text"
+                    value={profile.phone}
+                    onChange={(e) =>
+                      setProfile({ ...profile, phone: e.target.value })
+                    }
+                    placeholder="(555) 000-0000"
+                  />
+                  {errors.phone && (
+                    <span className="error-text">{errors.phone}</span>
+                  )}
+                </div>
 
-                  <div className="field">
-                    <label htmlFor="phone">Phone</label>
-                    <input
-                      id="phone"
-                      type="text"
-                      value={profile.phone}
-                      onChange={(e) =>
-                        setProfile({ ...profile, phone: e.target.value })
-                      }
-                      placeholder="(555) 000-0000"
-                    />
-                    {errors.phone && (
-                      <span className="error-text">{errors.phone}</span>
-                    )}
-                  </div>
+                <div className="field">
+                  <label htmlFor="location">Location</label>
+                  <input
+                    id="location"
+                    type="text"
+                    value={profile.location}
+                    onChange={(e) =>
+                      setProfile({ ...profile, location: e.target.value })
+                    }
+                    placeholder="City, NJ"
+                  />
+                </div>
 
-                  <div className="field">
-                    <label htmlFor="location">Location</label>
-                    <input
-                      id="location"
-                      type="text"
-                      value={profile.location}
-                      onChange={(e) =>
-                        setProfile({ ...profile, location: e.target.value })
-                      }
-                      placeholder="City, NJ"
-                    />
-                  </div>
+                <div className="field">
+                  <label htmlFor="summary">Summary</label>
+                  <input
+                    id="summary"
+                    type="text"
+                    value={profile.summary}
+                    onChange={(e) =>
+                      setProfile({ ...profile, summary: e.target.value })
+                    }
+                    placeholder="Brief background..."
+                  />
+                </div>
 
-                  <div className="field">
-                    <label htmlFor="summary">Summary</label>
-                    <input
-                      id="summary"
-                      type="text"
-                      value={profile.summary}
-                      onChange={(e) =>
-                        setProfile({ ...profile, summary: e.target.value })
-                      }
-                      placeholder="Brief background..."
-                    />
-                  </div>
+                <div className="form-actions">
+                  <button type="submit" className="btn-primary">
+                    Save profile
+                  </button>
 
-                  <div className="form-actions">
-                    <button type="submit" className="btn-primary">
-                      Save profile
-                    </button>
+                  {successMessage && (
+                    <span className="success-text ml-2.5 text-green-600 font-medium">
+                      {successMessage}
+                    </span>
+                  )}
 
-                    {successMessage && (
-                      <span className="success-text ml-2.5 text-green-600 font-medium">
-                        {successMessage}
-                      </span>
-                    )}
+                  {errors.server && (
+                    <span className="error-text ml-2.5 text-red-500 font-bold">
+                      {errors.server}
+                    </span>
+                  )}
+                </div>
+              </form>
+            </section>
 
-                    {errors.server && (
-                      <span className="error-text ml-2.5 text-red-500 font-bold">
-                        {errors.server}
-                      </span>
-                    )}
-                  </div>
-                </form>
-              </section>
-            </div>
-          )}
+            <ExperienceSection />
+          </div>
         </main>
       </div>
     </div>
