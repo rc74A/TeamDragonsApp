@@ -13,6 +13,9 @@ APPLICATION_STAGES = {"Applied", "Interviewing", "Offer", "Rejected"}
 # A "response" means the employer moved you past Applied.
 RESPONSE_STAGES = {"Interviewing", "Offer", "Rejected"}
 
+# Baseline profile fields that count toward completion (S1-BR-009).
+PROFILE_FIELDS = ["full_name", "email", "phone", "location", "summary"]
+
 
 def compute_job_metrics(stages: list[str]) -> dict:
     """
@@ -50,3 +53,22 @@ def compute_job_metrics(stages: list[str]) -> dict:
         "offers": offers,
         "response_rate": response_rate,
     }
+
+
+def compute_profile_completion(values: dict) -> dict:
+    """
+    Compute how complete a profile is from its baseline field values.
+
+    A field counts as filled only if it has non-whitespace content, so a
+    profile of all blanks is 0% complete (S1-BR-011 / S2-025 tie-in).
+
+    Args:
+        values (dict): Maps each baseline field name to its string value.
+
+    Returns:
+        dict: filled (count), total (count), and percent (0-100, rounded).
+    """
+    total = len(PROFILE_FIELDS)
+    filled = sum(1 for field in PROFILE_FIELDS if str(values.get(field, "")).strip())
+    percent = round(filled / total * 100) if total else 0
+    return {"filled": filled, "total": total, "percent": percent}
