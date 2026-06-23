@@ -135,6 +135,7 @@ class ProfileOut(BaseModel):
 
 # ----- Metrics -----
 
+
 class JobMetrics(BaseModel):
     """Dashboard metrics computed from a user's jobs (S2-025)."""
 
@@ -144,7 +145,8 @@ class JobMetrics(BaseModel):
     responses: int
     offers: int
     response_rate: float
-      
+
+
 # ----- Experience -----
 
 ENTRY_TYPES = {"employment", "project"}
