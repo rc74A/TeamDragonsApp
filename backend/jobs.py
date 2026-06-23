@@ -4,8 +4,9 @@ from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlalchemy.orm import Session
 
 from database import get_db
+from domain import compute_job_metrics
 from models import Job, utc_now
-from schemas import JobCreate, JobOut, JobUpdate
+from schemas import JobCreate, JobMetrics, JobOut, JobUpdate
 
 jobsrouter = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
@@ -112,6 +113,30 @@ def list_jobs(
         .order_by(Job.last_activity.desc())
         .all()
     )
+
+
+@jobsrouter.get("/metrics", response_model=JobMetrics)
+def job_metrics(
+    user_id: Annotated[int, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """
+    Return dashboard metrics for the requesting user's jobs (S2-025).
+
+    Defined before the /{job_id} route so "metrics" isn't captured as an id.
+
+    Args:
+        user_id (int): Owner identity from the auth dependency.
+        db (Session): Database session.
+
+    Returns:
+        JobMetrics: Stage counts and response-tracking metrics, computed
+            only from jobs owned by the requesting user (S2-BR-022/023).
+    """
+    stages = [
+        row[0] for row in db.query(Job.stage).filter(Job.owner_id == user_id).all()
+    ]
+    return compute_job_metrics(stages)
 
 
 @jobsrouter.get("/{job_id}", response_model=JobOut)

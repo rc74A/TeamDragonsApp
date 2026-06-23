@@ -2,6 +2,7 @@ import type { Route } from "./+types/profile";
 import { getAuth } from "@clerk/react-router/server";
 import { Link, useNavigate, redirect } from "react-router";
 import { useEffect, useState, type FormEvent } from "react";
+import ExperienceSection from "../components/ExperienceSection";
 import "./app.css";
 import "./profile.css";
 
@@ -255,6 +256,8 @@ export default function Profile() {
                 </div>
               </form>
             </section>
+
+            <ExperienceSection />
           </div>
         </main>
       </div>

@@ -131,3 +131,95 @@ class ProfileOut(BaseModel):
     location: str
     summary: str
     updated_at: datetime
+
+
+# ----- Metrics -----
+
+
+class JobMetrics(BaseModel):
+    """Dashboard metrics computed from a user's jobs (S2-025)."""
+
+    total: int
+    by_stage: dict[str, int]
+    applications: int
+    responses: int
+    offers: int
+    response_rate: float
+
+
+# ----- Experience -----
+
+ENTRY_TYPES = {"employment", "project"}
+
+
+def _validate_entry_type(value: str | None) -> str | None:
+    """
+    Restrict entry_type to the allowed kinds.
+
+    Args:
+        value (str | None): The raw entry_type, or None if omitted.
+
+    Returns:
+        str | None: The value unchanged, or None if omitted.
+
+    Raises:
+        ValueError: If a non-None value is not 'employment' or 'project'.
+    """
+    if value is not None and value not in ENTRY_TYPES:
+        raise ValueError("must be 'employment' or 'project'")
+    return value
+
+
+class ExperienceCreate(BaseModel):
+    """Request body for creating an experience entry (S2-016)."""
+
+    entry_type: str = Field(default="employment", max_length=20)
+    title: str = Field(max_length=200)
+    organization: str = Field(default="", max_length=200)
+    start_date: str = Field(default="", max_length=40)
+    end_date: str = Field(default="", max_length=40)
+    description: str = Field(default="", max_length=5000)
+
+    _validate_title = field_validator("title")(_reject_blank)
+    _validate_type = field_validator("entry_type")(_validate_entry_type)
+
+
+class ExperienceUpdate(BaseModel):
+    """Request body for updating an experience entry; all fields optional."""
+
+    entry_type: str | None = Field(default=None, max_length=20)
+    title: str | None = Field(default=None, max_length=200)
+    organization: str | None = Field(default=None, max_length=200)
+    start_date: str | None = Field(default=None, max_length=40)
+    end_date: str | None = Field(default=None, max_length=40)
+    description: str | None = Field(default=None, max_length=5000)
+
+    _validate_type = field_validator("entry_type")(_validate_entry_type)
+
+    @field_validator("title")
+    @classmethod
+    def validate_title(cls, value: str | None) -> str | None:
+        """Reject a blank title only when one is provided."""
+        return None if value is None else _reject_blank(value)
+
+
+class ExperienceOut(BaseModel):
+    """Response body for an experience entry."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    owner_id: int
+    entry_type: str
+    title: str
+    organization: str
+    start_date: str
+    end_date: str
+    description: str
+    position: int
+
+
+class ReorderRequest(BaseModel):
+    """Request body for reordering: entry ids in their new order."""
+
+    order: list[int]
