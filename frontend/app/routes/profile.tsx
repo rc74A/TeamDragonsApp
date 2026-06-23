@@ -60,8 +60,8 @@ export default function Profile() {
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
 
-  const activeUserId = userId || "1";
-    
+    const activeUserId = userId || "1";
+
     let valid = true;
     const newErrors = { email: "", phone: "", server: "" };
 
