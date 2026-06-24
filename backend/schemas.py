@@ -70,7 +70,7 @@ class JobOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    owner_id: int
+    owner_id: str
     title: str
     company: str
     stage: str
@@ -124,7 +124,7 @@ class ProfileOut(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-    owner_id: int
+    owner_id: str
     full_name: str
     email: str
     phone: str
@@ -209,7 +209,7 @@ class ExperienceOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    owner_id: int
+    owner_id: str
     entry_type: str
     title: str
     organization: str

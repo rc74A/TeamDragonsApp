@@ -1,4 +1,5 @@
 fastapi
+fastapi-clerk-auth
 uvicorn
 pydantic
 sqlalchemy
