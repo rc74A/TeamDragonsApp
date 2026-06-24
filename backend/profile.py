@@ -42,7 +42,7 @@ def empty_profile(owner_id: int) -> Profile:
 
 @profilerouter.get("", response_model=ProfileOut)
 def get_profile(
-    user_id: Annotated[int, Depends(get_current_user_id)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
@@ -62,7 +62,7 @@ def get_profile(
 @profilerouter.put("", response_model=ProfileOut)
 def update_profile(
     payload: ProfileUpdate,
-    user_id: Annotated[int, Depends(get_current_user_id)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """

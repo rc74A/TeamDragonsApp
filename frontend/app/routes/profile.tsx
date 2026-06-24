@@ -1,8 +1,8 @@
 import type { Route } from "./+types/profile";
 import { getAuth } from "@clerk/react-router/server";
 import { Link, useNavigate, redirect } from "react-router";
-import { SignOutButton } from "@clerk/react-router";
-import { useEffect, useState } from "react";
+import { SignOutButton, useAuth } from "@clerk/react-router";
+import { useEffect, useState, type FormEvent } from "react";
 import ExperienceSection from "../components/ExperienceSection";
 import "./app.css";
 import "./profile.css";
@@ -17,6 +17,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Profile() {
   const navigate = useNavigate();
+  const { getToken } = useAuth();
 
   const [profile, setProfile] = useState({
     full_name: "",
@@ -33,20 +34,29 @@ export default function Profile() {
 
   useEffect(() => {
     async function verifyAndLoad() {
-      const res = await fetch(`${API_BASE}/api/profile`, {
-        method: "GET",
-        headers: { "X-User-Id": "1" },
-      });
+      try {
+        const token = await getToken();
+        if (!token) return;
 
-      if (res.ok) {
-        const data = await res.json();
-        setProfile({
-          full_name: data.full_name || "",
-          email: data.email || "",
-          phone: data.phone || "",
-          location: data.location || "",
-          summary: data.summary || "",
+        const res = await fetch(`${API_BASE}/api/profile`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
+
+        if (res.ok) {
+          const data = await res.json();
+          setProfile({
+            full_name: data.full_name || "",
+            email: data.email || "",
+            phone: data.phone || "",
+            location: data.location || "",
+            summary: data.summary || "",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to load profile record: ", error);
       }
     }
 
@@ -82,11 +92,14 @@ export default function Profile() {
 
     if (valid) {
       try {
+        const token = await getToken();
+        if (!token) return;
+
         const res = await fetch(`${API_BASE}/api/profile`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "X-User-Id": userId,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(profile),
         });
