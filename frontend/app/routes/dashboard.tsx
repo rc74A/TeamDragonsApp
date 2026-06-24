@@ -24,6 +24,21 @@ interface JobMetrics {
 
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
+enum SortByValues {
+  LastActivity = "Last Activity",
+  Deadline = "Deadline",
+  Company = "Company",
+  CreatedDate = "Date Created",
+  DontSort = "Don't Sort",
+}
+
+enum FilterByValues {
+  Stage = "Stage",
+  JobLocation = "Location",
+  DeadlineState = "Deadline State",
+  NoFilter = "No Filter",
+}
+
 const EMPTY_METRICS: JobMetrics = {
   total: 0,
   by_stage: {},
@@ -36,6 +51,7 @@ const EMPTY_METRICS: JobMetrics = {
 interface DashboardData {
   username: string;
   jobs: Job[];
+  display_jobs: Job[];
   userId: string;
   metrics: JobMetrics;
 }
@@ -66,6 +82,7 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
       username,
       userId: String(userId),
       jobs: jobsData,
+      display_jobs: jobsData,
       metrics,
     };
   } catch (error) {
@@ -74,16 +91,21 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
       username,
       userId: String(userId),
       jobs: [],
+      display_jobs: [],
       metrics: EMPTY_METRICS,
     };
   }
 }
 
 export default function Dashboard() {
-  const { userId, jobs, username, metrics } = useLoaderData() as DashboardData;
+  const { userId, jobs, display_jobs, username, metrics } =
+    useLoaderData() as DashboardData;
   const navigate = useNavigate();
 
   const { getToken } = useAuth();
+
+  const [sortProperty, setSortProperty] = useState(SortByValues.CreatedDate);
+  const [filterProperty, setFilterProperty] = useState(FilterByValues.NoFilter);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingJobId, setEditingJobId] = useState<number | null>(null);
@@ -92,6 +114,28 @@ export default function Dashboard() {
     company: "",
     stage: "Wishlist",
   });
+
+  const handleFilterJobs = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    // Purely client side
+
+    const selectedValue = e.target.value as FilterByValues;
+    setFilterProperty(selectedValue);
+
+    console.log("FILTERING:");
+    console.log(selectedValue);
+
+    //display_jobs.filter((
+  };
+
+  const handleSortJobs = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.target.value as SortByValues;
+    setSortProperty(selectedValue);
+
+    console.log("SORTING:");
+    console.log(selectedValue);
+
+    //display_jobs.sort(());
+  };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -221,6 +265,43 @@ export default function Dashboard() {
 
             <div className="db-section-header">
               <h3>Job Applications</h3>
+
+              {/* Sort */}
+              <div>
+                <label htmlFor="options">Sort By</label>
+                <select
+                  id="sortBy"
+                  value={sortProperty}
+                  onChange={handleSortJobs}
+                >
+                  <option value={SortByValues.LastActivity}>
+                    Last Activity
+                  </option>
+                  <option value={SortByValues.CreatedDate}>Date Created</option>
+                  <option value={SortByValues.Deadline}>Deadline</option>
+                  <option value={SortByValues.Company}>Company</option>
+                  <option value={SortByValues.DontSort}>Don't Sort</option>
+                </select>
+              </div>
+
+              {/* Filter */}
+              <div>
+                <label htmlFor="options">Filter By</label>
+                <select
+                  id="filterBy"
+                  value={filterProperty}
+                  onChange={handleFilterJobs}
+                >
+                  <option value={FilterByValues.Stage}>Stage</option>
+                  <option value={FilterByValues.Location}>Location</option>
+                  <option value={FilterByValues.DeadlineState}>
+                    DeadlineState
+                  </option>
+                  <option value={FilterByValues.NoFilter}>No Filter</option>
+                </select>
+              </div>
+
+              {/* Add */}
               <button
                 type="button"
                 onClick={() => {
@@ -236,7 +317,7 @@ export default function Dashboard() {
             </div>
 
             <div className="db-grid">
-              {jobs.map((job) => (
+              {display_jobs.map((job) => (
                 <div key={job.id} className="db-card">
                   <div>
                     <h4>{job.title}</h4>
