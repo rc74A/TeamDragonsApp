@@ -1,5 +1,16 @@
-USER_1 = {"X-User-Id": "1"}
-USER_2 = {"X-User-Id": "2"}
+import jwt
+
+# ----- Helper to generate compliant test tokens -----
+def create_test_token(clerk_str_id: str) -> dict:
+    """Generate mock Authorization Bearer headers for testing."""
+    payload = {"sub": clerk_str_id}
+    # Encode with an empty string key to match options={"verify_signature": False}
+    token_string = jwt.encode(payload, "", algorithm="HS256")
+    return {"Authorization": f"Bearer {token_string}"}
+
+
+USER_1 = create_test_token("1")
+USER_2 = create_test_token("2")
 
 
 def _create(client, headers, title="Software Engineer", **fields):
@@ -74,7 +85,7 @@ def test_validation_rejects_blank_title_and_bad_type(client):
 
 
 def test_requests_without_identity_are_unauthorized(client):
-    """Negative path: requests without X-User-Id are rejected (S1-BR-001)."""
+    """Negative path: requests without valid token headers are rejected (S1-BR-001)."""
     assert client.get("/api/experience").status_code == 401
     assert client.post("/api/experience", json={"title": "X"}).status_code == 401
 
@@ -98,3 +109,4 @@ def test_entries_are_owner_scoped(client):
     )
     # The owner's entry is untouched by the denied writes.
     assert client.get("/api/experience", headers=USER_1).json()[0]["title"] == "Mine"
+
