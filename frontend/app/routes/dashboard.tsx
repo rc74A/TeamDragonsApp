@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getAuth } from "@clerk/react-router/server";
-import { SignOutButton } from "@clerk/react-router";
+import { SignOutButton, useAuth } from "@clerk/react-router";
 import { useLoaderData, Link, useNavigate, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
 import "./app.css";
@@ -41,31 +41,39 @@ interface DashboardData {
 }
 
 export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
-  const { userId, sessionClaims } = await getAuth(args);
+  const { userId, sessionClaims, getToken } = await getAuth(args);
   if (!userId) throw redirect("/login");
 
-  const username = sessionClaims?.email ?? "Joshua";
+  const username = sessionClaims?.email ?? "User";
 
   try {
-    const headers = { "x-user-id": String(userId) };
+    const token = await getToken();
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+
     const [jobsRes, metricsRes] = await Promise.all([
       fetch(`${BACKEND_URL}/api/jobs`, { headers }),
       fetch(`${BACKEND_URL}/api/jobs/metrics`, { headers }),
     ]);
+
     const jobsData = jobsRes.ok ? await jobsRes.json() : [];
     const metrics = metricsRes.ok ? await metricsRes.json() : EMPTY_METRICS;
 
     return {
       username,
       userId: String(userId),
-      jobs: jobsData.length > 0 ? jobsData : getFallbackJobs(),
+      jobs: jobsData,
       metrics,
     };
-  } catch {
+  } catch (error) {
+    console.error("Loader failed:", error);
     return {
       username,
       userId: String(userId),
-      jobs: getFallbackJobs(),
+      jobs: [],
       metrics: EMPTY_METRICS,
     };
   }
@@ -74,6 +82,8 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
 export default function Dashboard() {
   const { userId, jobs, username, metrics } = useLoaderData() as DashboardData;
   const navigate = useNavigate();
+
+  const { getToken } = useAuth();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingJobId, setEditingJobId] = useState<number | null>(null);
@@ -90,23 +100,57 @@ export default function Dashboard() {
       ? `${BACKEND_URL}/api/jobs/${editingJobId}`
       : `${BACKEND_URL}/api/jobs`;
 
-    await fetch(url, {
-      method: isEditing ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json", "x-user-id": userId },
-      body: JSON.stringify(jobForm),
-    });
-    setIsModalOpen(false);
-    navigate(".", { replace: true });
+    try {
+      const token = await getToken();
+
+      if (!token) {
+        console.error("Form submission blocked: Missing authentication token.");
+        return;
+      }
+
+      await fetch(url, {
+        method: isEditing ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(jobForm),
+      });
+
+      setIsModalOpen(false);
+      navigate(".", { replace: true });
+    } catch (error) {
+      console.error("form submission failed", error);
+    }
   };
 
   const handleDeleteJob = async (jobId: number) => {
     if (!confirm("Are you sure you want to delete this tracking entry?"))
       return;
-    await fetch(`${BACKEND_URL}/api/jobs/${jobId}`, {
-      method: "DELETE",
-      headers: { "x-user-id": userId },
-    });
-    navigate(".", { replace: true });
+
+    try {
+      const token = await getToken();
+
+      if (!token) {
+        console.error("Could not retrieve a valid token");
+        return;
+      }
+
+      const response = await fetch(`${BACKEND_URL}/api/jobs/${jobId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        navigate(".", { replace: true });
+      } else {
+        console.error("Backend failed to delete the job:", response.status);
+      }
+    } catch (error) {
+      console.error("Deletion request failed entirely:", error);
+    }
   };
 
   return (
@@ -299,21 +343,4 @@ export default function Dashboard() {
       )}
     </div>
   );
-}
-
-function getFallbackJobs(): Job[] {
-  return [
-    {
-      id: 1,
-      title: "Software Engineer Intern",
-      company: "Google",
-      stage: "Interviewing",
-    },
-    {
-      id: 2,
-      title: "Frontend Developer Co-op",
-      company: "Vercel",
-      stage: "Applied",
-    },
-  ];
 }

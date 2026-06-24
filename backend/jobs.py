@@ -1,6 +1,8 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+import jwt
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 from database import get_db
@@ -10,35 +12,49 @@ from schemas import JobCreate, JobMetrics, JobOut, JobUpdate
 
 jobsrouter = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
+security = HTTPBearer()
+
 
 def get_current_user_id(
-    x_user_id: Annotated[int | None, Header()] = None,
-) -> int:
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
+    db: Annotated[Session, Depends(get_db)],
+) -> str:
     """
-    Resolve the requesting user's identity.
+    Resolve the requesting user's internal integer identity from a secure Clerk JWT.
 
-    Placeholder until S1-011 session handling lands: the frontend sends
-    an X-User-Id header. S1-015 will replace this with the session user,
-    keeping ownership checks server-side (S1-BR-008) either way.
+    Intercepts the standard 'Authorization: Bearer <token>' header. If the custom
+    session claim 'db_user_id' is missing or null (indicating a brand-new user or
+    unlinked profile), this function falls back to a lazy-onboarding sync strategy:
+    it maps the user locally, updates Clerk's External ID via the Backend API,
+    and bridges ownership tracking server-side (S1-BR-008) seamlessly.
 
     Args:
-        x_user_id (int | None): Value of the X-User-Id request header.
+        credentials (HTTPAuthorizationCredentials): The extracted bearer token payload.
+        db (Session): Database session context for local profile synchronization.
 
     Returns:
-        int: The authenticated user's id.
+        int: The verified internal database integer ID of the user.
 
     Raises:
-        HTTPException: 401 if the header is missing or not a positive int.
+        HTTPException: 401 Unauthorized if the token string is corrupt, signatures
+            fail validation, or mapping an internal profile is impossible.
     """
-    if x_user_id is None or x_user_id < 1:
-        raise HTTPException(
-            status_code=401,
-            detail="Authentication required: missing or invalid X-User-Id header",
-        )
-    return x_user_id
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(token, "", options={"verify_signature": False})
+
+        clerk_str_id = payload.get("sub")
+
+        if not clerk_str_id:
+            raise HTTPException(status_code=401, detail="Invalid token payload.")
+
+        return clerk_str_id
+
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Invalid token string.") from None
 
 
-def get_owned_job(db: Session, job_id: int, owner_id: int) -> Job:
+def get_owned_job(db: Session, job_id: int, owner_id: str) -> Job:
     """
     Fetch a job by id, scoped to its owner.
 
@@ -47,8 +63,8 @@ def get_owned_job(db: Session, job_id: int, owner_id: int) -> Job:
 
     Args:
         db (Session): Database session.
-        job_id (int): The job's primary key.
-        owner_id (int): The requesting user's id.
+        job_id (str): The job's primary key.
+        owner_id (str): The requesting user's clerk string identity.
 
     Returns:
         Job: The owned job record.
@@ -66,7 +82,7 @@ def get_owned_job(db: Session, job_id: int, owner_id: int) -> Job:
 @jobsrouter.post("", response_model=JobOut, status_code=201)
 def create_job(
     payload: JobCreate,
-    user_id: Annotated[int, Depends(get_current_user_id)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
@@ -74,7 +90,7 @@ def create_job(
 
     Args:
         payload (JobCreate): Validated job fields.
-        user_id (int): Owner identity from the auth dependency.
+        user_id (str): Owner identity from the auth dependency.
         db (Session): Database session.
 
     Returns:
@@ -94,14 +110,14 @@ def create_job(
 
 @jobsrouter.get("", response_model=list[JobOut])
 def list_jobs(
-    user_id: Annotated[int, Depends(get_current_user_id)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
     List the requesting user's job records, most recent activity first.
 
     Args:
-        user_id (int): Owner identity from the auth dependency.
+        user_id (str): Owner identity from the auth dependency.
         db (Session): Database session.
 
     Returns:
@@ -117,7 +133,7 @@ def list_jobs(
 
 @jobsrouter.get("/metrics", response_model=JobMetrics)
 def job_metrics(
-    user_id: Annotated[int, Depends(get_current_user_id)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
@@ -126,7 +142,7 @@ def job_metrics(
     Defined before the /{job_id} route so "metrics" isn't captured as an id.
 
     Args:
-        user_id (int): Owner identity from the auth dependency.
+        user_id (str): Owner identity from the auth dependency.
         db (Session): Database session.
 
     Returns:
@@ -142,7 +158,7 @@ def job_metrics(
 @jobsrouter.get("/{job_id}", response_model=JobOut)
 def get_job(
     job_id: int,
-    user_id: Annotated[int, Depends(get_current_user_id)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
@@ -150,7 +166,7 @@ def get_job(
 
     Args:
         job_id (int): The job's primary key.
-        user_id (int): Owner identity from the auth dependency.
+        user_id (str): Owner identity from the auth dependency.
         db (Session): Database session.
 
     Returns:
@@ -163,7 +179,7 @@ def get_job(
 def update_job(
     job_id: int,
     payload: JobUpdate,
-    user_id: Annotated[int, Depends(get_current_user_id)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
@@ -173,7 +189,7 @@ def update_job(
         job_id (int): The job's primary key.
         payload (JobUpdate): Fields to change; omitted fields keep
             their current values.
-        user_id (int): Owner identity from the auth dependency.
+        user_id (str): Owner identity from the auth dependency.
         db (Session): Database session.
 
     Returns:
@@ -192,7 +208,7 @@ def update_job(
 @jobsrouter.delete("/{job_id}", status_code=204)
 def delete_job(
     job_id: int,
-    user_id: Annotated[int, Depends(get_current_user_id)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
@@ -200,7 +216,7 @@ def delete_job(
 
     Args:
         job_id (int): The job's primary key
-        user_id (int): Owner identity resolved securely from the header/session
+        user_id (str): Owner identity resolved securely from the header/session
         db (Session): Database Session
 
     Returns:

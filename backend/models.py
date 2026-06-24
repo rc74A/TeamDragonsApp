@@ -27,7 +27,7 @@ class Job(Base):
     __tablename__ = "jobs"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    owner_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
+    owner_id: Mapped[str] = mapped_column(String(50), index=True, nullable=False)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     company: Mapped[str] = mapped_column(String(200), nullable=False)
     stage: Mapped[str] = mapped_column(String(50), nullable=False, default="Saved")
@@ -52,8 +52,8 @@ class Profile(Base):
     __tablename__ = "profiles"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    owner_id: Mapped[int] = mapped_column(
-        Integer, unique=True, index=True, nullable=False
+    owner_id: Mapped[str] = mapped_column(
+        String(50), unique=True, index=True, nullable=False
     )
     full_name: Mapped[str] = mapped_column(String(120), nullable=False, default="")
     email: Mapped[str] = mapped_column(String(128), nullable=False, default="")
@@ -76,7 +76,7 @@ class Experience(Base):
     __tablename__ = "experiences"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    owner_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
+    owner_id: Mapped[str] = mapped_column(String(50), index=True, nullable=False)
     entry_type: Mapped[str] = mapped_column(
         String(20), nullable=False, default="employment"
     )
