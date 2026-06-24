@@ -1,5 +1,5 @@
 import jwt
-from datetime import datetime
+
 
 # ----- Helper to generate compliant test tokens -----
 def create_test_token(clerk_str_id: str) -> dict:
@@ -8,6 +8,7 @@ def create_test_token(clerk_str_id: str) -> dict:
     # Encode with an empty string key to match options={"verify_signature": False}
     token_string = jwt.encode(payload, "", algorithm="HS256")
     return {"Authorization": f"Bearer {token_string}"}
+
 
 USER_1 = create_test_token("1")
 USER_2 = create_test_token("2")
@@ -23,7 +24,7 @@ def test_create_and_retrieve_job(client):
     assert body["title"] == "Software Engineer"
     assert body["company"] == "Dragon Corp"
     assert body["stage"] == "Saved"
-    
+
     # 🔄 FIX 2: Owner ID is now verified and returned as a string
     assert body["owner_id"] == "1"
     assert body["last_activity"] is not None
@@ -99,4 +100,3 @@ def test_cross_user_access_is_denied(client):
     # Owner's record is unchanged by the denied write.
     fetched = client.get(f"/api/jobs/{job['id']}", headers=USER_1)
     assert fetched.json()["stage"] == "Saved"
-

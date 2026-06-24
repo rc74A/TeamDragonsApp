@@ -1,5 +1,6 @@
 import jwt
 
+
 # ----- Helper to generate compliant test tokens -----
 def create_test_token(clerk_str_id: str) -> dict:
     """Generate mock Authorization Bearer headers for testing."""
@@ -109,4 +110,3 @@ def test_entries_are_owner_scoped(client):
     )
     # The owner's entry is untouched by the denied writes.
     assert client.get("/api/experience", headers=USER_1).json()[0]["title"] == "Mine"
-
