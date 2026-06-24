@@ -1,5 +1,17 @@
-USER_1 = {"X-User-Id": "1"}
-USER_2 = {"X-User-Id": "2"}
+import jwt
+
+
+# ----- Helper to generate compliant test tokens -----
+def create_test_token(clerk_str_id: str) -> dict:
+    """Generate mock Authorization Bearer headers for testing."""
+    payload = {"sub": clerk_str_id}
+    # Encode with a dummy string key since backend uses verify_signature=False
+    token_string = jwt.encode(payload, "test_secret_key", algorithm="HS256")
+    return {"Authorization": f"Bearer {token_string}"}
+
+
+USER_1 = create_test_token("1")
+USER_2 = create_test_token("2")
 
 
 def _create(client, headers, stage):
