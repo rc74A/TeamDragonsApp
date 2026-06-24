@@ -3,6 +3,7 @@ import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton } from "@clerk/react-router";
 import { useLoaderData, Link, useNavigate, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
+import "./app.css";
 import "./dashboard.css";
 
 interface Job {
