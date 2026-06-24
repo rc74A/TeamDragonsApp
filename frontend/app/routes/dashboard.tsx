@@ -112,26 +112,31 @@ export default function Dashboard() {
     <div className="db-root">
       <header className="db-header">Dragon Application</header>
       <div className="db-workspace">
-        <aside className="db-sidebar">
+        <aside className="sidebar">
           <ul>
             <li>
-              <Link to="/" className="db-link-active">
+              <Link to="/" className="nav-link-active">
                 Dashboard
               </Link>
             </li>
             <li>
-              <Link to="/findjobs" className="db-link">
+              <Link to="/findjobs" className="nav-link">
                 Find Jobs
               </Link>
             </li>
             <li>
-              <Link to="/profile" className="db-link">
+              <Link to="/profile" className="nav-link">
                 Profile
               </Link>
             </li>
-            <li className="db-logout-item">
+            <li>
+              <Link to="/settings" className="nav-link">
+                Settings
+              </Link>
+            </li>
+            <li className="logout-item">
               <SignOutButton redirectUrl="/login">
-                <button className="bg-red-500 text-white px-4 py-2 rounded">
+                <button className="btn-logout">
                   Sign Out
                 </button>
               </SignOutButton>
@@ -141,7 +146,7 @@ export default function Dashboard() {
 
         <main className="db-main">
           <div className="db-container">
-            <h2>Welcome, {username}!</h2>
+            <h2 className="view-title">Welcome, {username}!</h2>
             <p className="db-caption">
               Explore open listings matching your profile workspace.
             </p>
@@ -295,6 +300,7 @@ export default function Dashboard() {
       )}
     </div>
   );
+  
 }
 
 function getFallbackJobs(): Job[] {

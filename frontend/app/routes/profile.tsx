@@ -1,7 +1,8 @@
 import type { Route } from "./+types/profile";
 import { getAuth } from "@clerk/react-router/server";
 import { Link, useNavigate, redirect } from "react-router";
-import { useEffect, useState, type FormEvent } from "react";
+import { SignOutButton } from "@clerk/react-router";
+import { useEffect, useState } from "react";
 import ExperienceSection from "../components/ExperienceSection";
 import "./app.css";
 import "./profile.css";
@@ -117,33 +118,40 @@ export default function Profile() {
     <div className="settings-root-layout profile-root">
       <h1 className="settings-top-bar profile-header">Dragon Application</h1>
       <div className="settings-split-pane profile-workspace">
-        <aside className="settings-sidebar-nav profile-sidebar">
-          <ul className="profile-nav-list">
+        <aside className="sidebar">
+          <ul>
             <li>
-              <Link to="/" className="profile-nav-link">
+              <Link to="/" className="nav-link">
                 Dashboard
               </Link>
             </li>
             <li>
-              <Link to="/findjobs" className="db-link">
+              <Link to="/findjobs" className="nav-link">
                 Find Jobs
               </Link>
             </li>
             <li>
-              <Link to="/profile" className="profile-nav-link active">
+              <Link to="/profile" className="nav-link-active">
                 Profile
               </Link>
             </li>
             <li>
-              <Link to="/settings" className="profile-nav-link">
+              <Link to="/settings" className="nav-link">
                 Settings
               </Link>
+            </li>
+            <li className="logout-item">
+              <SignOutButton redirectUrl="/login">
+                <button className="btn-logout">
+                  Sign Out
+                </button>
+              </SignOutButton>
             </li>
           </ul>
         </aside>
         <main className="settings-main-viewport profile-main">
           <div className="profile-content-box">
-            <h2>Profile</h2>
+            <h2 className="view-title">Profile</h2>
             <p className="settings-subtitle">
               Keep your structural summary records updated for matching pipeline
               discovery.

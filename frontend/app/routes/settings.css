@@ -1,4 +1,3 @@
-/* Layout Shell Configuration */
 .settings-root-layout {
   display: flex;
   flex-direction: column;
@@ -11,46 +10,15 @@
 .settings-top-bar {
   background-color: #2d3748;
   padding: 16px 24px;
-  font-size: 1.5rem;
+  font-size: 20px;
   font-weight: bold;
   border-bottom: 1px solid #4a5568;
   color: #06b6d4;
-  margin: 0;
 }
 
 .settings-split-pane {
   display: flex;
   flex: 1;
-}
-
-.settings-sidebar-nav {
-  width: 240px;
-  background-color: #2d3748;
-  border-right: 1px solid #4a5568;
-  padding: 24px 16px;
-}
-
-.settings-sidebar-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.settings-sidebar-nav a {
-  display: block;
-  padding: 10px 16px;
-  border-radius: 8px;
-  color: #a0aec0;
-  text-decoration: none;
-}
-
-.settings-sidebar-nav .active-link {
-  background-color: #06b6d4;
-  color: #ffffff;
-  font-weight: bold;
 }
 
 .settings-main-viewport {
@@ -59,28 +27,27 @@
 }
 
 .settings-constrained-box {
-  max-width: 600px;
+  max-width: 560px;
 }
 
-/* Settings Card Baselines (S1-017) */
 .settings-subtitle {
   color: #a0aec0;
-  margin: 4px 0 24px;
+  margin-bottom: 32px;
 }
 
 .settings-section {
   background-color: #2d3748;
   border: 1px solid #4a5568;
-  border-radius: 8px;
-  padding: 20px;
+  border-radius: 12px;
+  padding: 24px;
   margin-bottom: 16px;
-  max-width: 560px;
 }
 
 .settings-section h3 {
-  margin-bottom: 12px;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 0 12px;
   color: #06b6d4;
-  margin-top: 0;
 }
 
 .settings-form .field {
@@ -90,24 +57,26 @@
 }
 
 .settings-form label {
-  font-weight: bold;
-  margin-bottom: 4px;
+  display: block;
+  font-size: 14px;
   color: #e2e8f0;
+  margin-bottom: 6px;
 }
 
 .settings-form input {
-  padding: 8px 10px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
   border: 1px solid #4a5568;
-  border-radius: 4px;
-  font-size: 14px;
   background-color: #1a202c;
   color: #ffffff;
+  box-sizing: border-box;
 }
 
 .settings-form input:focus {
   outline: none;
   border-color: #06b6d4;
-  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
 }
 
 .form-actions {
@@ -118,13 +87,15 @@
 
 .btn-primary {
   background-color: #06b6d4;
-  color: #fff;
+  color: #ffffff;
   border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
+  border-radius: 6px;
+  padding: 10px 20px;
   font-size: 14px;
-  cursor: pointer;
   font-weight: bold;
+  cursor: pointer;
+  width: fit-content;
+  transition: background-color 0.15s ease;
 }
 
 .btn-primary:hover {
@@ -136,7 +107,12 @@
   font-size: 14px;
 }
 
-/* Coming Soon Placeholders */
+.error-text {
+  color: #f56565;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
 .coming-soon-list {
   list-style: none;
   padding: 0;
@@ -148,8 +124,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 0;
-  opacity: 0.7;
   border-top: 1px solid #4a5568;
+  opacity: 0.7;
 }
 
 .coming-soon:first-child {
@@ -157,7 +133,7 @@
 }
 
 .coming-soon-info h4 {
-  margin: 0 0 4px 0;
+  margin: 0 0 4px;
   color: #e2e8f0;
   font-size: 15px;
 }
@@ -170,7 +146,7 @@
 
 .coming-soon .badge {
   background-color: #4a5568;
-  color: #cbd5e0;
+  color: #e2e8f0;
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 12px;
@@ -187,11 +163,4 @@
 .settings-loading-text {
   color: #06b6d4;
   font-family: sans-serif;
-}
-
-/* Core Form Content Title Header Override */
-.settings-view-title {
-  font-size: 28px;
-  font-weight: bold;
-  margin: 0 0 4px 0;
 }
