@@ -43,9 +43,7 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
   const { userId, sessionClaims } = await getAuth(args);
   if (!userId) throw redirect("/login");
 
-  const username = sessionClaims?.email ?? "Joshua"; // 👈 replaces authUser
-
-  const authUser = { id: userID };
+  const username = sessionClaims?.email ?? "Joshua"; 
 
   try {
     const headers = { "x-user-id": String(userId) };
