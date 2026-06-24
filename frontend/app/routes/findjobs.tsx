@@ -3,6 +3,7 @@ import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton } from "@clerk/react-router";
 import { Link, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
+import "./app.css";
 import "./findjobs.css";
 
 interface FoundJob {
