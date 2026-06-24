@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton } from "@clerk/react-router";
-import { Link, useNavigate, redirect } from "react-router";
+import { Link, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
 import "./findjobs.css";
 
@@ -25,9 +25,18 @@ export async function loader(args: Route.LoaderArgs) {
   if (!userId) throw redirect("/login");
 }
 
+const Spinner = () => (
+  <div className="spinner-overlay">
+    <div className="spinner-box">
+      <div className="spinner" />
+      <p className="spinner-label">Searching for jobs...</p>
+    </div>
+  </div>
+);
+
 export default function FindJobs() {
-  const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [searchForm, setSearchForm] = useState({
     title: "",
     employer: "",
@@ -38,6 +47,9 @@ export default function FindJobs() {
 
   const handleSearchSubmit = async () => {
     try {
+      setIsLoading(true);
+      setError("");
+
       const response = await fetch(`${BACKEND_URL}/api/findjobs/find_job`, {
         method: "PUT",
         headers: {
@@ -73,35 +85,41 @@ export default function FindJobs() {
       setError("");
     } catch {
       setError("Network error while searching for jobs.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="search-root">
+      {isLoading && <Spinner />}
       <header className="search-header">Dragon Application</header>
       <div className="search-workspace">
-        <aside className="search-sidebar">
+        <aside className="sidebar">
           <ul>
             <li>
-              <Link to="/" className="search-link-active">
+              <Link to="/" className="nav-link">
                 Dashboard
               </Link>
             </li>
             <li>
-              <Link to="/profile" className="search-link">
+              <Link to="/findjobs" className="nav-link-active">
+                Find Jobs
+              </Link>
+            </li>
+            <li>
+              <Link to="/profile" className="nav-link">
                 Profile
               </Link>
             </li>
             <li>
-              <Link to="/profile" className="search-link">
+              <Link to="/settings" className="nav-link">
                 Settings
               </Link>
             </li>
-            <li className="search-logout-item">
+            <li className="logout-item">
               <SignOutButton redirectUrl="/login">
-                <button className="bg-red-500 text-white px-4 py-2 rounded">
-                  Sign Out
-                </button>
+                <button className="btn-logout">Sign Out</button>
               </SignOutButton>
             </li>
           </ul>
@@ -109,7 +127,7 @@ export default function FindJobs() {
 
         <main className="search-main">
           <div className="search-container">
-            <h2>Welcome!</h2>
+            <h2 className="view-title">Find Jobs</h2>
             <p className="search-caption">
               Search for new and exciting opportunities!
             </p>

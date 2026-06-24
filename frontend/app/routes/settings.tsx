@@ -1,6 +1,7 @@
 import type { Route } from "./+types/settings";
 import { getAuth } from "@clerk/react-router/server";
 import { Link, redirect } from "react-router";
+import { SignOutButton } from "@clerk/react-router";
 import "./app.css";
 import "./settings.css";
 
@@ -68,34 +69,39 @@ export default function Settings() {
       <h1 className="settings-top-bar profile-header">Dragon Application</h1>
 
       <div className="settings-split-pane profile-workspace">
-        <aside className="settings-sidebar-nav profile-sidebar">
-          <ul className="profile-nav-list">
+        <aside className="sidebar">
+          <ul>
             <li>
-              <Link to="/" className="profile-nav-link">
+              <Link to="/" className="nav-link">
                 Dashboard
               </Link>
             </li>
             <li>
-              <Link to="/findjobs" className="db-link">
+              <Link to="/findjobs" className="nav-link">
                 Find Jobs
               </Link>
             </li>
             <li>
-              <Link to="/profile" className="profile-nav-link">
+              <Link to="/profile" className="nav-link">
                 Profile
               </Link>
             </li>
             <li>
-              <Link to="/settings" className="profile-nav-link active">
+              <Link to="/settings" className="nav-link-active">
                 Settings
               </Link>
+            </li>
+            <li className="logout-item">
+              <SignOutButton redirectUrl="/login">
+                <button className="btn-logout">Sign Out</button>
+              </SignOutButton>
             </li>
           </ul>
         </aside>
 
         <main className="settings-main-viewport profile-main">
           <div className="settings-constrained-box">
-            <h2 className="settings-view-title">Account Settings</h2>
+            <h2 className="view-title">Account Settings</h2>
             <p className="settings-subtitle">
               Manage your node credentials, security preferences, and system
               automation configurations.
