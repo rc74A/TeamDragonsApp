@@ -6,7 +6,7 @@ def create_test_token(clerk_str_id: str) -> dict:
     """Generate mock Authorization Bearer headers for testing."""
     payload = {"sub": clerk_str_id}
     # Encode with an empty string key to match options={"verify_signature": False}
-    token_string = jwt.encode(payload, "", algorithm="HS256")
+    token_string = jwt.encode(payload, "test_secret_key", algorithm="HS256")
     return {"Authorization": f"Bearer {token_string}"}
 
 
