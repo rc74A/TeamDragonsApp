@@ -56,7 +56,7 @@ def _list_owned(db: Session, owner_id: int) -> list[Experience]:
 @experiencerouter.post("", response_model=ExperienceOut, status_code=201)
 def create_experience(
     payload: ExperienceCreate,
-    user_id: Annotated[int, Depends(get_current_user_id)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
@@ -91,7 +91,7 @@ def create_experience(
 
 @experiencerouter.get("", response_model=list[ExperienceOut])
 def list_experience(
-    user_id: Annotated[int, Depends(get_current_user_id)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
@@ -110,7 +110,7 @@ def list_experience(
 @experiencerouter.put("/reorder", response_model=list[ExperienceOut])
 def reorder_experience(
     payload: ReorderRequest,
-    user_id: Annotated[int, Depends(get_current_user_id)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
@@ -142,7 +142,7 @@ def reorder_experience(
 def update_experience(
     exp_id: int,
     payload: ExperienceUpdate,
-    user_id: Annotated[int, Depends(get_current_user_id)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
@@ -169,7 +169,7 @@ def update_experience(
 @experiencerouter.delete("/{exp_id}", status_code=204)
 def delete_experience(
     exp_id: int,
-    user_id: Annotated[int, Depends(get_current_user_id)],
+    user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
