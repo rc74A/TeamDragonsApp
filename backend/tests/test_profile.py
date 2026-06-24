@@ -1,5 +1,17 @@
-USER_1 = {"X-User-Id": "1"}
-USER_2 = {"X-User-Id": "2"}
+import jwt
+
+
+# ----- Helper to generate compliant test tokens -----
+def create_test_token(clerk_str_id: str) -> dict:
+    """Generate mock Authorization Bearer headers for testing."""
+    payload = {"sub": clerk_str_id}
+    # Encode with a dummy string key since backend uses verify_signature=False
+    token_string = jwt.encode(payload, "test_secret_key", algorithm="HS256")
+    return {"Authorization": f"Bearer {token_string}"}
+
+
+USER_1 = create_test_token("1")
+USER_2 = create_test_token("2")
 
 FULL_PROFILE = {
     "full_name": "Joel Walker",
@@ -15,7 +27,7 @@ def test_get_returns_empty_baseline_when_unsaved(client):
     res = client.get("/api/profile", headers=USER_1)
     assert res.status_code == 200
     body = res.json()
-    assert body["owner_id"] == 1
+    assert body["owner_id"] == "1"
     assert body["full_name"] == ""
     assert body["email"] == ""
     assert body["summary"] == ""
@@ -26,7 +38,7 @@ def test_create_and_retrieve_profile(client):
     saved = client.put("/api/profile", json=FULL_PROFILE, headers=USER_1)
     assert saved.status_code == 200
     assert saved.json()["full_name"] == "Joel Walker"
-    assert saved.json()["owner_id"] == 1
+    assert saved.json()["owner_id"] == "1"
 
     # Separate request proves persistence beyond the write call.
     fetched = client.get("/api/profile", headers=USER_1)
@@ -67,7 +79,7 @@ def test_invalid_email_is_rejected(client):
 
 
 def test_requests_without_identity_are_unauthorized(client):
-    """Negative path: requests without X-User-Id are rejected (S1-BR-001)."""
+    """Negative path: requests without valid token headers are rejected (S1-BR-001)."""
     assert client.get("/api/profile").status_code == 401
     assert client.put("/api/profile", json=FULL_PROFILE).status_code == 401
 
@@ -79,7 +91,7 @@ def test_profiles_are_isolated_by_owner(client):
     # User 2 sees only their own (empty) profile, never user 1's data.
     other = client.get("/api/profile", headers=USER_2)
     assert other.status_code == 200
-    assert other.json()["owner_id"] == 2
+    assert other.json()["owner_id"] == "2"
     assert other.json()["full_name"] == ""
 
     # User 2 writing their own profile does not touch user 1's.
