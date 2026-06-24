@@ -43,7 +43,7 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
   const { userId, sessionClaims } = await getAuth(args);
   if (!userId) throw redirect("/login");
 
-  const username = sessionClaims?.email ?? "Joshua"; 
+  const username = sessionClaims?.email ?? "Joshua";
 
   try {
     const headers = { "x-user-id": String(userId) };
@@ -136,9 +136,7 @@ export default function Dashboard() {
             </li>
             <li className="logout-item">
               <SignOutButton redirectUrl="/login">
-                <button className="btn-logout">
-                  Sign Out
-                </button>
+                <button className="btn-logout">Sign Out</button>
               </SignOutButton>
             </li>
           </ul>
@@ -300,7 +298,6 @@ export default function Dashboard() {
       )}
     </div>
   );
-  
 }
 
 function getFallbackJobs(): Job[] {

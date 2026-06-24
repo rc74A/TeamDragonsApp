@@ -142,9 +142,7 @@ export default function Profile() {
             </li>
             <li className="logout-item">
               <SignOutButton redirectUrl="/login">
-                <button className="btn-logout">
-                  Sign Out
-                </button>
+                <button className="btn-logout">Sign Out</button>
               </SignOutButton>
             </li>
           </ul>
