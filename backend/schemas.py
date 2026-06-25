@@ -209,3 +209,59 @@ class ReorderRequest(BaseModel):
     """Request body for reordering: entry ids in their new order."""
 
     order: list[int]
+
+
+# ----- Education (S2-017) -----
+
+
+class EducationCreate(BaseModel):
+    """Request body for creating an education record (S2-017).
+
+    `school` and `degree` are required, non-blank fields (S2-BR-015).
+    """
+
+    school: str = Field(max_length=200)
+    degree: str = Field(max_length=200)
+    field_of_study: str = Field(default="", max_length=200)
+    start_date: str = Field(default="", max_length=40)
+    end_date: str = Field(default="", max_length=40)
+    gpa: str = Field(default="", max_length=20)
+    description: str = Field(default="", max_length=5000)
+
+    _validate_school = field_validator("school")(_reject_blank)
+    _validate_degree = field_validator("degree")(_reject_blank)
+
+
+class EducationUpdate(BaseModel):
+    """Request body for updating an education record; all fields optional."""
+
+    school: str | None = Field(default=None, max_length=200)
+    degree: str | None = Field(default=None, max_length=200)
+    field_of_study: str | None = Field(default=None, max_length=200)
+    start_date: str | None = Field(default=None, max_length=40)
+    end_date: str | None = Field(default=None, max_length=40)
+    gpa: str | None = Field(default=None, max_length=20)
+    description: str | None = Field(default=None, max_length=5000)
+
+    @field_validator("school", "degree")
+    @classmethod
+    def validate_required_text(cls, value: str | None) -> str | None:
+        """Reject a blank required field only when one is provided."""
+        return None if value is None else _reject_blank(value)
+
+
+class EducationOut(BaseModel):
+    """Response body for an education record."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    owner_id: int
+    school: str
+    degree: str
+    field_of_study: str
+    start_date: str
+    end_date: str
+    gpa: str
+    description: str
+    position: int
