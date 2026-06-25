@@ -94,3 +94,28 @@ class Experience(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=utc_now
     )
+
+
+class Education(Base):
+    """
+    An education record on a user's profile (S2-017).
+
+    Owned by one user (S1-BR-006). `school` and `degree` are required
+    fields (S2-BR-015); the rest are optional. Ordered by `position`.
+    """
+
+    __tablename__ = "educations"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    owner_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
+    school: Mapped[str] = mapped_column(String(200), nullable=False)
+    degree: Mapped[str] = mapped_column(String(200), nullable=False)
+    field_of_study: Mapped[str] = mapped_column(String(200), nullable=False, default="")
+    start_date: Mapped[str] = mapped_column(String(40), nullable=False, default="")
+    end_date: Mapped[str] = mapped_column(String(40), nullable=False, default="")
+    gpa: Mapped[str] = mapped_column(String(20), nullable=False, default="")
+    description: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    position: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=utc_now
+    )

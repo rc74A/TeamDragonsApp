@@ -4,6 +4,7 @@ import { Link, useNavigate, redirect } from "react-router";
 import { SignOutButton, useAuth } from "@clerk/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import ExperienceSection from "../components/ExperienceSection";
+import EducationSection from "../components/EducationSection";
 import "./app.css";
 import "./profile.css";
 
@@ -277,6 +278,7 @@ export default function Profile() {
             </section>
 
             <ExperienceSection />
+            <EducationSection />
           </div>
         </main>
       </div>
