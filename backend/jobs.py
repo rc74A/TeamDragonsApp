@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from domain import compute_job_metrics
-from models import Job, utc_now
+from models import Job, utc_now, JobStageHistory
 from schemas import JobCreate, JobMetrics, JobOut, JobUpdate
 
 jobsrouter = APIRouter(prefix="/api/jobs", tags=["jobs"])
@@ -187,6 +187,7 @@ def update_job(
 ):
     """
     Update an owned job record and refresh its last activity time.
+    Tracks stage transitions to history logs automatically (S2-009).
 
     Args:
         job_id (int): The job's primary key.
@@ -200,8 +201,25 @@ def update_job(
     """
     job = get_owned_job(db, job_id, user_id)
     updates = payload.model_dump(exclude_unset=True)
+    
+    if "stage" in updates:
+        old_stage = job.stage
+        new_stage = updates["stage"]
+        
+        if old_stage != new_stage:
+            # Create a transition log entry
+            history_entry = JobStageHistory(
+                job_id=job.id,
+                old_stage=old_stage,
+                new_stage=new_stage,
+                changed_at=utc_now()
+            )
+            db.add(history_entry)
+
+    # Apply the field updates to our record
     for field, value in updates.items():
         setattr(job, field, value)
+        
     job.last_activity = utc_now()
     db.commit()
     db.refresh(job)

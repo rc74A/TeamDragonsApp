@@ -140,3 +140,20 @@ class Skill(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=utc_now
     )
+class JobStageHistory(Base):
+    """
+    An automated tracking log recording a job's stage changes over time (S2-009).
+
+    Captures chronological data points to construct the job activity timeline (S2-010)
+    and preserve state transition paths.
+    """
+
+    __tablename__ = "job_stage_history"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    job_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
+    old_stage: Mapped[str] = mapped_column(String(50), nullable=False)
+    new_stage: Mapped[str] = mapped_column(String(50), nullable=False)
+    changed_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=utc_now
+    )

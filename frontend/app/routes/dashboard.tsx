@@ -249,6 +249,36 @@ export default function Dashboard() {
     }
   };
 
+  const handleInlineStageChange = async (jobId: number, currentJob: any, newStage: string) => {
+    try {
+      const token = await getToken();
+      if (!token) return;
+
+      const response = await fetch(`${BACKEND_URL}/api/jobs/${jobId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: currentJob.title,
+          company: currentJob.company,
+          stage: newStage, 
+          location: currentJob.location,
+          deadline: currentJob.deadline,
+          deadline_state: currentJob.deadlineState,
+        }),
+      });
+
+      if (response.ok) {
+        // Refresh router context to update pipeline cards & dashboard metric states
+        navigate(".", { replace: true });
+      }
+    } catch (error) {
+      console.error("Inline stage transition failed:", error);
+    }
+  };
+
   const handleDeleteJob = async (jobId: number) => {
     if (!confirm("Are you sure you want to delete this tracking entry?"))
       return;
@@ -452,8 +482,17 @@ export default function Dashboard() {
                   <div>
                     <h4>{job.title}</h4>
                     <p className="db-card-company">🏢 {job.company}</p>
-                    <p className="db-card-status">📋 Status: {job.stage}</p>
-                    <p className="db-card-status">
+                      <div className="db-inline-stage-wrapper">
+                      <span className="db-card-status">📋 Status:</span>
+                        <select value={job.stage} aria-label={`Change pipeline stage for ${job.title}`} onChange={(e) => handleInlineStageChange(job.id, job, e.target.value)} className="db-card-inline-select">
+                          <option value="Wishlist">Wishlist</option>
+                          <option value="Applied">Applied</option>
+                          <option value="Interviewing">Interviewing</option>
+                          <option value="Offer">Offer</option>
+                          <option value="Rejected">Rejected</option>
+                        </select>
+                      </div>
+                      <p className="db-card-status">
                       📍 Location: {job.location}
                     </p>
                     <p className="db-card-status">

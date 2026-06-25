@@ -304,3 +304,35 @@
   font-size: 13px;
   color: #a0aec0;
 }
+
+.db-inline-stage-wrapper {
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.db-inline-stage-wrapper .db-card-status {
+  margin: 0 !important; 
+}
+
+.db-card-inline-select {
+  background-color: #1a202c; 
+  color: #ffffff;
+  border: 1px solid #4a5568; 
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 13px; 
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.db-card-inline-select:focus {
+  border-color: #06b6d4;
+}
+
+.db-card-inline-select option {
+  background-color: #2d3748; 
+  color: #ffffff;
+}
