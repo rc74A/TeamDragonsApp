@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton, useAuth } from "@clerk/react-router";
 import { useLoaderData, Link, useNavigate, redirect } from "react-router";
@@ -110,7 +110,7 @@ export default function Dashboard() {
 
   const { getToken } = useAuth();
 
-  const mapBackendJobs = (backendList: any[]): Job[] => {
+  const mapBackendJobs = (backendList: record<string, unknown>[]): Job[] => {
     return (backendList || []).map((rawJob) => ({
       id: rawJob.id,
       title: rawJob.title,
@@ -142,6 +142,66 @@ export default function Dashboard() {
     deadlineState: "No Deadline",
   });
 
+  // Central function to update display state whenever filter, criteria, or sort changes
+  const applyFilterAndSort = React.useCallback(
+    (
+      activeFilter: FilterByValues,
+      criteria: string,
+      activeSort: SortByValues,
+      currentJobsSource: Job[] = clientJobs,
+    ) => {
+      let updatedList = [...currentJobsSource];
+
+      if (activeFilter !== FilterByValues.NoFilter && criteria.trim() !== "") {
+        const lowercaseCriteria = criteria.toLowerCase();
+
+        updatedList = updatedList.filter((job) => {
+          if (activeFilter === FilterByValues.Stage) {
+            return job.stage === criteria;
+          }
+          if (activeFilter === FilterByValues.DeadlineState) {
+            return (job.deadlineState ?? "") === criteria;
+          }
+          if (activeFilter === FilterByValues.JobLocation) {
+            return (job.location ?? "")
+              .toLowerCase()
+              .includes(lowercaseCriteria);
+          }
+          return true;
+        });
+      }
+
+      if (activeSort !== SortByValues.DontSort) {
+        updatedList.sort((a, b) => {
+          if (activeSort === SortByValues.Company) {
+            return (a.company ?? "").localeCompare(b.company);
+          }
+
+          const dateA = new Date(
+            activeSort === SortByValues.LastActivity
+              ? a.lastActivity
+              : activeSort === SortByValues.Deadline
+                ? (a.deadline ?? 0)
+                : a.createdAt,
+          ).getTime();
+
+          const dateB = new Date(
+            activeSort === SortByValues.LastActivity
+              ? b.lastActivity
+              : activeSort === SortByValues.Deadline
+                ? (b.deadline ?? 0)
+                : a.createdAt,
+          ).getTime();
+
+          return dateB - dateA;
+        });
+      }
+
+      setDisplayJobs(updatedList);
+    },
+    [clientJobs],
+  );
+
   useEffect(() => {
     const updated = mapBackendJobs(rawJobs);
     applyFilterAndSort(
@@ -150,7 +210,7 @@ export default function Dashboard() {
       sortProperty,
       updated,
     );
-  }, [rawJobs]);
+  }, [rawJobs, filterProperty, selectedCriteriaValue]);
 
   const uniqueStages = Array.from(
     new Set(clientJobs.map((j) => j.stage)),
@@ -158,61 +218,6 @@ export default function Dashboard() {
   const uniqueDeadlineStates = Array.from(
     new Set(clientJobs.map((j) => j.deadlineState)),
   ).filter(Boolean);
-
-  // Central function to update display state whenever filter, criteria, or sort changes
-  const applyFilterAndSort = (
-    activeFilter: FilterByValues,
-    criteria: string,
-    activeSort: SortByValues,
-    currentJobsSource: Job[] = clientJobs,
-  ) => {
-    let updatedList = [...currentJobsSource];
-
-    if (activeFilter !== FilterByValues.NoFilter && criteria.trim() !== "") {
-      const lowercaseCriteria = criteria.toLowerCase();
-
-      updatedList = updatedList.filter((job) => {
-        if (activeFilter === FilterByValues.Stage) {
-          return job.stage === criteria;
-        }
-        if (activeFilter === FilterByValues.DeadlineState) {
-          return (job.deadlineState ?? "") === criteria;
-        }
-        if (activeFilter === FilterByValues.JobLocation) {
-          return (job.location ?? "").toLowerCase().includes(lowercaseCriteria);
-        }
-        return true;
-      });
-    }
-
-    if (activeSort !== SortByValues.DontSort) {
-      updatedList.sort((a, b) => {
-        if (activeSort === SortByValues.Company) {
-          return (a.company ?? "").localeCompare(b.company);
-        }
-
-        const dateA = new Date(
-          activeSort === SortByValues.LastActivity
-            ? a.lastActivity
-            : activeSort === SortByValues.Deadline
-              ? (a.deadline ?? 0)
-              : a.createdAt,
-        ).getTime();
-
-        const dateB = new Date(
-          activeSort === SortByValues.LastActivity
-            ? b.lastActivity
-            : activeSort === SortByValues.Deadline
-              ? (b.deadline ?? 0)
-              : a.createdAt,
-        ).getTime();
-
-        return dateB - dateA;
-      });
-    }
-
-    setDisplayJobs(updatedList);
-  };
 
   const handleFilterJobs = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     // Purely client side
