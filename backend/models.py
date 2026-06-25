@@ -107,7 +107,7 @@ class Education(Base):
     __tablename__ = "educations"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    owner_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
+    owner_id: Mapped[str] = mapped_column(String(50), index=True, nullable=False)
     school: Mapped[str] = mapped_column(String(200), nullable=False)
     degree: Mapped[str] = mapped_column(String(200), nullable=False)
     field_of_study: Mapped[str] = mapped_column(String(200), nullable=False, default="")
@@ -132,7 +132,7 @@ class Skill(Base):
     __tablename__ = "skills"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    owner_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
+    owner_id: Mapped[str] = mapped_column(String(50), index=True, nullable=False)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     category: Mapped[str] = mapped_column(String(100), nullable=False, default="")
     proficiency: Mapped[str] = mapped_column(String(20), nullable=False, default="")

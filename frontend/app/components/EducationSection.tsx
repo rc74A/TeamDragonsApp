@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { useAuth } from "@clerk/react-router";
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
-const HEADERS = { "Content-Type": "application/json", "X-User-Id": "1" };
 
 interface Education {
   id: number;
@@ -26,6 +26,7 @@ const EMPTY_FORM = {
 };
 
 export default function EducationSection() {
+  const { getToken } = useAuth();
   const [entries, setEntries] = useState<Education[]>([]);
   const [form, setForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -33,8 +34,13 @@ export default function EducationSection() {
 
   async function load() {
     try {
+      const token = await getToken();
+      if (!token) return;
+
       const res = await fetch(`${API_BASE}/api/education`, {
-        headers: HEADERS,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       if (res.ok) {
         const data = await res.json();
@@ -70,18 +76,31 @@ export default function EducationSection() {
       setError("Degree is required.");
       return;
     }
-    const url = editingId
-      ? `${API_BASE}/api/education/${editingId}`
-      : `${API_BASE}/api/education`;
-    const res = await fetch(url, {
-      method: editingId ? "PUT" : "POST",
-      headers: HEADERS,
-      body: JSON.stringify(form),
-    });
-    if (res.ok) {
-      resetForm();
-      load();
-    } else {
+
+    try {
+      const token = await getToken();
+      if (!token) return;
+
+      const url = editingId
+        ? `${API_BASE}/api/education/${editingId}`
+        : `${API_BASE}/api/education`;
+
+      const res = await fetch(url, {
+        method: editingId ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(form),
+      });
+
+      if (res.ok) {
+        resetForm();
+        load();
+      } else {
+        setError("Could not save this record.");
+      }
+    } catch {
       setError("Could not save this record.");
     }
   }
@@ -101,14 +120,23 @@ export default function EducationSection() {
   }
 
   async function handleDelete(id: number) {
-    await fetch(`${API_BASE}/api/education/${id}`, {
-      method: "DELETE",
-      headers: HEADERS,
-    });
-    if (editingId === id) {
-      resetForm();
+    try {
+      const token = await getToken();
+      if (!token) return;
+
+      await fetch(`${API_BASE}/api/education/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (editingId === id) {
+        resetForm();
+      }
+      load();
+    } catch {
+      setError("Failed to delete this record.");
     }
-    load();
   }
 
   async function move(index: number, direction: -1 | 1) {
@@ -116,14 +144,26 @@ export default function EducationSection() {
     if (target < 0 || target >= entries.length) {
       return;
     }
-    const order = entries.map((entry) => entry.id);
-    [order[index], order[target]] = [order[target], order[index]];
-    await fetch(`${API_BASE}/api/education/reorder`, {
-      method: "PUT",
-      headers: HEADERS,
-      body: JSON.stringify({ order }),
-    });
-    load();
+
+    try {
+      const token = await getToken();
+      if (!token) return;
+
+      const order = entries.map((entry) => entry.id);
+      [order[index], order[target]] = [order[target], order[index]];
+
+      await fetch(`${API_BASE}/api/education/reorder`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ order }),
+      });
+      load();
+    } catch {
+      setError("Failed to reorder records.");
+    }
   }
 
   return (
