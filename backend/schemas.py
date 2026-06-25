@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import date, datetime
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -34,6 +34,9 @@ class JobCreate(BaseModel):
     title: str = Field(max_length=200)
     company: str = Field(max_length=200)
     stage: str = Field(default="Saved", max_length=50)
+    location: str | None = Field(default=None, max_length=200)
+    deadline: date | None = Field(default=None)
+    deadline_state: str | None = Field(default="No Deadline", max_length=50)
 
     _validate_title = field_validator("title")(_reject_blank)
     _validate_company = field_validator("company")(_reject_blank)
@@ -46,8 +49,11 @@ class JobUpdate(BaseModel):
     title: str | None = Field(default=None, max_length=200)
     company: str | None = Field(default=None, max_length=200)
     stage: str | None = Field(default=None, max_length=50)
+    location: str | None = Field(default=None, max_length=200)
+    deadline: date | None = Field(default=None)
+    deadline_state: str | None = Field(default=None, max_length=50)
 
-    @field_validator("title", "company", "stage")
+    @field_validator("title", "company", "stage", "location", "deadline_state")
     @classmethod
     def validate_not_blank(cls, value: str | None) -> str | None:
         """
@@ -74,6 +80,9 @@ class JobOut(BaseModel):
     title: str
     company: str
     stage: str
+    location: str | None
+    deadline: date | None
+    deadline_state: str | None
     last_activity: datetime
     created_at: datetime
 
