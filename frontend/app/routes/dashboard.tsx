@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton, useAuth } from "@clerk/react-router";
 import { useLoaderData, Link, useNavigate, redirect } from "react-router";
@@ -101,31 +101,15 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
 
 export default function Dashboard() {
   const {
-    userId,
+    _userId,
     jobs: rawJobs,
     username,
     metrics,
   } = useLoaderData() as DashboardData;
   const navigate = useNavigate();
-
   const { getToken } = useAuth();
 
-  const mapBackendJobs = (backendList: record<string, unknown>[]): Job[] => {
-    return (backendList || []).map((rawJob) => ({
-      id: rawJob.id,
-      title: rawJob.title,
-      company: rawJob.company,
-      stage: rawJob.stage,
-      location: rawJob.location ?? null,
-      deadline: rawJob.deadline ?? null,
-      deadlineState: rawJob.deadline_state ?? null,
-      lastActivity: rawJob.last_activity ?? null,
-      createdAt: rawJob.created_at || new Date().toISOString(),
-    }));
-  };
-  const clientJobs = mapBackendJobs(rawJobs);
-
-  const [displayJobs, setDisplayJobs] = useState<Job[]>(clientJobs);
+  // Tracking sort/filter state
   const [sortProperty, setSortProperty] = useState(SortByValues.CreatedDate);
   const [filterProperty, setFilterProperty] = useState(FilterByValues.NoFilter);
   const [selectedCriteriaValue, setSelectedCriteriaValue] =
@@ -142,104 +126,93 @@ export default function Dashboard() {
     deadlineState: "No Deadline",
   });
 
-  // Central function to update display state whenever filter, criteria, or sort changes
-  const applyFilterAndSort = React.useCallback(
-    (
-      activeFilter: FilterByValues,
-      criteria: string,
-      activeSort: SortByValues,
-      currentJobsSource: Job[] = clientJobs,
-    ) => {
-      let updatedList = [...currentJobsSource];
+  const clientJobs = useMemo(() => {
+    return (rawJobs || []).map((rawJob) => ({
+      id: Number(rawJob.id),
+      title: String(rawJob.title),
+      company: String(rawJob.company),
+      stage: String(rawJob.stage),
+      location: (rawJob.location as string) ?? null,
+      deadline: (rawJob.deadline as string) ?? null,
+      deadlineState: (rawJob.deadline_state as string) ?? null,
+      lastActivity: (rawJob.last_activity as string) ?? null,
+      createdAt: (rawJob.created_at as string) || new Date().toISOString(),
+    }));
+  }, [rawJobs]);
 
-      if (activeFilter !== FilterByValues.NoFilter && criteria.trim() !== "") {
-        const lowercaseCriteria = criteria.toLowerCase();
+  const displayJobs = useMemo(() => {
+    let updatedList = [...clientJobs];
 
-        updatedList = updatedList.filter((job) => {
-          if (activeFilter === FilterByValues.Stage) {
-            return job.stage === criteria;
-          }
-          if (activeFilter === FilterByValues.DeadlineState) {
-            return (job.deadlineState ?? "") === criteria;
-          }
-          if (activeFilter === FilterByValues.JobLocation) {
-            return (job.location ?? "")
-              .toLowerCase()
-              .includes(lowercaseCriteria);
-          }
-          return true;
-        });
-      }
+    if (
+      filterProperty !== FilterByValues.NoFilter &&
+      selectedCriteriaValue.trim() !== ""
+    ) {
+      const lowercaseCriteria = selectedCriteriaValue.toLowerCase();
 
-      if (activeSort !== SortByValues.DontSort) {
-        updatedList.sort((a, b) => {
-          if (activeSort === SortByValues.Company) {
-            return (a.company ?? "").localeCompare(b.company);
-          }
+      updatedList = updatedList.filter((job) => {
+        if (filterProperty === FilterByValues.Stage)
+          return job.stage === selectedCriteriaValue;
+        if (filterProperty === FilterByValues.DeadlineState)
+          return (job.deadlineState ?? "") === selectedCriteriaValue;
+        if (filterProperty === FilterByValues.JobLocation)
+          return (job.location ?? "").toLowerCase().includes(lowercaseCriteria);
+        return true;
+      });
+    }
 
-          const dateA = new Date(
-            activeSort === SortByValues.LastActivity
-              ? a.lastActivity
-              : activeSort === SortByValues.Deadline
-                ? (a.deadline ?? 0)
-                : a.createdAt,
-          ).getTime();
+    if (sortProperty !== SortByValues.DontSort) {
+      updatedList.sort((a, b) => {
+        if (sortProperty === SortByValues.Company)
+          return (a.company ?? "").localeCompare(b.company ?? "");
 
-          const dateB = new Date(
-            activeSort === SortByValues.LastActivity
-              ? b.lastActivity
-              : activeSort === SortByValues.Deadline
-                ? (b.deadline ?? 0)
-                : a.createdAt,
-          ).getTime();
+        const dateA = new Date(
+          sortProperty === SortByValues.LastActivity
+            ? (a.lastActivity ?? 0)
+            : sortProperty === SortByValues.Deadline
+              ? (a.deadline ?? 0)
+              : a.createdAt,
+        ).getTime();
 
-          return dateB - dateA;
-        });
-      }
+        const dateB = new Date(
+          sortProperty === SortByValues.LastActivity
+            ? (b.lastActivity ?? 0)
+            : sortProperty === SortByValues.Deadline
+              ? (b.deadline ?? 0)
+              : b.createdAt,
+        ).getTime();
 
-      setDisplayJobs(updatedList);
-    },
+        return dateB - dateA;
+      });
+    }
+
+    return updatedList;
+  }, [clientJobs, filterProperty, selectedCriteriaValue, sortProperty]);
+
+  const uniqueStages = useMemo(
+    () => Array.from(new Set(clientJobs.map((j) => j.stage))).filter(Boolean),
+    [clientJobs],
+  );
+  const uniqueDeadlineStates = useMemo(
+    () =>
+      Array.from(new Set(clientJobs.map((j) => j.deadlineState))).filter(
+        Boolean,
+      ),
     [clientJobs],
   );
 
-  useEffect(() => {
-    const updated = mapBackendJobs(rawJobs);
-    applyFilterAndSort(
-      filterProperty,
-      selectedCriteriaValue,
-      sortProperty,
-      updated,
-    );
-  }, [rawJobs, filterProperty, selectedCriteriaValue]);
-
-  const uniqueStages = Array.from(
-    new Set(clientJobs.map((j) => j.stage)),
-  ).filter(Boolean);
-  const uniqueDeadlineStates = Array.from(
-    new Set(clientJobs.map((j) => j.deadlineState)),
-  ).filter(Boolean);
-
-  const handleFilterJobs = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    // Purely client side
-
+  const handleFilterJobs = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value as FilterByValues;
     setFilterProperty(selectedValue);
     setSelectedCriteriaValue("");
-
-    if (selectedValue === FilterByValues.NoFilter) {
-      applyFilterAndSort(FilterByValues.NoFilter, "", sortProperty);
-    }
   };
 
   const handleCriteriaChange = (value: string) => {
     setSelectedCriteriaValue(value);
-    applyFilterAndSort(filterProperty, value, sortProperty);
   };
 
-  const handleSortJobs = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSortJobs = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value as SortByValues;
     setSortProperty(selectedValue);
-    applyFilterAndSort(filterProperty, selectedCriteriaValue, selectedValue);
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -251,11 +224,7 @@ export default function Dashboard() {
 
     try {
       const token = await getToken();
-
-      if (!token) {
-        console.error("Form submission blocked: Missing authentication token.");
-        return;
-      }
+      if (!token) return;
 
       await fetch(url, {
         method: isEditing ? "PUT" : "POST",
@@ -276,7 +245,7 @@ export default function Dashboard() {
       setIsModalOpen(false);
       navigate(".", { replace: true });
     } catch (error) {
-      console.error("form submission failed", error);
+      console.error("Form submission failed", error);
     }
   };
 
@@ -286,23 +255,15 @@ export default function Dashboard() {
 
     try {
       const token = await getToken();
-
-      if (!token) {
-        console.error("Could not retrieve a valid token");
-        return;
-      }
+      if (!token) return;
 
       const response = await fetch(`${BACKEND_URL}/api/jobs/${jobId}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.ok) {
         navigate(".", { replace: true });
-      } else {
-        console.error("Backend failed to delete the job:", response.status);
       }
     } catch (error) {
       console.error("Deletion request failed entirely:", error);
