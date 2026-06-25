@@ -9,6 +9,7 @@ from education import educationrouter
 from experience import experiencerouter
 from jobs import jobsrouter
 from search import searchrouter
+from skills import skillsrouter
 
 # ----- FastAPI setup -----
 
@@ -48,6 +49,7 @@ app.include_router(profilerouter)
 app.include_router(searchrouter)
 app.include_router(experiencerouter)
 app.include_router(educationrouter)
+app.include_router(skillsrouter)
 
 # ----- API Endpoints -----
 

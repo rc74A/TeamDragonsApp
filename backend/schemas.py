@@ -288,3 +288,75 @@ class EducationOut(BaseModel):
     gpa: str
     description: str
     position: int
+
+
+# ----- Skills (S2-018) -----
+
+# Allowed proficiency levels. An empty string means "unspecified"; any
+# other value must be one of these (S2-BR-016). The team's requirements
+# doc names the rule but not the vocabulary, so this is the testable
+# interpretation: a level scale, mirroring how entry_type is constrained.
+PROFICIENCY_LEVELS = {"Beginner", "Intermediate", "Advanced", "Expert"}
+
+
+def _validate_proficiency(value: str | None) -> str | None:
+    """
+    Restrict proficiency to an allowed level when one is given (S2-BR-016).
+
+    Args:
+        value (str | None): The raw proficiency, or None if omitted.
+
+    Returns:
+        str | None: The value unchanged (blank/None means unspecified).
+
+    Raises:
+        ValueError: If a non-blank value is not an allowed level.
+    """
+    if value and value not in PROFICIENCY_LEVELS:
+        allowed = ", ".join(sorted(PROFICIENCY_LEVELS))
+        raise ValueError(f"must be one of: {allowed}")
+    return value
+
+
+class SkillCreate(BaseModel):
+    """Request body for creating a skill (S2-018).
+
+    `name` is required and non-blank; `category` and `proficiency` are
+    optional (S2-BR-016).
+    """
+
+    name: str = Field(max_length=100)
+    category: str = Field(default="", max_length=100)
+    proficiency: str = Field(default="", max_length=20)
+
+    _validate_name = field_validator("name")(_reject_blank)
+    _validate_proficiency = field_validator("proficiency")(_validate_proficiency)
+
+
+class SkillUpdate(BaseModel):
+    """Request body for updating a skill; all fields optional."""
+
+    name: str | None = Field(default=None, max_length=100)
+    category: str | None = Field(default=None, max_length=100)
+    proficiency: str | None = Field(default=None, max_length=20)
+
+    _validate_proficiency = field_validator("proficiency")(_validate_proficiency)
+
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, value: str | None) -> str | None:
+        """Reject a blank name only when one is provided."""
+        return None if value is None else _reject_blank(value)
+
+
+class SkillOut(BaseModel):
+    """Response body for a skill."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    owner_id: int
+    name: str
+    category: str
+    proficiency: str
+    position: int
