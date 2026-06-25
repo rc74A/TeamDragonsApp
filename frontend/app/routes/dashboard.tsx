@@ -353,7 +353,7 @@ export default function Dashboard() {
                   <option value={SortByValues.CreatedDate}>Date Created</option>
                   <option value={SortByValues.Deadline}>Deadline</option>
                   <option value={SortByValues.Company}>Company</option>
-                  <option value={SortByValues.DontSort}>Don't Sort</option>
+                  <option value={SortByValues.DontSort}>Don&apos;t Sort</option>
                 </select>
               </div>
 
