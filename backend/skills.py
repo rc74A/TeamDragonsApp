@@ -34,9 +34,7 @@ def get_owned_skill(db: Session, skill_id: int, owner_id: int) -> Skill:
         HTTPException: 404 if it does not exist or is not owned by the user.
     """
     skill = (
-        db.query(Skill)
-        .filter(Skill.id == skill_id, Skill.owner_id == owner_id)
-        .first()
+        db.query(Skill).filter(Skill.id == skill_id, Skill.owner_id == owner_id).first()
     )
     if skill is None:
         raise HTTPException(status_code=404, detail="Skill not found")

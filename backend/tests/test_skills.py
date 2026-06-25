@@ -4,9 +4,7 @@ USER_2 = {"X-User-Id": "2"}
 
 def _create(client, headers, name="Python", **fields):
     """Create a skill for a test user."""
-    return client.post(
-        "/api/skills", json={"name": name, **fields}, headers=headers
-    )
+    return client.post("/api/skills", json={"name": name, **fields}, headers=headers)
 
 
 def test_create_and_list_in_order(client):
