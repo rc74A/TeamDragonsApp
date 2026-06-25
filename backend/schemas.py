@@ -279,7 +279,7 @@ class EducationOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    owner_id: int
+    owner_id: str
     school: str
     degree: str
     field_of_study: str
@@ -355,7 +355,7 @@ class SkillOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    owner_id: int
+    owner_id: str
     name: str
     category: str
     proficiency: str
