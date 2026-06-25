@@ -114,3 +114,24 @@ class Education(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=utc_now
     )
+
+
+class Skill(Base):
+    """
+    A skill on a user's profile (S2-018).
+
+    Owned by one user (S1-BR-006). `name` is required; `category` and
+    `proficiency` are optional (S2-BR-016). Ordered by `position`.
+    """
+
+    __tablename__ = "skills"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    owner_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    category: Mapped[str] = mapped_column(String(100), nullable=False, default="")
+    proficiency: Mapped[str] = mapped_column(String(20), nullable=False, default="")
+    position: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=utc_now
+    )
