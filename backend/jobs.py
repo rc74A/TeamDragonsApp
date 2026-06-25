@@ -101,6 +101,9 @@ def create_job(
         title=payload.title,
         company=payload.company,
         stage=payload.stage,
+        location=payload.location,
+        deadline=payload.deadline,
+        deadline_state=payload.deadline_state,
     )
     db.add(job)
     db.commit()
@@ -196,7 +199,7 @@ def update_job(
         JobOut: The updated job record.
     """
     job = get_owned_job(db, job_id, user_id)
-    updates = payload.model_dump(exclude_unset=True, exclude_none=True)
+    updates = payload.model_dump(exclude_unset=True)
     for field, value in updates.items():
         setattr(job, field, value)
     job.last_activity = utc_now()

@@ -101,23 +101,33 @@
   font-size: 18px;
   font-weight: bold;
   color: #06b6d4;
-  margin-bottom: 8px;
   margin-top: 0;
+  margin-bottom: 12px;
 }
 
 .db-card-company {
   font-size: 14px;
   color: #e2e8f0;
-  margin-bottom: 4px;
+  margin-top: 0;
+  margin-bottom: 12px;
 }
 
 .db-card-status {
   font-size: 12px;
   display: inline-block;
-  padding: 4px 8px;
+  padding: 6px 10px;
   background-color: #1a202c;
   border-radius: 4px;
   color: #e2e8f0;
+
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 10px;
+}
+
+.db-card-status:last-of-type {
+  margin-bottom: 0;
 }
 
 .db-btn-edit {

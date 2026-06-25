@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton, useAuth } from "@clerk/react-router";
 import { useLoaderData, Link, useNavigate, redirect } from "react-router";
@@ -11,6 +11,11 @@ interface Job {
   title: string;
   company: string;
   stage: string;
+  location: string | null;
+  deadline: string | null;
+  deadlineState: string | null;
+  lastActivity: string | null;
+  createdAt: string;
 }
 
 interface JobMetrics {
@@ -51,7 +56,6 @@ const EMPTY_METRICS: JobMetrics = {
 interface DashboardData {
   username: string;
   jobs: Job[];
-  display_jobs: Job[];
   userId: string;
   metrics: JobMetrics;
 }
@@ -82,7 +86,6 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
       username,
       userId: String(userId),
       jobs: jobsData,
-      display_jobs: jobsData,
       metrics,
     };
   } catch (error) {
@@ -91,21 +94,42 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
       username,
       userId: String(userId),
       jobs: [],
-      display_jobs: [],
       metrics: EMPTY_METRICS,
     };
   }
 }
 
 export default function Dashboard() {
-  const { userId, jobs, display_jobs, username, metrics } =
-    useLoaderData() as DashboardData;
+  const {
+    userId,
+    jobs: rawJobs,
+    username,
+    metrics,
+  } = useLoaderData() as DashboardData;
   const navigate = useNavigate();
 
   const { getToken } = useAuth();
 
+  const mapBackendJobs = (backendList: any[]): Job[] => {
+    return (backendList || []).map((rawJob) => ({
+      id: rawJob.id,
+      title: rawJob.title,
+      company: rawJob.company,
+      stage: rawJob.stage,
+      location: rawJob.location ?? null,
+      deadline: rawJob.deadline ?? null,
+      deadlineState: rawJob.deadline_state ?? null,
+      lastActivity: rawJob.last_activity ?? null,
+      createdAt: rawJob.created_at || new Date().toISOString(),
+    }));
+  };
+  const clientJobs = mapBackendJobs(rawJobs);
+
+  const [displayJobs, setDisplayJobs] = useState<Job[]>(clientJobs);
   const [sortProperty, setSortProperty] = useState(SortByValues.CreatedDate);
   const [filterProperty, setFilterProperty] = useState(FilterByValues.NoFilter);
+  const [selectedCriteriaValue, setSelectedCriteriaValue] =
+    useState<string>("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingJobId, setEditingJobId] = useState<number | null>(null);
@@ -113,28 +137,104 @@ export default function Dashboard() {
     title: "",
     company: "",
     stage: "Wishlist",
+    location: "",
+    deadline: "",
+    deadlineState: "No Deadline",
   });
+
+  useEffect(() => {
+    const updated = mapBackendJobs(rawJobs);
+    applyFilterAndSort(
+      filterProperty,
+      selectedCriteriaValue,
+      sortProperty,
+      updated,
+    );
+  }, [rawJobs]);
+
+  const uniqueStages = Array.from(
+    new Set(clientJobs.map((j) => j.stage)),
+  ).filter(Boolean);
+  const uniqueDeadlineStates = Array.from(
+    new Set(clientJobs.map((j) => j.deadlineState)),
+  ).filter(Boolean);
+
+  // Central function to update display state whenever filter, criteria, or sort changes
+  const applyFilterAndSort = (
+    activeFilter: FilterByValues,
+    criteria: string,
+    activeSort: SortByValues,
+    currentJobsSource: Job[] = clientJobs,
+  ) => {
+    let updatedList = [...currentJobsSource];
+
+    if (activeFilter !== FilterByValues.NoFilter && criteria.trim() !== "") {
+      const lowercaseCriteria = criteria.toLowerCase();
+
+      updatedList = updatedList.filter((job) => {
+        if (activeFilter === FilterByValues.Stage) {
+          return job.stage === criteria;
+        }
+        if (activeFilter === FilterByValues.DeadlineState) {
+          return (job.deadlineState ?? "") === criteria;
+        }
+        if (activeFilter === FilterByValues.JobLocation) {
+          return (job.location ?? "").toLowerCase().includes(lowercaseCriteria);
+        }
+        return true;
+      });
+    }
+
+    if (activeSort !== SortByValues.DontSort) {
+      updatedList.sort((a, b) => {
+        if (activeSort === SortByValues.Company) {
+          return (a.company ?? "").localeCompare(b.company);
+        }
+
+        const dateA = new Date(
+          activeSort === SortByValues.LastActivity
+            ? a.lastActivity
+            : activeSort === SortByValues.Deadline
+              ? (a.deadline ?? 0)
+              : a.createdAt,
+        ).getTime();
+
+        const dateB = new Date(
+          activeSort === SortByValues.LastActivity
+            ? b.lastActivity
+            : activeSort === SortByValues.Deadline
+              ? (b.deadline ?? 0)
+              : a.createdAt,
+        ).getTime();
+
+        return dateB - dateA;
+      });
+    }
+
+    setDisplayJobs(updatedList);
+  };
 
   const handleFilterJobs = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     // Purely client side
 
     const selectedValue = e.target.value as FilterByValues;
     setFilterProperty(selectedValue);
+    setSelectedCriteriaValue("");
 
-    console.log("FILTERING:");
-    console.log(selectedValue);
+    if (selectedValue === FilterByValues.NoFilter) {
+      applyFilterAndSort(FilterByValues.NoFilter, "", sortProperty);
+    }
+  };
 
-    //display_jobs.filter((
+  const handleCriteriaChange = (value: string) => {
+    setSelectedCriteriaValue(value);
+    applyFilterAndSort(filterProperty, value, sortProperty);
   };
 
   const handleSortJobs = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value as SortByValues;
     setSortProperty(selectedValue);
-
-    console.log("SORTING:");
-    console.log(selectedValue);
-
-    //display_jobs.sort(());
+    applyFilterAndSort(filterProperty, selectedCriteriaValue, selectedValue);
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -158,7 +258,14 @@ export default function Dashboard() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(jobForm),
+        body: JSON.stringify({
+          title: jobForm.title,
+          company: jobForm.company,
+          stage: jobForm.stage,
+          location: jobForm.location || null,
+          deadline: jobForm.deadline || null,
+          deadline_state: jobForm.deadlineState,
+        }),
       });
 
       setIsModalOpen(false);
@@ -301,12 +408,69 @@ export default function Dashboard() {
                 </select>
               </div>
 
+              {/* Conditional Secondary Criteria Input */}
+              {filterProperty !== FilterByValues.NoFilter && (
+                <div>
+                  <label htmlFor="filterCriteria">Select/Type Value</label>
+
+                  {/* Dropdown for Stage */}
+                  {filterProperty === FilterByValues.Stage && (
+                    <select
+                      id="filterCriteria"
+                      value={selectedCriteriaValue}
+                      onChange={(e) => handleCriteriaChange(e.target.value)}
+                    >
+                      <option value="">Select Stage...</option>
+                      {uniqueStages.map((stage) => (
+                        <option key={stage} value={stage}>
+                          {stage}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                  {/* Dropdown for Deadline State */}
+                  {filterProperty === FilterByValues.DeadlineState && (
+                    <select
+                      id="filterCriteria"
+                      value={selectedCriteriaValue}
+                      onChange={(e) => handleCriteriaChange(e.target.value)}
+                    >
+                      <option value="">Select State...</option>
+                      {uniqueDeadlineStates.map((state) => (
+                        <option key={state} value={state}>
+                          {state}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                  {/* Text Input for Location */}
+                  {filterProperty === FilterByValues.JobLocation && (
+                    <input
+                      id="filterCriteria"
+                      type="text"
+                      placeholder="Type a city or 'Remote'..."
+                      value={selectedCriteriaValue}
+                      onChange={(e) => handleCriteriaChange(e.target.value)}
+                    />
+                  )}
+                </div>
+              )}
+
               {/* Add */}
               <button
                 type="button"
                 onClick={() => {
                   setEditingJobId(null);
-                  setJobForm({ title: "", company: "", stage: "Wishlist" });
+                  setJobForm({
+                    title: "",
+                    company: "",
+                    stage: "Wishlist",
+                    location: "",
+                    deadline: "",
+                    deadlineState: "No Deadline",
+                  });
                   setIsModalOpen(true);
                 }}
                 className="db-btn-add-job"
@@ -317,12 +481,21 @@ export default function Dashboard() {
             </div>
 
             <div className="db-grid">
-              {display_jobs.map((job) => (
+              {displayJobs.map((job) => (
                 <div key={job.id} className="db-card">
                   <div>
                     <h4>{job.title}</h4>
                     <p className="db-card-company">🏢 {job.company}</p>
                     <p className="db-card-status">📋 Status: {job.stage}</p>
+                    <p className="db-card-status">
+                      📍 Location: {job.location}
+                    </p>
+                    <p className="db-card-status">
+                      📅 Deadline: {job.deadline}
+                    </p>
+                    <p className="db-card-status">
+                      ⚠️ Deadline State: {job.deadlineState}
+                    </p>
                   </div>
                   <div className="db-card-actions">
                     <button
@@ -333,6 +506,9 @@ export default function Dashboard() {
                           title: job.title,
                           company: job.company,
                           stage: job.stage,
+                          location: job.location || "",
+                          deadline: job.deadline || "",
+                          deadlineState: job.deadlineState,
                         });
                         setIsModalOpen(true);
                       }}
@@ -404,6 +580,46 @@ export default function Dashboard() {
                   <option value="Interviewing">Interviewing</option>
                   <option value="Offer">Offer</option>
                   <option value="Rejected">Rejected</option>
+                </select>
+              </div>
+              <div className="db-form-group">
+                <label>Location</label>
+                <input
+                  type="text"
+                  id="modalLocation"
+                  required
+                  placeholder="e.g. Houston, TX"
+                  value={jobForm.location}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, location: e.target.value })
+                  }
+                />
+              </div>
+              <div className="db-form-group">
+                <label>Deadline</label>
+                <input
+                  type="date"
+                  id="modalDeadline"
+                  required
+                  value={jobForm.deadline || ""}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, deadline: e.target.value })
+                  }
+                />
+              </div>
+              <div className="db-form-group">
+                <label htmlFor="modalDeadlineState">Tracking Stage</label>
+                <select
+                  id="modalDeadlineState"
+                  value={jobForm.deadlineState}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, deadlineState: e.target.value })
+                  }
+                >
+                  <option value="No Deadline">No Deadline</option>
+                  <option value="Upcoming">Upcoming</option>
+                  <option value="Past">Past</option>
+                  <option value="Extended">Extended</option>
                 </select>
               </div>
               <div className="db-form-actions">
