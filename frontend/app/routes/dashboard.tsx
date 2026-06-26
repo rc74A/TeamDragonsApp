@@ -34,6 +34,14 @@ interface TimelineEntry {
   changed_at: string;
 }
 
+interface Interview {
+  id: number;
+  job_id: number;
+  round_type: string; // e.g., Phone Screen, Technical, Behavioral, Management
+  interview_date: string;
+  notes: string | null;
+}
+
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 enum SortByValues {
@@ -136,6 +144,16 @@ export default function Dashboard() {
 
   const [timelineData, setTimelineData] = useState<TimelineEntry[]>([]);
   const [loadingTimeline, setLoadingTimeline] = useState(false);
+  
+  const [interviewForm, setInterviewForm] = useState({
+    roundType: "Technical",
+    interviewDate: "",
+    notes: "",
+  });
+
+  const [interviews, setInterviews] = useState<Interview[]>([]);
+  const [loadingInterviews, setLoadingInterviews] = useState(false);
+
 
   const clientJobs = useMemo(() => {
     return ((rawJobs as any[]) || []).map((rawJob) => ({
@@ -226,6 +244,57 @@ export default function Dashboard() {
   const handleSortJobs = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value as SortByValues;
     setSortProperty(selectedValue);
+  };
+
+  const fetchJobInterviews = async (jobId: number) => {
+    setLoadingInterviews(true);
+    try {
+      const token = await getToken();
+      if (!token) return;
+
+      const res = await fetch(`${BACKEND_URL}/api/jobs/${jobId}/interviews`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setInterviews(data);
+      }
+    } catch (err) {
+      console.error("Failed to load interview rounds:", err);
+    } finally {
+      setLoadingInterviews(false);
+    }
+  };
+
+  const handleAddInterview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingJobId) return;
+
+    try {
+      const token = await getToken();
+      if (!token) return;
+
+      const response = await fetch(`${BACKEND_URL}/api/jobs/${editingJobId}/interviews`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          round_type: interviewForm.roundType,
+          interview_date: interviewForm.interviewDate,
+          notes: interviewForm.notes || null,
+        }),
+      });
+
+      if (response.ok) {
+        // Clear sub-form and re-fetch to show the fresh interview round in the list
+        setInterviewForm({ roundType: "Technical", interviewDate: "", notes: "" });
+        fetchJobInterviews(editingJobId);
+      }
+    } catch (error) {
+      console.error("Failed to append interview record:", error);
+    }
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -539,6 +608,7 @@ export default function Dashboard() {
                           outcomeNotes: "",
                         });
                         setIsModalOpen(true);
+                        fetchJobInterviews(job.id);
                       }}
                       className="db-btn-edit"
                     >
@@ -698,6 +768,80 @@ export default function Dashboard() {
                       ))}
                     </div>
                   )}
+                  {/* 🟢 DROP THE NEW CLEAN PANEL CODE DIRECTLY HERE */}
+                  <hr className="db-modal-divider" />
+
+                  {/* S2-011: Interview Tracking Management Panel */}
+                  <h3 className="db-modal-title-blue view-title-spacing">🎙️ Scheduled Interviews</h3>
+                  
+                  {loadingInterviews ? (
+                    <p className="db-timeline-loading">Syncing interview records...</p>
+                  ) : interviews.length === 0 ? (
+                    <p className="db-timeline-empty interview-empty-margin">No interview rounds logged for this position yet.</p>
+                  ) : (
+                    <div className="db-interview-list">
+                      {interviews.map((iv) => (
+                        <div key={iv.id} className="db-timeline-card db-interview-card-accent">
+                          <div className="db-timeline-time db-interview-type-highlight">
+                            {iv.round_type} Round
+                          </div>
+                          <div className="db-timeline-time">
+                            📅 {new Date(iv.interview_date).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                          </div>
+                          {iv.notes && <p className="db-timeline-text db-interview-notes-text">📝 {iv.notes}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Add Interview Sub-Form Component */}
+                  <form onSubmit={handleAddInterview} className="db-interview-subform">
+                    <h4 className="db-interview-subform-title">Log an Interview Round</h4>
+                    
+                    <div className="db-form-group subform-group-spacing">
+                      <label htmlFor="interviewRoundType">Round Type</label>
+                      <select 
+                        id="interviewRoundType"
+                        value={interviewForm.roundType} 
+                        onChange={(e) => setInterviewForm({ ...interviewForm, roundType: e.target.value })}
+                        className="subform-select-padding"
+                      >
+                        <option value="Phone Screen">Phone Screen</option>
+                        <option value="Technical">Technical Interview</option>
+                        <option value="Behavioral">Behavioral Interview</option>
+                        <option value="Manager Round">Manager Round</option>
+                        <option value="Onsite / Final">Onsite / Final Round</option>
+                      </select>
+                    </div>
+
+                    <div className="db-form-group subform-group-spacing">
+                      <label htmlFor="interviewDateTime">Date & Time</label>
+                      <input 
+                        id="interviewDateTime"
+                        type="datetime-local" 
+                        required 
+                        value={interviewForm.interviewDate} 
+                        onChange={(e) => setInterviewForm({ ...interviewForm, interviewDate: e.target.value })}
+                        className="subform-select-padding"
+                      />
+                    </div>
+
+                    <div className="db-form-group subform-group-spacing">
+                      <label htmlFor="interviewNotes">Notes</label>
+                      <input 
+                        id="interviewNotes"
+                        type="text" 
+                        placeholder="e.g., LeetCode medium, system architecture..." 
+                        value={interviewForm.notes} 
+                        onChange={(e) => setInterviewForm({ ...interviewForm, notes: e.target.value })}
+                        className="subform-select-padding"
+                      />
+                    </div>
+
+                    <button type="submit" className="db-btn-submit subform-btn-layout">
+                      + Save Interview Round
+                    </button>
+                  </form>
                 </div>
               )}
 
