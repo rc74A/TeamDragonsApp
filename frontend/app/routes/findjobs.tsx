@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { getAuth } from "@clerk/react-router/server";
-import { SignOutButton } from "@clerk/react-router";
+import { SignOutButton, useAuth } from "@clerk/react-router";
 import { Link, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
 import "./app.css";
 import "./findjobs.css";
+import { Console } from "console";
 
 interface FoundJob {
   id: string;
@@ -22,7 +23,7 @@ interface FoundJob {
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 export async function loader(args: Route.LoaderArgs) {
-  const { userId, sessionClaims } = await getAuth(args);
+  const { userId } = await getAuth(args);
   if (!userId) throw redirect("/login");
 }
 
@@ -38,13 +39,22 @@ const Spinner = () => (
 export default function FindJobs() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [currentResume, setCurrentResume] = useState("");
   const [searchForm, setSearchForm] = useState({
     title: "",
     employer: "",
     keywords: "",
     excluded_words: "",
   });
-  const [jobs, setJobs] = useState<FoundJob[]>([]);
+
+  const [jobs, setJobs] = useState<FoundJob[]>([
+    { id: "0", title: "Test Job", employer: "Employer", description: "This is a normal job.", apply_link: "https://google.com", 
+      salary: 36000, employment_type: "Full-Time", country: "United States", state: "New Jersey", city: "Newark"
+    }
+  ]);
+  const [selectedJob, setSelectedJob] = useState<FoundJob>();
+
+  const { getToken } = useAuth();
 
   const handleSearchSubmit = async () => {
     try {
@@ -91,9 +101,63 @@ export default function FindJobs() {
     }
   };
 
+  const handleGenerateResume = async (job: FoundJob) => {
+    try {
+      setIsLoading(true);
+      setError("");
+
+      const token = await getToken();
+      if (!token) return;
+
+      const response = await fetch(`${BACKEND_URL}/api/ai/create_resume`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          position_info: job.description,  
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError("Failed to generate resume.");
+        console.error(errorData.detail);  
+        return;
+      }
+
+      const resume = await response.json();
+
+      if (resume.length == 0) {
+        setError("Failed to generate resume.");
+        return;
+      }
+
+      setCurrentResume(resume);
+      setError("");
+
+      // TODO: Create popup with resume preview 
+      console.log(resume);
+    } catch {
+      setError("Network error while generating resume.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="search-root">
-      {isLoading && <Spinner />}
+
+      {isLoading && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div className="bg-white rounded-xl p-8 flex flex-col items-center gap-4">
+          <Spinner />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+      )}
+
       <header className="search-header">Dragon Application</header>
       <div className="search-workspace">
         <aside className="sidebar">
@@ -216,17 +280,17 @@ export default function FindJobs() {
                   <div>
                     <h4>{job.title}</h4>
                     <p className="search-card-company">🏢 {job.employer}</p>
-                    <p className="search-card-company">🏢 {job.description}</p>
                     <p className="search-card-company">
-                      🏢 {job.employment_type}
+                      {job.employment_type}
                     </p>
                     <p className="search-card-company">
-                      🏢 {job.country}, {job.state}, {job.city}
+                       {job.country}, {job.state}, {job.city}
                     </p>
+                    <a className="search-card-company underline" href={job.apply_link}> Link </a> <br/><br/>
                     <p className="search-card-status">
-                      📋 salary: {job.salary}
+                      salary: {job.salary}
                     </p>
-                    <p className="search-card-company">🏢 {job.apply_link}</p>
+                    <p className="search-card-company">{job.description}</p>
                   </div>
                   <div className="search-card-actions">
                     <button
@@ -237,6 +301,16 @@ export default function FindJobs() {
                       className="search-btn-add"
                     >
                       Apply
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedJob(job)
+                        handleGenerateResume(job)
+                      }}
+                      className="search-btn-add"
+                    >
+                      Create Resume
                     </button>
                     <button
                       type="button"

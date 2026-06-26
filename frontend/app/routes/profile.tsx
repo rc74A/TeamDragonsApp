@@ -29,7 +29,7 @@ export default function Profile() {
     summary: "",
   });
 
-  const [userId, setUserId] = useState<string | null>(null);
+  const [userId] = useState<string | null>(null);
 
   const [errors, setErrors] = useState({ email: "", phone: "", server: "" });
   const [successMessage, setSuccessMessage] = useState("");
@@ -73,8 +73,6 @@ export default function Profile() {
 
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
-
-    const activeUserId = userId || "1";
 
     let valid = true;
     const newErrors = { email: "", phone: "", server: "" };
