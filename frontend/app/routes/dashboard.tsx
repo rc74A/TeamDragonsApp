@@ -26,6 +26,13 @@ interface JobMetrics {
   offers: number;
   response_rate: number;
 }
+interface TimelineEntry {
+  id: number;
+  job_id: number;
+  old_stage: string;
+  new_stage: string;
+  changed_at: string;
+}
 
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
@@ -64,7 +71,7 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
   const { userId, sessionClaims, getToken } = await getAuth(args);
   if (!userId) throw redirect("/login");
 
-  const username = sessionClaims?.email ?? "User";
+  const username = (sessionClaims?.email as string) ?? "User";
 
   try {
     const token = await getToken();
@@ -101,7 +108,6 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
 
 export default function Dashboard() {
   const {
-    _userId,
     jobs: rawJobs,
     username,
     metrics,
@@ -124,10 +130,15 @@ export default function Dashboard() {
     location: "",
     deadline: "",
     deadlineState: "No Deadline",
+    outcomeState: "",
+    outcomeNotes: "",
   });
 
+  const [timelineData, setTimelineData] = useState<TimelineEntry[]>([]);
+  const [loadingTimeline, setLoadingTimeline] = useState(false);
+
   const clientJobs = useMemo(() => {
-    return (rawJobs || []).map((rawJob) => ({
+    return ((rawJobs as any[]) || []).map((rawJob) => ({
       id: Number(rawJob.id),
       title: String(rawJob.title),
       company: String(rawJob.company),
@@ -137,6 +148,8 @@ export default function Dashboard() {
       deadlineState: (rawJob.deadline_state as string) ?? null,
       lastActivity: (rawJob.last_activity as string) ?? null,
       createdAt: (rawJob.created_at as string) || new Date().toISOString(),
+      outcome_state: (rawJob.outcome_state as string) ?? null,
+      outcome_notes: (rawJob.outcome_notes as string) ?? null,
     }));
   }, [rawJobs]);
 
@@ -239,6 +252,8 @@ export default function Dashboard() {
           location: jobForm.location || null,
           deadline: jobForm.deadline || null,
           deadline_state: jobForm.deadlineState,
+          outcome_state: jobForm.outcomeState || null,
+          outcome_notes: jobForm.outcomeNotes || null,
         }),
       });
 
@@ -267,6 +282,8 @@ export default function Dashboard() {
           location: currentJob.location,
           deadline: currentJob.deadline,
           deadline_state: currentJob.deadlineState,
+          outcome_state: currentJob.outcome_state || null,
+          outcome_notes: currentJob.outcome_notes || null,
         }),
       });
 
@@ -374,6 +391,7 @@ export default function Dashboard() {
                 <label htmlFor="options">Sort By</label>
                 <select
                   id="sortBy"
+                  aria-label="Sort job applications list"
                   value={sortProperty}
                   onChange={handleSortJobs}
                 >
@@ -392,11 +410,12 @@ export default function Dashboard() {
                 <label htmlFor="options">Filter By</label>
                 <select
                   id="filterBy"
+                  aria-label="Filter job applications list"
                   value={filterProperty}
                   onChange={handleFilterJobs}
                 >
                   <option value={FilterByValues.Stage}>Stage</option>
-                  <option value={FilterByValues.Location}>Location</option>
+                  <option value={FilterByValues.JobLocation}>Location</option>
                   <option value={FilterByValues.DeadlineState}>
                     DeadlineState
                   </option>
@@ -466,6 +485,8 @@ export default function Dashboard() {
                     location: "",
                     deadline: "",
                     deadlineState: "No Deadline",
+                    outcomeState: "",
+                    outcomeNotes: "",
                   });
                   setIsModalOpen(true);
                 }}
@@ -514,6 +535,8 @@ export default function Dashboard() {
                           location: job.location || "",
                           deadline: job.deadline || "",
                           deadlineState: job.deadlineState,
+                          outcomeState: "",
+                          outcomeNotes: "",
                         });
                         setIsModalOpen(true);
                       }}
@@ -535,111 +558,150 @@ export default function Dashboard() {
           </div>
         </main>
       </div>
-
       {isModalOpen && (
         <div className="db-modal-overlay">
-          <div className="db-modal-content">
-            <h3>
-              {editingJobId
-                ? "Edit Position Details"
-                : "Post a New Tracking Entry"}
-            </h3>
-            <form onSubmit={handleFormSubmit}>
-              <div className="db-form-group">
-                <label>Job Title</label>
-                <input
-                  type="text"
-                  id="modalJobTitle"
-                  required
-                  placeholder="e.g. Software Engineer"
-                  value={jobForm.title}
-                  onChange={(e) =>
-                    setJobForm({ ...jobForm, title: e.target.value })
-                  }
-                />
+          {/* Managed purely via CSS file targeting hooks */}
+          <div className={`db-modal-content ${editingJobId ? "db-modal-expanded" : ""}`}>
+            <div className="db-modal-split">
+              
+              {/* LEFT COLUMN: Input form data elements */}
+              <div className="db-modal-col-left">
+                <h3 className="db-modal-title-blue">
+                  {editingJobId ? "✏️ Edit Position Details" : "➕ Post a New Tracking Entry"}
+                </h3>
+                <form onSubmit={handleFormSubmit}>
+                  <div className="db-form-group">
+                    <label>Job Title</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Software Engineer"
+                      value={jobForm.title}
+                      onChange={(e) => setJobForm({ ...jobForm, title: e.target.value })}
+                    />
+                  </div>
+                  <div className="db-form-group">
+                    <label>Company</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Google"
+                      value={jobForm.company}
+                      onChange={(e) => setJobForm({ ...jobForm, company: e.target.value })}
+                    />
+                  </div>
+                  <div className="db-form-group">
+                      <label htmlFor="modalStage">Tracking Stage</label>                    
+                      <select value={jobForm.stage} aria-label="Select current application tracking stage" onChange={(e) => setJobForm({ ...jobForm, stage: e.target.value })}>
+                      <option value="Wishlist">Wishlist</option>
+                      <option value="Applied">Applied</option>
+                      <option value="Interviewing">Interviewing</option>
+                      <option value="Offer">Offer</option>
+                      <option value="Rejected">Rejected</option>
+                    </select>
+                  </div>
+                  <div className="db-form-group">
+                    <label>Location</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Houston, TX"
+                      value={jobForm.location}
+                      onChange={(e) => setJobForm({ ...jobForm, location: e.target.value })}
+                    />
+                  </div>
+                  <div className="db-form-group">
+                    <label htmlFor="modalDeadline">Deadline</label>
+                  <input id="modalDeadline" type="date" required value={jobForm.deadline || ""} onChange={(e) => setJobForm({ ...jobForm, deadline: e.target.value })}/>
+                  </div>
+                  <div className="db-form-group">
+                    <label htmlFor="modalDeadlineState">Deadline State</label>
+                    <select id="modalDeadlineState" aria-label="Select deadline status state" value={jobForm.deadlineState} onChange={(e) => setJobForm({ ...jobForm, deadlineState: e.target.value })}>
+                      <option value="No Deadline">No Deadline</option>
+                      <option value="Upcoming">Upcoming</option>
+                      <option value="Past">Past</option>
+                      <option value="Extended">Extended</option>
+                    </select>
+                  </div>
+
+                  {/* S2-013: Terminal Conclusion Tracking Panel Block */}
+                  {editingJobId && (
+                    <div className="db-outcome-panel">
+                      <h4 className="db-outcome-title">🏁 Terminal Outcome </h4>
+                      <div className="db-form-group">
+                        <label htmlFor="modalOutcomeState">Conclusion State</label>
+                        <select id="modalOutcomeState" aria-label="Select terminal job application conclusion state"value={jobForm.outcomeState} onChange={(e) => setJobForm({ ...jobForm, outcomeState: e.target.value })}>
+                          <option value="">In Progress / Active Pipeline...</option>
+                          <option value="Offer Accepted">Offer Accepted 🍾</option>
+                          <option value="Offer Declined">Offer Declined</option>
+                          <option value="Rejected">Rejected by Company</option>
+                          <option value="Withdrawn">Withdrawn by Me</option>
+                        </select>
+                      </div>
+                      <div className="db-form-group db-form-group-no-margin">
+                        <label htmlFor="modalOutcomeNotes">Conclusion Notes</label>
+                        <textarea
+                          id="modalOutcomeNotes"
+                          placeholder="Add any retrospective thoughts, final salary stats, or feedback details..."
+                          value={jobForm.outcomeNotes}
+                          rows={3}
+                          className="db-outcome-textarea"
+                          onChange={(e) => setJobForm({ ...jobForm, outcomeNotes: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="db-form-actions db-form-actions-spaced">
+                    <button type="button" onClick={() => setIsModalOpen(false)} className="db-btn-cancel">
+                      Cancel
+                    </button>
+                    <button type="submit" className="db-btn-submit">
+                      {editingJobId ? "Save Changes" : "Track Job"}
+                    </button>
+                  </div>
+                </form>
               </div>
-              <div className="db-form-group">
-                <label>Company</label>
-                <input
-                  type="text"
-                  id="modalCompany"
-                  required
-                  placeholder="e.g. Google"
-                  value={jobForm.company}
-                  onChange={(e) =>
-                    setJobForm({ ...jobForm, company: e.target.value })
-                  }
-                />
-              </div>
-              <div className="db-form-group">
-                <label htmlFor="modalStage">Tracking Stage</label>
-                <select
-                  id="modalStage"
-                  value={jobForm.stage}
-                  onChange={(e) =>
-                    setJobForm({ ...jobForm, stage: e.target.value })
-                  }
-                >
-                  <option value="Wishlist">Wishlist</option>
-                  <option value="Applied">Applied</option>
-                  <option value="Interviewing">Interviewing</option>
-                  <option value="Offer">Offer</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
-              </div>
-              <div className="db-form-group">
-                <label>Location</label>
-                <input
-                  type="text"
-                  id="modalLocation"
-                  required
-                  placeholder="e.g. Houston, TX"
-                  value={jobForm.location}
-                  onChange={(e) =>
-                    setJobForm({ ...jobForm, location: e.target.value })
-                  }
-                />
-              </div>
-              <div className="db-form-group">
-                <label>Deadline</label>
-                <input
-                  type="date"
-                  id="modalDeadline"
-                  required
-                  value={jobForm.deadline || ""}
-                  onChange={(e) =>
-                    setJobForm({ ...jobForm, deadline: e.target.value })
-                  }
-                />
-              </div>
-              <div className="db-form-group">
-                <label htmlFor="modalDeadlineState">Tracking Stage</label>
-                <select
-                  id="modalDeadlineState"
-                  value={jobForm.deadlineState}
-                  onChange={(e) =>
-                    setJobForm({ ...jobForm, deadlineState: e.target.value })
-                  }
-                >
-                  <option value="No Deadline">No Deadline</option>
-                  <option value="Upcoming">Upcoming</option>
-                  <option value="Past">Past</option>
-                  <option value="Extended">Extended</option>
-                </select>
-              </div>
-              <div className="db-form-actions">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="db-btn-cancel"
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="db-btn-submit">
-                  {editingJobId ? "Save Changes" : "Track Job"}
-                </button>
-              </div>
-            </form>
+
+              {/* RIGHT COLUMN: S2-010 Visual Chronological History Timeline Feed Panel */}
+              {editingJobId && (
+                <div className="db-modal-col-right">
+                  <h3 className="db-modal-title-blue">⏱️ Activity Timeline</h3>
+                  {loadingTimeline ? (
+                    <p className="db-timeline-loading">Syncing chronological logs...</p>
+                  ) : timelineData.length === 0 ? (
+                    <p className="db-timeline-empty">No stage transitions recorded yet. Changes you save above will build logs here!</p>
+                  ) : (
+                    <div className="db-timeline-container">
+                      {timelineData.map((entry, index) => (
+                        <div key={entry.id} className="db-timeline-node">
+                          
+                          {/* Chronological Connector Graphics wireframe elements */}
+                          <div className="db-timeline-axis">
+                            <div className="db-timeline-dot" />
+                            {index !== timelineData.length - 1 && (
+                              <div className="db-timeline-line" />
+                            )}
+                          </div>
+
+                          {/* Historical Node Description Label Cards */}
+                          <div className="db-timeline-card">
+                            <div className="db-timeline-time">
+                              {new Date(entry.changed_at).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                            <div className="db-timeline-text">
+                              Moved from <span className="db-timeline-old-stage">{entry.old_stage}</span> → <span className="db-timeline-new-stage">{entry.new_stage}</span>
+                            </div>
+                          </div>
+
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+            </div>
           </div>
         </div>
       )}

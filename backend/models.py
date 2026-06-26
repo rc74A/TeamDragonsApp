@@ -42,7 +42,8 @@ class Job(Base):
     deadline_state: Mapped[str] = mapped_column(
         String(50), nullable=True, default="No Deadline"
     )
-
+    outcome_state: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    outcome_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 
 class Profile(Base):
     """

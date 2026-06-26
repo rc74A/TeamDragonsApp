@@ -53,6 +53,9 @@ class JobUpdate(BaseModel):
     deadline: date | None = Field(default=None)
     deadline_state: str | None = Field(default=None, max_length=50)
 
+    outcome_state: str | None = Field(default=None, max_length=50)
+    outcome_notes: str | None = Field(default=None)
+
     @field_validator("title", "company", "stage", "location", "deadline_state")
     @classmethod
     def validate_not_blank(cls, value: str | None) -> str | None:
@@ -85,7 +88,20 @@ class JobOut(BaseModel):
     deadline_state: str | None
     last_activity: datetime
     created_at: datetime
+    outcome_state: str | None
+    outcome_notes: str | None
 
+
+class JobStageHistoryOut(BaseModel):
+    """Response body representing a single historical point on the job timeline."""
+    
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    job_id: int
+    old_stage: str
+    new_stage: str
+    changed_at: datetime
 
 # ----- Profile -----
 

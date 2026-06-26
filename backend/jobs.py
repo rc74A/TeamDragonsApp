@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from domain import compute_job_metrics
 from models import Job, utc_now, JobStageHistory
-from schemas import JobCreate, JobMetrics, JobOut, JobUpdate
+from schemas import JobCreate, JobMetrics, JobOut, JobUpdate, JobStageHistoryOut
 
 jobsrouter = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
@@ -247,3 +247,24 @@ def delete_job(
     db.delete(job)
     db.commit()
     return None
+
+@jobsrouter.get("/{job_id}/timeline", response_model=list[JobStageHistoryOut])
+def get_job_timeline(
+    job_id: int,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """
+    Retrieve the chronological stage history log for a specific job (S2-010).
+    Guarded by user ownership verification checks to prevent resource leaks.
+    """
+    get_owned_job(db, job_id, user_id)
+    
+    timeline = (
+        db.query(JobStageHistory)
+        .filter(JobStageHistory.job_id == job_id)
+        .order_by(JobStageHistory.changed_at.asc())
+        .all()
+    )
+    
+    return timeline

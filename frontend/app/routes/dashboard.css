@@ -336,3 +336,140 @@
   background-color: #2d3748; 
   color: #ffffff;
 }
+
+
+.db-modal-split {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.db-modal-col-left {
+  flex: 1;
+  min-width: 300px;
+}
+
+.db-modal-col-right {
+  flex: 1;
+  min-width: 300px;
+  border-left: 1px solid #eee;
+  padding-left: 20px;
+}
+
+.db-modal-title-blue {
+  color: #4169E1;
+  margin-bottom: 20px;
+}
+
+/* Outcome Panel Section */
+.db-outcome-panel {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #4169E1;
+  border-radius: 6px;
+  background-color: rgba(65, 105, 225, 0.05);
+}
+
+.db-outcome-title {
+  color: #4169E1;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.db-outcome-textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+/* Card Outcome Badge */
+.db-card-outcome-highlight {
+  color: #00FFFF;
+  font-weight: bold;
+}
+
+/* Chronological Timeline Element Engine */
+.db-timeline-loading {
+  color: #00FFFF;
+}
+
+.db-timeline-empty {
+  color: #666;
+  font-style: italic;
+}
+
+.db-timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 450px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.db-timeline-node {
+  display: flex;
+  gap: 10px;
+  position: relative;
+}
+
+.db-timeline-axis {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.db-timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #00FFFF;
+  border: 2px solid #4169E1;
+  z-index: 2;
+}
+
+.db-timeline-line {
+  width: 2px;
+  flex-grow: 1;
+  background-color: #4169E1;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.db-timeline-card {
+  background-color: #f8f9fa;
+  padding: 10px;
+  borderRadius: 6px;
+  flex-grow: 1;
+  border-left: 3px solid #00FFFF;
+}
+
+.db-timeline-time {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.db-timeline-text {
+  font-size: 0.95rem;
+  margin-top: 4px;
+}
+
+.db-timeline-old-stage {
+  font-weight: 600;
+  color: #666;
+}
+
+.db-timeline-new-stage {
+  font-weight: 600;
+  color: #4169E1;
+}
+
+.db-form-group-no-margin {
+  margin-bottom: 0 !important;
+}
+.db-form-actions-spaced {
+  margin-top: 20px;
+}
