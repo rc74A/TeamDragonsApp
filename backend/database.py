@@ -68,5 +68,4 @@ def get_db():
 
 
 # Remake the db if deleted
-
 Base.metadata.create_all(bind=engine)

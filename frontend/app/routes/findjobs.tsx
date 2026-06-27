@@ -2,10 +2,10 @@ import { useState } from "react";
 import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton, useAuth } from "@clerk/react-router";
 import { Link, redirect } from "react-router";
-import type { Route } from "./+types/dashboard";
+import type { Route } from "./+types/findjobs";
+import ResumeModal from "~/components/ResumeModal";
 import "./app.css";
 import "./findjobs.css";
-import { Console } from "console";
 
 interface FoundJob {
   id: string;
@@ -39,7 +39,8 @@ const Spinner = () => (
 export default function FindJobs() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [currentResume, setCurrentResume] = useState("");
+  const [currentResume, setCurrentResume] = useState<TailoredResume | null>(null);
+  const [resumeModalOpen, setResumeModalOpen] = useState(true);
   const [searchForm, setSearchForm] = useState({
     title: "",
     employer: "",
@@ -122,7 +123,7 @@ export default function FindJobs() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        setError("Failed to generate resume.");
+        setError(errorData.detail);
         console.error(errorData.detail);  
         return;
       }
@@ -135,6 +136,7 @@ export default function FindJobs() {
       }
 
       setCurrentResume(resume);
+      setResumeModalOpen(true);
       setError("");
 
       // TODO: Create popup with resume preview 
@@ -328,6 +330,15 @@ export default function FindJobs() {
           </div>
         </main>
       </div>
+
+      {resumeModalOpen && (
+        <ResumeModal
+          resume={currentResume}
+          onClose={() => setResumeModalOpen(false)}
+        />
+      )}
+
     </div>
+
   );
 }

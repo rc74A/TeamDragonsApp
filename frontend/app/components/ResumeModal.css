@@ -1,0 +1,254 @@
+
+/* ── Backdrop ─────────────────────────────────────────── */
+.rm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 18, 0.72);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+/* ── Modal shell ──────────────────────────────────────── */
+.rm-modal {
+  width: 100%;
+  max-width: 780px;
+  background: #f7f6f2;
+  border-radius: 6px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Toolbar ──────────────────────────────────────────── */
+.rm-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1.25rem;
+  background: #1a1c24;
+  color: #9a9faf;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rm-toolbar-label {
+  font-weight: 600;
+}
+
+.rm-toolbar-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.rm-btn-print {
+  background: #2f6df5;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-transform: none;
+  transition: background 0.15s;
+}
+
+.rm-btn-print:hover {
+  background: #1a57e0;
+}
+
+.rm-btn-close {
+  background: none;
+  border: none;
+  color: #9a9faf;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  transition: color 0.15s, background 0.15s;
+  line-height: 1;
+}
+
+.rm-btn-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Paper ────────────────────────────────────────────── */
+.rm-paper {
+  padding: 3rem 3.5rem;
+  font-family: "Georgia", "Times New Roman", serif;
+  color: #1a1c24;
+  line-height: 1.55;
+  background: #fff;
+  margin: 1.25rem;
+  border-radius: 3px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Header ───────────────────────────────────────────── */
+.rm-header {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 2px solid #1a1c24;
+}
+
+.rm-name {
+  font-family: "Georgia", serif;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.4rem;
+  color: #1a1c24;
+}
+
+.rm-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  font-family: "Arial", sans-serif;
+  font-size: 0.78rem;
+  color: #555;
+  margin-bottom: 0.85rem;
+}
+
+.rm-contact span::before {
+  content: "";
+}
+
+.rm-contact span + span::before {
+  content: "·";
+  margin-right: 1.25rem;
+  color: #bbb;
+}
+
+.rm-summary {
+  font-size: 0.875rem;
+  color: #333;
+  margin: 0;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* ── Sections ─────────────────────────────────────────── */
+.rm-section {
+  margin-bottom: 1.5rem;
+}
+
+.rm-section-title {
+  font-family: "Arial", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #2f6df5;
+  margin: 0 0 0.3rem;
+}
+
+.rm-section-rule {
+  height: 1px;
+  background: #d8d8d8;
+  margin-bottom: 0.85rem;
+}
+
+/* ── Entries ──────────────────────────────────────────── */
+.rm-entry {
+  margin-bottom: 0.9rem;
+}
+
+.rm-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.rm-entry-title {
+  font-family: "Arial", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1a1c24;
+}
+
+.rm-entry-org {
+  font-family: "Arial", sans-serif;
+  font-size: 0.875rem;
+  color: #444;
+}
+
+.rm-entry-dates {
+  font-family: "Arial", sans-serif;
+  font-size: 0.75rem;
+  color: #777;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rm-entry-desc {
+  font-size: 0.85rem;
+  color: #333;
+  margin: 0.3rem 0 0;
+  line-height: 1.55;
+}
+
+/* ── Skills ───────────────────────────────────────────── */
+.rm-skills-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.rm-skill-group {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.84rem;
+  align-items: baseline;
+}
+
+.rm-skill-category {
+  font-family: "Arial", sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: #1a1c24;
+  min-width: 110px;
+  flex-shrink: 0;
+}
+
+.rm-skill-list {
+  color: #333;
+  font-family: "Arial", sans-serif;
+}
+
+/* ── Print ────────────────────────────────────────────── */
+@media print {
+  .rm-backdrop {
+    position: static;
+    background: none;
+    padding: 0;
+  }
+
+  .rm-modal {
+    box-shadow: none;
+    max-width: 100%;
+  }
+
+  .rm-toolbar {
+    display: none;
+  }
+
+  .rm-paper {
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+}
