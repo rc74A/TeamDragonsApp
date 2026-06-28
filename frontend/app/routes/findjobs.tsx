@@ -4,10 +4,13 @@ import { SignOutButton, useAuth } from "@clerk/react-router";
 import { Link, redirect } from "react-router";
 import type { Route } from "./+types/findjobs";
 import ResumeModal from "~/components/ResumeModal";
+import type { TailoredResume } from "~/components/ResumeModal";
+import CoverLetterModal from "~/components/CoverLetterModal";
+import type { CoverLetter } from "~/components/CoverLetterModal";
 import "./app.css";
 import "./findjobs.css";
 
-interface FoundJob {
+export interface FoundJob {
   id: string;
   title: string;
   employer: string;
@@ -42,6 +45,9 @@ export default function FindJobs() {
   const [currentResume, setCurrentResume] = useState<TailoredResume | null>(
     null,
   );
+  const [currentCoverLetter, setCurrentCoverLetter] =
+    useState<CoverLetter | null>(null);
+  const [coverLetterModalOpen, setCoverLetterModalOpen] = useState(true);
   const [resumeModalOpen, setResumeModalOpen] = useState(true);
   const [searchForm, setSearchForm] = useState({
     title: "",
@@ -150,10 +156,57 @@ export default function FindJobs() {
       setResumeModalOpen(true);
       setError("");
 
-      // TODO: Create popup with resume preview
       console.log(resume);
     } catch {
       setError("Network error while generating resume.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGenerateCover = async (job: FoundJob) => {
+    try {
+      setIsLoading(true);
+      setError("");
+
+      const token = await getToken();
+      if (!token) return;
+
+      const response = await fetch(
+        `${BACKEND_URL}/api/ai/create_cover_letter`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            position_info: job.description,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.detail);
+        console.error(errorData.detail);
+        return;
+      }
+
+      const resume = await response.json();
+
+      if (resume.length == 0) {
+        setError("Failed to generate cover letter.");
+        return;
+      }
+
+      setCurrentCoverLetter(resume);
+      setCoverLetterModalOpen(true);
+      setError("");
+
+      console.log(resume);
+    } catch {
+      setError("Network error while generating cover letter.");
     } finally {
       setIsLoading(false);
     }
@@ -331,6 +384,16 @@ export default function FindJobs() {
                     <button
                       type="button"
                       onClick={() => {
+                        setSelectedJob(job);
+                        handleGenerateCover(job);
+                      }}
+                      className="search-btn-add"
+                    >
+                      Create Cover Letter
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
                         // TODO: Remove from cards, and put in a denied jobs list
                       }}
                       className="search-btn-delete search-btn-disabled"
@@ -348,7 +411,22 @@ export default function FindJobs() {
       {resumeModalOpen && (
         <ResumeModal
           resume={currentResume}
-          onClose={() => setResumeModalOpen(false)}
+          job={selectedJob}
+          onClose={() => {
+            setResumeModalOpen(false);
+            setCurrentResumeLetter(null);
+          }}
+        />
+      )}
+
+      {coverLetterModalOpen && (
+        <CoverLetterModal
+          coverLetter={currentCoverLetter}
+          job={selectedJob}
+          onClose={() => {
+            setCoverLetterModalOpen(false);
+            setCurrentCoverLetter(null);
+          }}
         />
       )}
     </div>
