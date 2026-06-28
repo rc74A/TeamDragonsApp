@@ -3,36 +3,13 @@ import os
 import requests
 from dotenv import load_dotenv
 from fastapi import APIRouter
-from pydantic import BaseModel
+
+from schemas import FoundJob, JobSearchRequest
 
 load_dotenv()
 headers = {"X-API-Key": os.getenv("JSEARCH_API_KEY")}
 
 searchrouter = APIRouter(prefix="/api/findjobs", tags=["jobs"])
-
-
-class JobSearchRequest(BaseModel):
-    """Search criteria used to look for matching job postings."""
-
-    title: str
-    employer: str
-    keywords: list[str]
-    excluded_words: list[str]
-
-
-class FoundJob(BaseModel):
-    """A job posting returned to the frontend."""
-
-    id: str
-    title: str
-    employer: str
-    description: str
-    apply_link: str
-    salary: float
-    employment_type: str
-    country: str
-    state: str
-    city: str
 
 
 @searchrouter.put("/find_job")

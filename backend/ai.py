@@ -10,8 +10,11 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from jobs import get_current_user_id
-from models import Education, Experience, Profile, Skill
+from models import Document, Education, Experience, Profile, Skill
 from schemas import (
+    CoverLetter,
+    SaveCoverLetterRequest,
+    SaveResumeRequest,
     TailoredEducation,
     TailoredExperience,
     TailoredProfile,
@@ -128,6 +131,38 @@ INSTRUCTIONS:
 
 CANDIDATE EXPERIENCE:
 {experience}
+
+POSITION INFORMATION:
+{position_info}
+"""
+
+COVER_LETTER_PROMPT = """
+You are a professional cover letter writer. Write a tailored cover letter
+for the candidate based on their profile and the target role.
+
+INSTRUCTIONS:
+- Write 3–4 paragraphs: opening hook, relevant experience,
+  why this company, closing call to action
+- Be specific to the job description — reference the role and company by name
+- Draw on the candidate's actual experience, skills, and education —
+  do not invent anything
+- Keep a professional but personable tone — avoid buzzwords and clichés
+- Each paragraph should be separated by a blank line
+- Do not include salutation, sign-off, or contact info — those are handled separately
+- Return today's date in the format "Month DD, YYYY" for the date field
+- For hiring_manager, use an empty string if unknown
+
+CANDIDATE PROFILE:
+{profile_info}
+
+CANDIDATE EXPERIENCE:
+{experience}
+
+CANDIDATE SKILLS:
+{skills}
+
+CANDIDATE EDUCATION:
+{education}
 
 POSITION INFORMATION:
 {position_info}
@@ -301,3 +336,120 @@ def create_resume(
         skills=tailored_skills,
         education=tailored_education,
     )
+
+
+@airouter.post("/save_resume", status_code=201)
+def save_resume(
+    body: SaveResumeRequest,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """
+    Given the generated resume and the found job,
+    issues a command to the database that saves both in one structure
+
+    Args:
+        body (SaveResumeRequest): Actual job information, mixed with
+        resume
+        user_id: Used to find the users profile information
+        db (Session): Database session, where the data is extracted from
+    Returns:
+        HTTP status codes
+    """
+    try:
+        doc = Document(
+            owner_id=user_id,
+            doc_type="resume",
+            content=body.resume.model_dump_json(),
+            job_snapshot=body.job.model_dump_json(),
+        )
+        db.add(doc)
+        db.commit()
+        return {"detail": "Resume saved successfully."}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Failed to save resume.") from e
+
+
+@airouter.post("/create_cover_letter", response_model=CoverLetter)
+def create_cover_letter(
+    body: ResumeRequest,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """
+    Creates a cover letter based off of the user's inputted data
+    in the profile section of the application.
+
+    Args:
+        body (ResumeRequest): Actual job information, to be combined with
+        profile information to tailor the cover letter
+        user_id: Used to find the users profile information
+        db (Session): Database session, where the data is extracted from
+    Returns:
+        CoverLetter: Cover letter represented as json, the frontend might
+        decide to format this as a png or jpg, etc.
+    """
+    profile = db.query(Profile).filter(Profile.owner_id == user_id).first()
+    if not profile:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                "Profile not found. "
+                "Please complete your profile before generating a cover letter."
+            ),
+        )
+    experience = db.query(Experience).filter(Experience.owner_id == user_id).all()
+    skills = db.query(Skill).filter(Skill.owner_id == user_id).all()
+    education = db.query(Education).filter(Education.owner_id == user_id).all()
+
+    position_info = body.position_info
+
+    cover_letter = call_gemini(
+        COVER_LETTER_PROMPT.format(
+            profile_info=fmt_profile(profile),
+            experience=fmt_experience(experience),
+            skills=fmt_skills(skills),
+            education=fmt_education(education),
+            position_info=position_info,
+        ),
+        CoverLetter,
+    )
+
+    print(cover_letter.model_dump_json(indent=2))
+    return cover_letter
+
+
+@airouter.post("/save_cover_letter", status_code=201)
+def save_cover_letter(
+    body: SaveCoverLetterRequest,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """
+    Given the generated cover letter and the found job,
+    issues a command to the database that saves both in one structure
+
+    Args:
+        body (SaveCoverLetterRequest): Actual job information, mixed with
+        cover letter
+        user_id: Used to find the users profile information
+        db (Session): Database session, where the data is extracted from
+    Returns:
+        HTTP status codes
+    """
+    try:
+        doc = Document(
+            owner_id=user_id,
+            doc_type="cover_letter",
+            content=body.cover_letter.model_dump_json(),
+            job_snapshot=body.job.model_dump_json(),
+        )
+        db.add(doc)
+        db.commit()
+        return {"detail": "Cover letter saved successfully."}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500, detail="Failed to save cover letter."
+        ) from e

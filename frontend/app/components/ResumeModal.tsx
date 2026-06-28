@@ -1,4 +1,9 @@
+import React, { useState } from "react";
+import { useAuth } from "@clerk/react-router";
+import type { FoundJob } from "~/routes/findjobs";
 import "./ResumeModal.css";
+
+const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 interface TailoredProfile {
   full_name: string;
@@ -33,7 +38,7 @@ interface TailoredEducation {
   description: string;
 }
 
-interface TailoredResume {
+export interface TailoredResume {
   profile: TailoredProfile;
   experience: TailoredExperience[];
   skills: TailoredSkill[];
@@ -42,6 +47,7 @@ interface TailoredResume {
 
 interface ResumeModalProps {
   resume: TailoredResume;
+  job: FoundJob;
   onClose: () => void;
 }
 
@@ -57,7 +63,15 @@ function groupSkills(skills: TailoredSkill[]): Record<string, TailoredSkill[]> {
   );
 }
 
-export default function ResumeModal({ resume, onClose }: ResumeModalProps) {
+export default function ResumeModal({
+  resume,
+  job,
+  onClose,
+}: ResumeModalProps) {
+  const { getToken } = useAuth();
+  const [error, setError] = useState("");
+  const [errorType, setErrorType] = useState<"error" | "success">("error");
+
   if (!resume) return null;
 
   const { profile, experience, skills, education } = resume;
@@ -67,13 +81,69 @@ export default function ResumeModal({ resume, onClose }: ResumeModalProps) {
     if (e.target === e.currentTarget) onClose();
   };
 
+  const handleSave = async () => {
+    try {
+      setError("");
+      setErrorType("error");
+
+      const token = await getToken();
+      if (!token) return;
+
+      const response = await fetch(`${BACKEND_URL}/api/ai/save_resume`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          job: job,
+          resume: resume,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setErrorType("error");
+
+        if (typeof errorData.detail === "string") {
+          setError(errorData.detail);
+        } else if (Array.isArray(errorData.detail)) {
+          setError(
+            errorData.detail.map((e: { msg: string }) => e.msg).join(", "),
+          );
+        } else {
+          setError("An unexpected error occurred.");
+        }
+        return;
+      }
+
+      setError("Succeeded in saving resume!");
+      setErrorType("success");
+    } catch {
+      setError("Network error while saving resume.");
+      setErrorType("error");
+    } finally {
+    }
+  };
   return (
     <div className="rm-backdrop" onClick={handleBackdropClick}>
       <div className="rm-modal">
         {/* Toolbar */}
         <div className="rm-toolbar">
           <span className="rm-toolbar-label">Resume Preview</span>
+          {error && (
+            <p
+              className={
+                errorType === "success" ? "rm-msg-success" : "rm-msg-error"
+              }
+            >
+              {error}
+            </p>
+          )}
           <div className="rm-toolbar-actions">
+            <button type="button" className="cl-btn-print" onClick={handleSave}>
+              Save
+            </button>
             <button
               type="button"
               className="rm-btn-print"
