@@ -31,6 +31,8 @@ export default function CoverLetterModal({
   const { getToken } = useAuth();
   const [error, setError] = useState("");
   const [errorType, setErrorType] = useState<"error" | "success">("error");
+  const [rewriteModalOpen, setRewriteModalOpen] = useState(false);
+  const [rewritePrompt, setRewritePrompt] = useState("");
 
   if (!coverLetter) return null;
 
@@ -82,6 +84,51 @@ export default function CoverLetterModal({
     }
   };
 
+  const handleRewrite = async () => {
+    try {
+      setError("");
+      setErrorType("error");
+
+      const token = await getToken();
+      if (!token) return;
+
+      const response = await fetch(`${BACKEND_URL}/api/ai/rewrite_cover_letter`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          job: job,
+          cover_letter: coverLetter,
+          rewrite_prompt: rewritePrompt,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setErrorType("error");
+
+        if (typeof errorData.detail === "string") {
+          setError(errorData.detail);
+        } else if (Array.isArray(errorData.detail)) {
+          setError(
+            errorData.detail.map((e: { msg: string }) => e.msg).join(", "),
+          );
+        } else {
+          setError("An unexpected error occurred.");
+        }
+        return;
+      }
+
+      setError("Succeeded in rewriting cover letter!");
+      setErrorType("success");
+    } catch {
+      setError("Network error while rewriting cover letter.");
+      setErrorType("error");
+    }
+  };
+
   // Split body into paragraphs on double newline or single newline
   const paragraphs = coverLetter.body
     .split(/\n\n|\n/)
@@ -106,6 +153,11 @@ export default function CoverLetterModal({
           <div className="cl-toolbar-actions">
             <button type="button" className="cl-btn-print" onClick={handleSave}>
               Save
+            </button>
+            <button type="button" 
+                className="cl-btn-print" 
+                onClick={() => setRewriteModalOpen(true)}>
+              Rewrite
             </button>
             <button
               type="button"
@@ -164,6 +216,36 @@ export default function CoverLetterModal({
           </div>
         </div>
       </div>
+
+      {/* Rewrite panel — only shows when open */}
+      {rewriteModalOpen && (
+        <div className="cl-rewrite-panel">
+          <div className="cl-toolbar">
+            <span className="cl-toolbar-label">Rewrite</span>
+            <div className="cl-toolbar-actions">
+              <button type="button" className="cl-btn-print" onClick={handleRewrite}>
+                Submit
+              </button>
+              <button type="button" className="cl-btn-close" onClick={() => setRewriteModalOpen(false)}>
+                ✕
+              </button>
+            </div>
+          </div>
+          <div className="cl-rewrite-body">
+            <p className="cl-rewrite-label">
+              Describe how you'd like the cover letter changed:
+            </p>
+            <textarea
+              className="cl-rewrite-input"
+              value={rewritePrompt}
+              onChange={(e) => setRewritePrompt(e.target.value)}
+              placeholder="e.g. Make it more formal, emphasize Python experience..."
+              rows={5}
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

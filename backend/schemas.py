@@ -486,3 +486,10 @@ class SavedCoverLetter(BaseModel):
 
     job: FoundJob
     cover_letter: CoverLetter
+
+class RewriteCoverLetterRequest(BaseModel):
+    """All information needed to request a rewrite of a cover letter"""
+
+    job: FoundJob
+    existing_cover_letter: CoverLetter
+    rewrite_prompt: str
