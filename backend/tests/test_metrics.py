@@ -53,7 +53,7 @@ def test_metrics_counts_stages_and_response_rate(client):
     assert m["by_stage"]["Rejected"] == 1
     assert m["by_stage"]["Interested"] == 1
     # applications = Applied(2) + Interviewing + Offer + Rejected = 5
-    assert m["applications"] == 4
+    assert m["applications"] == 5
     # responses = Interviewing + Offer + Rejected = 3
     assert m["responses"] == 3
     assert m["offers"] == 1
