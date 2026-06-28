@@ -122,7 +122,6 @@ export default function ResumeModal({
     } catch {
       setError("Network error while saving resume.");
       setErrorType("error");
-    } finally {
     }
   };
   return (

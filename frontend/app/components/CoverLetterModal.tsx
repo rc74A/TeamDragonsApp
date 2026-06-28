@@ -79,7 +79,6 @@ export default function CoverLetterModal({
     } catch {
       setError("Network error while saving cover letter.");
       setErrorType("error");
-    } finally {
     }
   };
 
