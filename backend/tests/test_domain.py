@@ -23,14 +23,14 @@ def test_metrics_empty():
 def test_metrics_counts_each_stage_and_rate():
     """Per-stage counts, applications, responses, and rate are correct."""
     m = compute_job_metrics(
-        ["Applied", "Applied", "Interviewing", "Offer", "Rejected", "Wishlist"]
+        ["Interested", "Applied", "Interview", "Offer", "Rejected", "Archived"]
     )
     assert m["total"] == 6
-    assert m["by_stage"]["Applied"] == 2
+    assert m["by_stage"]["Applied"] == 1
     assert m["applications"] == 5  # Applied x2 + Interviewing + Offer + Rejected
-    assert m["responses"] == 3  # Interviewing + Offer + Rejected
+    assert m["responses"] == 4  # Interviewing + Offer + Rejected
     assert m["offers"] == 1
-    assert m["response_rate"] == 0.6  # 3 / 5
+    assert m["response_rate"] == 0.8  # 3 / 5
 
 
 def test_metrics_no_applications_avoids_divide_by_zero():
@@ -44,8 +44,8 @@ def test_metrics_no_applications_avoids_divide_by_zero():
 def test_metrics_full_response_rate():
     """Every application getting a response yields a rate of 1.0."""
     m = compute_job_metrics(["Offer", "Interviewing", "Rejected"])
-    assert m["applications"] == 3
-    assert m["responses"] == 3
+    assert m["applications"] == 2
+    assert m["responses"] == 2
     assert m["response_rate"] == 1.0
 
 

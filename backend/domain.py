@@ -4,14 +4,14 @@ These functions take plain data and return plain data — no database, no
 I/O — so they are fast and straightforward to unit-test (S2-026).
 """
 
-# The stages a job moves through. "Saved"/"Wishlist" mean not yet applied.
-STAGES = ["Saved", "Wishlist", "Applied", "Interviewing", "Offer", "Rejected"]
+# The stages a job moves through. Names have been updated from a previous version.
+STAGES = ["Interested", "Applied", "Interview", "Offer", "Rejected", "Archived"]
 
 # A job counts as an "application" once it reaches Applied or beyond.
-APPLICATION_STAGES = {"Applied", "Interviewing", "Offer", "Rejected"}
+APPLICATION_STAGES = {"Applied", "Interview", "Offer", "Rejected", "Archived"}
 
 # A "response" means the employer moved you past Applied.
-RESPONSE_STAGES = {"Interviewing", "Offer", "Rejected"}
+RESPONSE_STAGES = {"Interview", "Offer", "Rejected", "Archived"}
 
 # Baseline profile fields that count toward completion (S1-BR-009).
 PROFILE_FIELDS = ["full_name", "email", "phone", "location", "summary"]

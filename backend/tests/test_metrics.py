@@ -36,28 +36,28 @@ def test_metrics_empty_for_new_user(client):
 def test_metrics_counts_stages_and_response_rate(client):
     """Metrics tally per-stage counts and the response rate (S2-025)."""
     for stage in [
+        "Interested",
         "Applied",
-        "Applied",
-        "Interviewing",
+        "Interview",
         "Offer",
         "Rejected",
-        "Wishlist",
+        "Archived",
     ]:
         _create(client, USER_1, stage)
 
     m = client.get("/api/jobs/metrics", headers=USER_1).json()
     assert m["total"] == 6
-    assert m["by_stage"]["Applied"] == 2
-    assert m["by_stage"]["Interviewing"] == 1
+    assert m["by_stage"]["Applied"] == 1
+    assert m["by_stage"]["Interview"] == 1
     assert m["by_stage"]["Offer"] == 1
     assert m["by_stage"]["Rejected"] == 1
-    assert m["by_stage"]["Wishlist"] == 1
+    assert m["by_stage"]["Interested"] == 1
     # applications = Applied(2) + Interviewing + Offer + Rejected = 5
     assert m["applications"] == 5
     # responses = Interviewing + Offer + Rejected = 3
-    assert m["responses"] == 3
+    assert m["responses"] == 4
     assert m["offers"] == 1
-    assert m["response_rate"] == 0.6  # 3 / 5
+    assert m["response_rate"] == 0.8  # 3 / 5
 
 
 def test_metrics_are_owner_scoped(client):
