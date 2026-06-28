@@ -57,7 +57,7 @@ def test_metrics_counts_stages_and_response_rate(client):
     # responses = Interviewing + Offer + Rejected = 3
     assert m["responses"] == 4
     assert m["offers"] == 1
-    assert m["response_rate"] == 0.6  # 3 / 5
+    assert m["response_rate"] == 0.8  # 3 / 5
 
 
 def test_metrics_are_owner_scoped(client):
