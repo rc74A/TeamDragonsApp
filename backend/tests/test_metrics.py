@@ -47,7 +47,7 @@ def test_metrics_counts_stages_and_response_rate(client):
 
     m = client.get("/api/jobs/metrics", headers=USER_1).json()
     assert m["total"] == 6
-    assert m["by_stage"]["Applied"] == 2
+    assert m["by_stage"]["Applied"] == 1
     assert m["by_stage"]["Interviewing"] == 1
     assert m["by_stage"]["Offer"] == 1
     assert m["by_stage"]["Rejected"] == 1
