@@ -1,4 +1,3 @@
-
 /* ── Backdrop ─────────────────────────────────────────── */
 .rm-backdrop {
   position: fixed;
@@ -74,7 +73,9 @@
   cursor: pointer;
   padding: 0.2rem 0.4rem;
   border-radius: 3px;
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
   line-height: 1;
 }
 

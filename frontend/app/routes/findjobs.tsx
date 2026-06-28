@@ -39,7 +39,9 @@ const Spinner = () => (
 export default function FindJobs() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [currentResume, setCurrentResume] = useState<TailoredResume | null>(null);
+  const [currentResume, setCurrentResume] = useState<TailoredResume | null>(
+    null,
+  );
   const [resumeModalOpen, setResumeModalOpen] = useState(true);
   const [searchForm, setSearchForm] = useState({
     title: "",
@@ -49,9 +51,18 @@ export default function FindJobs() {
   });
 
   const [jobs, setJobs] = useState<FoundJob[]>([
-    { id: "0", title: "Test Job", employer: "Employer", description: "This is a normal job.", apply_link: "https://google.com", 
-      salary: 36000, employment_type: "Full-Time", country: "United States", state: "New Jersey", city: "Newark"
-    }
+    {
+      id: "0",
+      title: "Test Job",
+      employer: "Employer",
+      description: "This is a normal job.",
+      apply_link: "https://google.com",
+      salary: 36000,
+      employment_type: "Full-Time",
+      country: "United States",
+      state: "New Jersey",
+      city: "Newark",
+    },
   ]);
   const [selectedJob, setSelectedJob] = useState<FoundJob>();
 
@@ -117,14 +128,14 @@ export default function FindJobs() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          position_info: job.description,  
+          position_info: job.description,
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
         setError(errorData.detail);
-        console.error(errorData.detail);  
+        console.error(errorData.detail);
         return;
       }
 
@@ -139,7 +150,7 @@ export default function FindJobs() {
       setResumeModalOpen(true);
       setError("");
 
-      // TODO: Create popup with resume preview 
+      // TODO: Create popup with resume preview
       console.log(resume);
     } catch {
       setError("Network error while generating resume.");
@@ -150,14 +161,13 @@ export default function FindJobs() {
 
   return (
     <div className="search-root">
-
       {isLoading && (
-      <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-        <div className="bg-white rounded-xl p-8 flex flex-col items-center gap-4">
-          <Spinner />
-          <p className="text-gray-600">Loading...</p>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-white rounded-xl p-8 flex flex-col items-center gap-4">
+            <Spinner />
+            <p className="text-gray-600">Loading...</p>
+          </div>
         </div>
-      </div>
       )}
 
       <header className="search-header">Dragon Application</header>
@@ -282,16 +292,20 @@ export default function FindJobs() {
                   <div>
                     <h4>{job.title}</h4>
                     <p className="search-card-company">🏢 {job.employer}</p>
+                    <p className="search-card-company">{job.employment_type}</p>
                     <p className="search-card-company">
-                      {job.employment_type}
+                      {job.country}, {job.state}, {job.city}
                     </p>
-                    <p className="search-card-company">
-                       {job.country}, {job.state}, {job.city}
-                    </p>
-                    <a className="search-card-company underline" href={job.apply_link}> Link </a> <br/><br/>
-                    <p className="search-card-status">
-                      salary: {job.salary}
-                    </p>
+                    <a
+                      className="search-card-company underline"
+                      href={job.apply_link}
+                    >
+                      {" "}
+                      Link{" "}
+                    </a>{" "}
+                    <br />
+                    <br />
+                    <p className="search-card-status">salary: {job.salary}</p>
                     <p className="search-card-company">{job.description}</p>
                   </div>
                   <div className="search-card-actions">
@@ -307,8 +321,8 @@ export default function FindJobs() {
                     <button
                       type="button"
                       onClick={() => {
-                        setSelectedJob(job)
-                        handleGenerateResume(job)
+                        setSelectedJob(job);
+                        handleGenerateResume(job);
                       }}
                       className="search-btn-add"
                     >
@@ -337,8 +351,6 @@ export default function FindJobs() {
           onClose={() => setResumeModalOpen(false)}
         />
       )}
-
     </div>
-
   );
 }

@@ -55,6 +55,7 @@ app.include_router(airouter)
 
 # ----- API Endpoints -----
 
+
 @app.get("/", tags=["root"])
 async def read_root() -> dict:
     """Health-check root endpoint."""

@@ -46,16 +46,19 @@ interface ResumeModalProps {
 }
 
 function groupSkills(skills: TailoredSkill[]): Record<string, TailoredSkill[]> {
-  return skills.reduce((acc, skill) => {
-    const key = skill.category || "Other";
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(skill);
-    return acc;
-  }, {} as Record<string, TailoredSkill[]>);
+  return skills.reduce(
+    (acc, skill) => {
+      const key = skill.category || "Other";
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(skill);
+      return acc;
+    },
+    {} as Record<string, TailoredSkill[]>,
+  );
 }
 
 export default function ResumeModal({ resume, onClose }: ResumeModalProps) {
-  if (!resume) return null;  
+  if (!resume) return null;
 
   const { profile, experience, skills, education } = resume;
   const groupedSkills = groupSkills(skills);
@@ -67,7 +70,6 @@ export default function ResumeModal({ resume, onClose }: ResumeModalProps) {
   return (
     <div className="rm-backdrop" onClick={handleBackdropClick}>
       <div className="rm-modal">
-
         {/* Toolbar */}
         <div className="rm-toolbar">
           <span className="rm-toolbar-label">Resume Preview</span>
@@ -87,7 +89,6 @@ export default function ResumeModal({ resume, onClose }: ResumeModalProps) {
 
         {/* Resume paper */}
         <div className="rm-paper" id="resume-paper">
-
           {/* Header */}
           <header className="rm-header">
             <h1 className="rm-name">{profile.full_name}</h1>
@@ -96,9 +97,7 @@ export default function ResumeModal({ resume, onClose }: ResumeModalProps) {
               {profile.phone && <span>{profile.phone}</span>}
               {profile.location && <span>{profile.location}</span>}
             </div>
-            {profile.summary && (
-              <p className="rm-summary">{profile.summary}</p>
-            )}
+            {profile.summary && <p className="rm-summary">{profile.summary}</p>}
           </header>
 
           {/* Experience */}
@@ -112,11 +111,15 @@ export default function ResumeModal({ resume, onClose }: ResumeModalProps) {
                     <div>
                       <span className="rm-entry-title">{exp.title}</span>
                       {exp.organization && (
-                        <span className="rm-entry-org"> · {exp.organization}</span>
+                        <span className="rm-entry-org">
+                          {" "}
+                          · {exp.organization}
+                        </span>
                       )}
                     </div>
                     <span className="rm-entry-dates">
-                      {exp.start_date}{exp.end_date ? ` – ${exp.end_date}` : ""}
+                      {exp.start_date}
+                      {exp.end_date ? ` – ${exp.end_date}` : ""}
                     </span>
                   </div>
                   {exp.description && (
@@ -138,14 +141,18 @@ export default function ResumeModal({ resume, onClose }: ResumeModalProps) {
                     <div>
                       <span className="rm-entry-title">{edu.degree}</span>
                       {edu.field_of_study && (
-                        <span className="rm-entry-org"> in {edu.field_of_study}</span>
+                        <span className="rm-entry-org">
+                          {" "}
+                          in {edu.field_of_study}
+                        </span>
                       )}
                       {edu.school && (
                         <span className="rm-entry-org"> · {edu.school}</span>
                       )}
                     </div>
                     <span className="rm-entry-dates">
-                      {edu.start_date}{edu.end_date ? ` – ${edu.end_date}` : ""}
+                      {edu.start_date}
+                      {edu.end_date ? ` – ${edu.end_date}` : ""}
                       {edu.gpa ? ` · GPA ${edu.gpa}` : ""}
                     </span>
                   </div>
@@ -174,7 +181,6 @@ export default function ResumeModal({ resume, onClose }: ResumeModalProps) {
               </div>
             </section>
           )}
-
         </div>
       </div>
     </div>
