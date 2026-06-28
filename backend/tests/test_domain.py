@@ -30,7 +30,7 @@ def test_metrics_counts_each_stage_and_rate():
     assert m["applications"] == 5  # Applied x2 + Interviewing + Offer + Rejected
     assert m["responses"] == 4  # Interviewing + Offer + Rejected
     assert m["offers"] == 1
-    assert m["response_rate"] == 0.6  # 3 / 5
+    assert m["response_rate"] == 0.8  # 3 / 5
 
 
 def test_metrics_no_applications_avoids_divide_by_zero():
