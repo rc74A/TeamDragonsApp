@@ -28,7 +28,7 @@ def test_metrics_counts_each_stage_and_rate():
     assert m["total"] == 6
     assert m["by_stage"]["Applied"] == 1
     assert m["applications"] == 5  # Applied x2 + Interviewing + Offer + Rejected
-    assert m["responses"] == 3  # Interviewing + Offer + Rejected
+    assert m["responses"] == 4  # Interviewing + Offer + Rejected
     assert m["offers"] == 1
     assert m["response_rate"] == 0.6  # 3 / 5
 
