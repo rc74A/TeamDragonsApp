@@ -22,7 +22,6 @@ from schemas import (
 airouter = APIRouter(prefix="/api/ai", tags=["ai"])
 
 load_dotenv()
-client = genai.Client()
 MODEL = "gemini-2.5-flash"
 
 # These prompts were obviously made with claude cuz I'm lazy
@@ -181,6 +180,7 @@ def fmt_education(rows: list[Education]) -> str:
 
 def call_gemini(prompt: str, schema: type) -> dict:
     """Simple wrapper function for the gemini api call"""
+    client = genai.Client()
     response = client.models.generate_content(
         model=MODEL,
         contents=prompt,
