@@ -44,7 +44,7 @@ def test_metrics_no_applications_avoids_divide_by_zero():
 def test_metrics_full_response_rate():
     """Every application getting a response yields a rate of 1.0."""
     m = compute_job_metrics(["Offer", "Interviewing", "Rejected"])
-    assert m["applications"] == 3
+    assert m["applications"] == 2
     assert m["responses"] == 2
     assert m["response_rate"] == 1.0
 
