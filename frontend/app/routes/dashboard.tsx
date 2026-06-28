@@ -120,7 +120,7 @@ export default function Dashboard() {
   const [jobForm, setJobForm] = useState({
     title: "",
     company: "",
-    stage: "Wishlist",
+    stage: "Interested",
     location: "",
     deadline: "",
     deadlineState: "No Deadline",
@@ -432,7 +432,7 @@ export default function Dashboard() {
                   setJobForm({
                     title: "",
                     company: "",
-                    stage: "Wishlist",
+                    stage: "Interested",
                     location: "",
                     deadline: "",
                     deadlineState: "No Deadline",
@@ -541,11 +541,12 @@ export default function Dashboard() {
                     setJobForm({ ...jobForm, stage: e.target.value })
                   }
                 >
-                  <option value="Wishlist">Wishlist</option>
+                  <option value="Interested">Interested</option>
                   <option value="Applied">Applied</option>
-                  <option value="Interviewing">Interviewing</option>
+                  <option value="Interview">Interview</option>
                   <option value="Offer">Offer</option>
                   <option value="Rejected">Rejected</option>
+                  <option value="Archived">Archived</option>
                 </select>
               </div>
               <div className="db-form-group">
