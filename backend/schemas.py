@@ -360,3 +360,57 @@ class SkillOut(BaseModel):
     category: str
     proficiency: str
     position: int
+
+
+# ----- Resume -----
+
+
+# Gemini structured output for tailoring
+class TailoredProfile(BaseModel):
+    """Users profile tailored to match the specific job"""
+
+    full_name: str
+    email: str
+    phone: str
+    location: str
+    summary: str  # AI rewrites this; all other fields pass through unchanged
+
+
+class TailoredExperience(BaseModel):
+    """Users expereicnce tailored to match the specific job"""
+
+    entry_type: str
+    title: str
+    organization: str
+    start_date: str
+    end_date: str
+    description: str
+
+
+class TailoredSkill(BaseModel):
+    """Users skills tailored to match the specific job"""
+
+    name: str
+    category: str
+    proficiency: str
+
+
+class TailoredEducation(BaseModel):
+    """Education tailored to the specific job"""
+
+    school: str
+    degree: str
+    field_of_study: str
+    start_date: str
+    end_date: str
+    gpa: str
+    description: str  # AI rewrites this to highlight relevant coursework/projects
+
+
+class TailoredResume(BaseModel):
+    """Generated resume from profile and job information"""
+
+    profile: TailoredProfile
+    experience: list[TailoredExperience]
+    skills: list[TailoredSkill]
+    education: list[TailoredEducation]

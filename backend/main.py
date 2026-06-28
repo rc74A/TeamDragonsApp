@@ -4,6 +4,7 @@ from profile import profilerouter
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from ai import airouter
 from database import Base, engine
 from education import educationrouter
 from experience import experiencerouter
@@ -50,6 +51,7 @@ app.include_router(searchrouter)
 app.include_router(experiencerouter)
 app.include_router(educationrouter)
 app.include_router(skillsrouter)
+app.include_router(airouter)
 
 # ----- API Endpoints -----
 
