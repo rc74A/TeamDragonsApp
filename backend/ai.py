@@ -14,6 +14,7 @@ from models import Document, Education, Experience, Profile, Skill
 from schemas import (
     CoverLetter,
     RewriteCoverLetterRequest,
+    RewriteResumeRequest,
     SaveCoverLetterRequest,
     SaveResumeRequest,
     TailoredEducation,
@@ -205,6 +206,46 @@ POSITION INFORMATION:
 {position_info}
 """
 
+REWRITE_RESUME_PROMPT = """
+You are an expert executive resume writer and career coach. Rewrite the candidate's
+existing resume data based on their instructions while
+    keeping it strictly tailored to the role.
+
+INSTRUCTIONS:
+- Apply the rewrite instructions exactly as requested.
+- Keep all facts 100% truthful — do not invent experience, metrics, titles, or skills.
+- Use strong action verbs at the start of every experience bullet point.
+- Format achievements using the STAR methodology
+    (Situation, Task, Action, Result) wherever possible.
+- Keep a crisp, professional, and high-impact tone —
+    eliminate passive phrases (e.g., "responsible for") and generic fluff.
+- Preserve the underlying timeline, company names, job titles,
+    and dates from the original unless explicitly told otherwise.
+- Only rewrite the content areas
+    (Summary, Experience Bullets, or Project Descriptions) affected by the instructions.
+
+EXISTING RESUME DATA:
+{existing_resume}
+
+REWRITE INSTRUCTIONS:
+{rewrite_prompt}
+
+CANDIDATE PROFILE:
+{profile_info}
+
+CANDIDATE EXPERIENCE:
+{experience}
+
+CANDIDATE SKILLS:
+{skills}
+
+CANDIDATE EDUCATION:
+{education}
+
+POSITION INFORMATION:
+{position_info}
+"""
+
 
 def fmt_profile(p: Profile) -> str:
     """Formatting for profile, so resume tailoring is easier"""
@@ -373,6 +414,57 @@ def create_resume(
         skills=tailored_skills,
         education=tailored_education,
     )
+
+
+@airouter.post("/rewrite_resume", response_model=TailoredResume)
+def rewrite_resume(
+    body: RewriteResumeRequest,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """
+    Modifes an existing resume based off of the user's inputted
+    suggestions of improvement
+
+    Args:
+        body (RewriteResumeRequest): Previous resume combined with
+        prompt for suggested improvements
+        user_id: Used to find the users profile information
+        db (Session): Database session, where the data is extracted from
+    Returns:
+        TailoredResume: resume represented as json, the frontend might
+        decide to format this as a png or jpg, etc.
+    """
+    profile = db.query(Profile).filter(Profile.owner_id == user_id).first()
+    print("BEFORE")
+    if not profile:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                "Profile not found. "
+                "Please complete your profile before generating a cover letter."
+            ),
+        )
+    print("HERE")
+    experience = db.query(Experience).filter(Experience.owner_id == user_id).all()
+    skills = db.query(Skill).filter(Skill.owner_id == user_id).all()
+    education = db.query(Education).filter(Education.owner_id == user_id).all()
+
+    new_resume = call_gemini(
+        REWRITE_RESUME_PROMPT.format(
+            existing_resume=body.existing_resume.model_dump_json(),
+            rewrite_prompt=body.rewrite_prompt,
+            profile_info=fmt_profile(profile),
+            experience=fmt_experience(experience),
+            skills=fmt_skills(skills),
+            education=fmt_education(education),
+            position_info=body.job.description,
+        ),
+        TailoredResume,
+    )
+
+    print(new_resume.model_dump_json(indent=2))
+    return new_resume
 
 
 @airouter.post("/save_resume", status_code=201)
