@@ -198,16 +198,7 @@ def update_job(
     """
     Update an owned job record and refresh its last activity time.
     Tracks stage transitions to history logs automatically (S2-009).
-
-    Args:
-        job_id (int): The job's primary key.
-        payload (JobUpdate): Fields to change; omitted fields keep
-            their current values.
-        user_id (str): Owner identity from the auth dependency.
-        db (Session): Database session.
-
-    Returns:
-        JobOut: The updated job record.
+    Automatically archives the job if a terminal outcome is set.
     """
     job = get_owned_job(db, job_id, user_id)
     updates = payload.model_dump(exclude_unset=True)
@@ -217,7 +208,6 @@ def update_job(
         new_stage = updates["stage"]
         
         if old_stage != new_stage:
-            # Create a transition log entry
             history_entry = JobStageHistory(
                 job_id=job.id,
                 old_stage=old_stage,
@@ -226,9 +216,9 @@ def update_job(
             )
             db.add(history_entry)
         
-        if "outcome_state" in updates:
-            old_outcome = job.outcome_state
-            new_outcome = updates["outcome_state"]
+    if "outcome_state" in updates:
+        old_outcome = job.outcome_state
+        new_outcome = updates["outcome_state"]
         
         if old_outcome != new_outcome and new_outcome is not None:
             outcome_history_entry = JobStageHistory(
@@ -238,6 +228,17 @@ def update_job(
                 changed_at=utc_now()
             )
             db.add(outcome_history_entry)
+
+    for field, value in updates.items():
+        setattr(job, field, value)
+        
+    if "outcome_state" in updates and updates["outcome_state"] is not None:
+        job.is_archived = True
+        
+    job.last_activity = utc_now()
+    db.commit()
+    db.refresh(job)
+    return job
 
     # Apply the field updates to our record
     for field, value in updates.items():

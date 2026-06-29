@@ -42,6 +42,14 @@ interface Interview {
   notes: string | null;
 }
 
+interface JobArchiveItem {
+  id: number;
+  title: string;
+  company: string;
+  stage: string;
+  outcome_state?: string | null;
+}
+
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 enum SortByValues {
@@ -115,11 +123,7 @@ export async function loader(args: Route.LoaderArgs): Promise<DashboardData> {
 }
 
 export default function Dashboard() {
-  const {
-    jobs: rawJobs,
-    username,
-    metrics,
-  } = useLoaderData() as DashboardData;
+  const { jobs: rawJobs, username, metrics } = useLoaderData() as DashboardData;
   const navigate = useNavigate();
   const { getToken } = useAuth();
 
@@ -144,7 +148,7 @@ export default function Dashboard() {
 
   const [timelineData, setTimelineData] = useState<TimelineEntry[]>([]);
   const [loadingTimeline, setLoadingTimeline] = useState(false);
-  
+
   const [interviewForm, setInterviewForm] = useState({
     roundType: "Technical",
     interviewDate: "",
@@ -153,8 +157,7 @@ export default function Dashboard() {
 
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loadingInterviews, setLoadingInterviews] = useState(false);
-  
-  
+
   const [isArchiveViewOpen, setIsArchiveViewOpen] = useState(false);
   const [archivedJobs, setArchivedJobs] = useState<unknown[]>([]);
   const fetchArchivedJobs = async () => {
@@ -162,32 +165,33 @@ export default function Dashboard() {
       const token = await getToken();
       if (!token) return;
       const res = await fetch(`${BACKEND_URL}/api/jobs/archived`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setArchivedJobs(data);
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setArchivedJobs(data);
       }
     } catch (err) {
       console.error("Failed to load archived repository:", err);
     }
   };
 
-
   const clientJobs = useMemo(() => {
-    return (((rawJobs as unknown as Record<string, unknown>[]) || []).map((rawJob) => ({
-      id: Number(rawJob.id),
-      title: String(rawJob.title),
-      company: String(rawJob.company),
-      stage: String(rawJob.stage),
-      location: (rawJob.location as string) ?? null,
-      deadline: (rawJob.deadline as string) ?? null,
-      deadlineState: (rawJob.deadline_state as string) ?? null,
-      lastActivity: (rawJob.last_activity as string) ?? null,
-      createdAt: (rawJob.created_at as string) || new Date().toISOString(),
-      outcome_state: (rawJob.outcome_state as string) ?? null,
-      outcome_notes: (rawJob.outcome_notes as string) ?? null,
-    })));
+    return ((rawJobs as unknown as Record<string, unknown>[]) || []).map(
+      (rawJob) => ({
+        id: Number(rawJob.id),
+        title: String(rawJob.title),
+        company: String(rawJob.company),
+        stage: String(rawJob.stage),
+        location: (rawJob.location as string) ?? null,
+        deadline: (rawJob.deadline as string) ?? null,
+        deadlineState: (rawJob.deadline_state as string) ?? null,
+        lastActivity: (rawJob.last_activity as string) ?? null,
+        createdAt: (rawJob.created_at as string) || new Date().toISOString(),
+        outcome_state: (rawJob.outcome_state as string) ?? null,
+        outcome_notes: (rawJob.outcome_notes as string) ?? null,
+      }),
+    );
   }, [rawJobs]);
 
   const displayJobs = useMemo(() => {
@@ -293,25 +297,35 @@ export default function Dashboard() {
       const token = await getToken();
       if (!token) return;
 
-      const response = await fetch(`${BACKEND_URL}/api/jobs/${editingJobId}/interviews`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${BACKEND_URL}/api/jobs/${editingJobId}/interviews`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            round_type: interviewForm.roundType,
+            interview_date: interviewForm.interviewDate,
+            notes: interviewForm.notes || null,
+          }),
         },
-        body: JSON.stringify({
-          round_type: interviewForm.roundType,
-          interview_date: interviewForm.interviewDate,
-          notes: interviewForm.notes || null,
-        }),
-      });
+      );
 
       if (response.ok) {
-        setInterviewForm({ roundType: "Technical", interviewDate: "", notes: "" });
+        setInterviewForm({
+          roundType: "Technical",
+          interviewDate: "",
+          notes: "",
+        });
         fetchJobInterviews(editingJobId);
-        fetchJobTimeline(editingJobId); 
+        fetchJobTimeline(editingJobId);
       } else {
-        console.error("Backend rejected the interview save request. Status:", response.status);
+        console.error(
+          "Backend rejected the interview save request. Status:",
+          response.status,
+        );
       }
     } catch (error) {
       console.error("Failed to append interview record:", error);
@@ -354,7 +368,11 @@ export default function Dashboard() {
     }
   };
 
-  const handleInlineStageChange = async (jobId: number, currentJob: Record<string, unknown>, newStage: string) => {
+  const handleInlineStageChange = async (
+    jobId: number,
+    currentJob: Record<string, unknown>,
+    newStage: string,
+  ) => {
     try {
       const token = await getToken();
       if (!token) return;
@@ -368,7 +386,7 @@ export default function Dashboard() {
         body: JSON.stringify({
           title: currentJob.title,
           company: currentJob.company,
-          stage: newStage, 
+          stage: newStage,
           location: currentJob.location,
           deadline: currentJob.deadline,
           deadline_state: currentJob.deadlineState,
@@ -387,24 +405,24 @@ export default function Dashboard() {
   };
 
   const fetchJobTimeline = async (jobId: number) => {
-  setLoadingTimeline(true);
-  try {
-    const token = await getToken();
-    if (!token) return;
+    setLoadingTimeline(true);
+    try {
+      const token = await getToken();
+      if (!token) return;
 
-    const res = await fetch(`${BACKEND_URL}/api/jobs/${jobId}/timeline`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setTimelineData(data);
+      const res = await fetch(`${BACKEND_URL}/api/jobs/${jobId}/timeline`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setTimelineData(data);
+      }
+    } catch (err) {
+      console.error("Failed to load timeline records:", err);
+    } finally {
+      setLoadingTimeline(false);
     }
-  } catch (err) {
-    console.error("Failed to load timeline records:", err);
-  } finally {
-    setLoadingTimeline(false);
-  }
-};
+  };
 
   const handleDeleteJob = async (jobId: number) => {
     if (!confirm("Are you sure you want to delete this tracking entry?"))
@@ -605,15 +623,19 @@ export default function Dashboard() {
                 <span className="plus-icon">+</span>
                 <span>Add Job</span>
               </button>
-              
+
               {/* Archive View Toggle */}
-              <button type="button" onClick={() => { setIsArchiveViewOpen(true); fetchArchivedJobs(); }} 
-              className="db-link-view-archived"
+              <button
+                type="button"
+                onClick={() => {
+                  setIsArchiveViewOpen(true);
+                  fetchArchivedJobs();
+                }}
+                className="db-link-view-archived"
               >
-              📁 View Archived Positions
+                📁 View Archived Positions
               </button>
             </div>
-
 
             <div className="db-grid">
               {displayJobs.map((job) => (
@@ -621,17 +643,24 @@ export default function Dashboard() {
                   <div>
                     <h4>{job.title}</h4>
                     <p className="db-card-company">🏢 {job.company}</p>
-                      <div className="db-inline-stage-wrapper">
+                    <div className="db-inline-stage-wrapper">
                       <span className="db-card-status">📋 Status:</span>
-                        <select value={job.stage} aria-label={`Change pipeline stage for ${job.title}`} onChange={(e) => handleInlineStageChange(job.id, job, e.target.value)} className="db-card-inline-select">
-                          <option value="Wishlist">Wishlist</option>
-                          <option value="Applied">Applied</option>
-                          <option value="Interviewing">Interviewing</option>
-                          <option value="Offer">Offer</option>
-                          <option value="Rejected">Rejected</option>
-                        </select>
-                      </div>
-                      <p className="db-card-status">
+                      <select
+                        value={job.stage}
+                        aria-label={`Change pipeline stage for ${job.title}`}
+                        onChange={(e) =>
+                          handleInlineStageChange(job.id, job, e.target.value)
+                        }
+                        className="db-card-inline-select"
+                      >
+                        <option value="Wishlist">Wishlist</option>
+                        <option value="Applied">Applied</option>
+                        <option value="Interviewing">Interviewing</option>
+                        <option value="Offer">Offer</option>
+                        <option value="Rejected">Rejected</option>
+                      </select>
+                    </div>
+                    <p className="db-card-status">
                       📍 Location: {job.location}
                     </p>
                     <p className="db-card-status">
@@ -681,13 +710,16 @@ export default function Dashboard() {
       {isModalOpen && (
         <div className="db-modal-overlay">
           {/* Managed purely via CSS file targeting hooks */}
-          <div className={`db-modal-content ${editingJobId ? "db-modal-expanded" : ""}`}>
+          <div
+            className={`db-modal-content ${editingJobId ? "db-modal-expanded" : ""}`}
+          >
             <div className="db-modal-split">
-              
               {/* LEFT COLUMN: Input form data elements */}
               <div className="db-modal-col-left">
                 <h3 className="db-modal-title-blue">
-                  {editingJobId ? "✏️ Edit Position Details" : "➕ Post a New Tracking Entry"}
+                  {editingJobId
+                    ? "✏️ Edit Position Details"
+                    : "➕ Post a New Tracking Entry"}
                 </h3>
                 <form onSubmit={handleFormSubmit}>
                   <div className="db-form-group">
@@ -697,7 +729,9 @@ export default function Dashboard() {
                       required
                       placeholder="e.g. Software Engineer"
                       value={jobForm.title}
-                      onChange={(e) => setJobForm({ ...jobForm, title: e.target.value })}
+                      onChange={(e) =>
+                        setJobForm({ ...jobForm, title: e.target.value })
+                      }
                     />
                   </div>
                   <div className="db-form-group">
@@ -707,12 +741,20 @@ export default function Dashboard() {
                       required
                       placeholder="e.g. Google"
                       value={jobForm.company}
-                      onChange={(e) => setJobForm({ ...jobForm, company: e.target.value })}
+                      onChange={(e) =>
+                        setJobForm({ ...jobForm, company: e.target.value })
+                      }
                     />
                   </div>
                   <div className="db-form-group">
-                      <label htmlFor="modalStage">Tracking Stage</label>                    
-                      <select value={jobForm.stage} aria-label="Select current application tracking stage" onChange={(e) => setJobForm({ ...jobForm, stage: e.target.value })}>
+                    <label htmlFor="modalStage">Tracking Stage</label>
+                    <select
+                      value={jobForm.stage}
+                      aria-label="Select current application tracking stage"
+                      onChange={(e) =>
+                        setJobForm({ ...jobForm, stage: e.target.value })
+                      }
+                    >
                       <option value="Wishlist">Wishlist</option>
                       <option value="Applied">Applied</option>
                       <option value="Interviewing">Interviewing</option>
@@ -727,16 +769,36 @@ export default function Dashboard() {
                       required
                       placeholder="e.g. Houston, TX"
                       value={jobForm.location}
-                      onChange={(e) => setJobForm({ ...jobForm, location: e.target.value })}
+                      onChange={(e) =>
+                        setJobForm({ ...jobForm, location: e.target.value })
+                      }
                     />
                   </div>
                   <div className="db-form-group">
                     <label htmlFor="modalDeadline">Deadline</label>
-                  <input id="modalDeadline" type="date" required value={jobForm.deadline || ""} onChange={(e) => setJobForm({ ...jobForm, deadline: e.target.value })}/>
+                    <input
+                      id="modalDeadline"
+                      type="date"
+                      required
+                      value={jobForm.deadline || ""}
+                      onChange={(e) =>
+                        setJobForm({ ...jobForm, deadline: e.target.value })
+                      }
+                    />
                   </div>
                   <div className="db-form-group">
                     <label htmlFor="modalDeadlineState">Deadline State</label>
-                    <select id="modalDeadlineState" aria-label="Select deadline status state" value={jobForm.deadlineState} onChange={(e) => setJobForm({ ...jobForm, deadlineState: e.target.value })}>
+                    <select
+                      id="modalDeadlineState"
+                      aria-label="Select deadline status state"
+                      value={jobForm.deadlineState}
+                      onChange={(e) =>
+                        setJobForm({
+                          ...jobForm,
+                          deadlineState: e.target.value,
+                        })
+                      }
+                    >
                       <option value="No Deadline">No Deadline</option>
                       <option value="Upcoming">Upcoming</option>
                       <option value="Past">Past</option>
@@ -749,24 +811,47 @@ export default function Dashboard() {
                     <div className="db-outcome-panel">
                       <h4 className="db-outcome-title">🏁 Terminal Outcome </h4>
                       <div className="db-form-group">
-                        <label htmlFor="modalOutcomeState">Conclusion State</label>
-                        <select id="modalOutcomeState" aria-label="Select terminal job application conclusion state"value={jobForm.outcomeState} onChange={(e) => setJobForm({ ...jobForm, outcomeState: e.target.value })}>
-                          <option value="">In Progress / Active Pipeline...</option>
-                          <option value="Offer Accepted">Offer Accepted 🍾</option>
+                        <label htmlFor="modalOutcomeState">
+                          Conclusion State
+                        </label>
+                        <select
+                          id="modalOutcomeState"
+                          aria-label="Select terminal job application conclusion state"
+                          value={jobForm.outcomeState}
+                          onChange={(e) =>
+                            setJobForm({
+                              ...jobForm,
+                              outcomeState: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="">
+                            In Progress / Active Pipeline...
+                          </option>
+                          <option value="Offer Accepted">
+                            Offer Accepted 🍾
+                          </option>
                           <option value="Offer Declined">Offer Declined</option>
                           <option value="Rejected">Rejected by Company</option>
                           <option value="Withdrawn">Withdrawn by Me</option>
                         </select>
                       </div>
                       <div className="db-form-group db-form-group-no-margin">
-                        <label htmlFor="modalOutcomeNotes">Conclusion Notes</label>
+                        <label htmlFor="modalOutcomeNotes">
+                          Conclusion Notes
+                        </label>
                         <textarea
                           id="modalOutcomeNotes"
                           placeholder="Add any retrospective thoughts, final salary stats, or feedback details..."
                           value={jobForm.outcomeNotes}
                           rows={3}
                           className="db-outcome-textarea"
-                          onChange={(e) => setJobForm({ ...jobForm, outcomeNotes: e.target.value })}
+                          onChange={(e) =>
+                            setJobForm({
+                              ...jobForm,
+                              outcomeNotes: e.target.value,
+                            })
+                          }
                         />
                       </div>
                     </div>
@@ -777,17 +862,25 @@ export default function Dashboard() {
                       <button
                         type="button"
                         onClick={async () => {
-                          if (!confirm("Are you sure you want to archive this job application?")) return;
-                          
+                          if (
+                            !confirm(
+                              "Are you sure you want to archive this job application?",
+                            )
+                          )
+                            return;
+
                           try {
                             const token = await getToken();
                             if (!token) return;
-                            
-                            const res = await fetch(`${BACKEND_URL}/api/jobs/${editingJobId}/archive`, {
-                              method: "POST",
-                              headers: { Authorization: `Bearer ${token}` },
-                            });
-                            
+
+                            const res = await fetch(
+                              `${BACKEND_URL}/api/jobs/${editingJobId}/archive`,
+                              {
+                                method: "POST",
+                                headers: { Authorization: `Bearer ${token}` },
+                              },
+                            );
+
                             if (res.ok) {
                               setIsModalOpen(false);
                               window.location.reload();
@@ -802,14 +895,17 @@ export default function Dashboard() {
                       </button>
                     )}
 
-                    <button type="button" onClick={() => setIsModalOpen(false)} className="db-btn-cancel">
+                    <button
+                      type="button"
+                      onClick={() => setIsModalOpen(false)}
+                      className="db-btn-cancel"
+                    >
                       Cancel
                     </button>
                     <button type="submit" className="db-btn-submit">
                       {editingJobId ? "Save Changes" : "Track Job"}
                     </button>
                   </div>
-
                 </form>
               </div>
 
@@ -818,14 +914,18 @@ export default function Dashboard() {
                 <div className="db-modal-col-right">
                   <h3 className="db-modal-title-blue">⏱️ Activity Timeline</h3>
                   {loadingTimeline ? (
-                    <p className="db-timeline-loading">Syncing chronological logs...</p>
+                    <p className="db-timeline-loading">
+                      Syncing chronological logs...
+                    </p>
                   ) : timelineData.length === 0 ? (
-                    <p className="db-timeline-empty">No stage transitions recorded yet. Changes you save above will build logs here!</p>
+                    <p className="db-timeline-empty">
+                      No stage transitions recorded yet. Changes you save above
+                      will build logs here!
+                    </p>
                   ) : (
                     <div className="db-timeline-container">
                       {timelineData.map((entry, index) => (
                         <div key={entry.id} className="db-timeline-node">
-                          
                           {/* Chronological Connector Graphics wireframe elements */}
                           <div className="db-timeline-axis">
                             <div className="db-timeline-dot" />
@@ -837,168 +937,241 @@ export default function Dashboard() {
                           {/* Historical Node Description Label Cards */}
                           <div className="db-timeline-card">
                             <div className="db-timeline-time">
-                              {new Date(entry.changed_at).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                              {new Date(entry.changed_at).toLocaleString([], {
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
                             </div>
                             <div className="db-timeline-text">
-                              Moved from <span className="db-timeline-old-stage">{entry.old_stage}</span> → <span className="db-timeline-new-stage">{entry.new_stage}</span>
+                              Moved from{" "}
+                              <span className="db-timeline-old-stage">
+                                {entry.old_stage}
+                              </span>{" "}
+                              →{" "}
+                              <span className="db-timeline-new-stage">
+                                {entry.new_stage}
+                              </span>
                             </div>
                           </div>
-
                         </div>
                       ))}
                     </div>
                   )}
                   <hr className="db-modal-divider" />
-{/* S2-011: Interview Tracking Management Panel */}
-      <h3 className="db-modal-title-blue view-title-spacing">🎙️ Scheduled Interviews</h3>
-      
-      {loadingInterviews ? (
-        <p className="db-timeline-loading">Syncing interview records...</p>
-      ) : interviews.length === 0 ? (
-        <p className="db-timeline-empty interview-empty-margin">No interview rounds logged for this position yet.</p>
-      ) : (
-        <div className="db-interview-list">
-          {interviews.map((iv) => (
-            <div key={iv.id} className="db-timeline-card db-interview-card-accent">
-              <div className="db-timeline-time db-interview-type-highlight">
-                {iv.round_type} Round
-              </div>
-              <div className="db-timeline-time">
-                📅 {(() => {
-                  if (!iv.interview_date) return "Date Pending";
-                  
-                  // Append generic seconds string if raw local string format lacks it
-                  const safeDateStr = iv.interview_date.includes('T') && !iv.interview_date.endsWith('Z') 
-                    ? `${iv.interview_date}:00` 
-                    : iv.interview_date;
+                  {/* S2-011: Interview Tracking Management Panel */}
+                  <h3 className="db-modal-title-blue view-title-spacing">
+                    🎙️ Scheduled Interviews
+                  </h3>
 
-                  const parsedDate = new Date(safeDateStr);
-                  
-                  // If parsing fails completely, fallback safely onto raw string
-                  return isNaN(parsedDate.getTime()) 
-                    ? iv.interview_date 
-                    : parsedDate.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                })()}
-              </div>
-              {iv.notes && <p className="db-timeline-text db-interview-notes-text">📝 {iv.notes}</p>}
-            </div>
-          ))}
-        </div>
-      )}
+                  {loadingInterviews ? (
+                    <p className="db-timeline-loading">
+                      Syncing interview records...
+                    </p>
+                  ) : interviews.length === 0 ? (
+                    <p className="db-timeline-empty interview-empty-margin">
+                      No interview rounds logged for this position yet.
+                    </p>
+                  ) : (
+                    <div className="db-interview-list">
+                      {interviews.map((iv) => (
+                        <div
+                          key={iv.id}
+                          className="db-timeline-card db-interview-card-accent"
+                        >
+                          <div className="db-timeline-time db-interview-type-highlight">
+                            {iv.round_type} Round
+                          </div>
+                          <div className="db-timeline-time">
+                            📅{" "}
+                            {(() => {
+                              if (!iv.interview_date) return "Date Pending";
+
+                              // Append generic seconds string if raw local string format lacks it
+                              const safeDateStr =
+                                iv.interview_date.includes("T") &&
+                                !iv.interview_date.endsWith("Z")
+                                  ? `${iv.interview_date}:00`
+                                  : iv.interview_date;
+
+                              const parsedDate = new Date(safeDateStr);
+
+                              // If parsing fails completely, fallback safely onto raw string
+                              return isNaN(parsedDate.getTime())
+                                ? iv.interview_date
+                                : parsedDate.toLocaleString([], {
+                                    month: "short",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  });
+                            })()}
+                          </div>
+                          {iv.notes && (
+                            <p className="db-timeline-text db-interview-notes-text">
+                              📝 {iv.notes}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Add Interview Sub-Form Component */}
-                  <form onSubmit={handleAddInterview} className="db-interview-subform">
-                    <h4 className="db-interview-subform-title">Log an Interview Round</h4>
-                    
+                  <form
+                    onSubmit={handleAddInterview}
+                    className="db-interview-subform"
+                  >
+                    <h4 className="db-interview-subform-title">
+                      Log an Interview Round
+                    </h4>
+
                     <div className="db-form-group subform-group-spacing">
                       <label htmlFor="interviewRoundType">Round Type</label>
-                      <select 
+                      <select
                         id="interviewRoundType"
-                        value={interviewForm.roundType} 
-                        onChange={(e) => setInterviewForm({ ...interviewForm, roundType: e.target.value })}
+                        value={interviewForm.roundType}
+                        onChange={(e) =>
+                          setInterviewForm({
+                            ...interviewForm,
+                            roundType: e.target.value,
+                          })
+                        }
                         className="subform-select-padding"
                       >
                         <option value="Phone Screen">Phone Screen</option>
                         <option value="Technical">Technical Interview</option>
                         <option value="Behavioral">Behavioral Interview</option>
                         <option value="Manager Round">Manager Round</option>
-                        <option value="Onsite / Final">Onsite / Final Round</option>
+                        <option value="Onsite / Final">
+                          Onsite / Final Round
+                        </option>
                       </select>
                     </div>
 
                     <div className="db-form-group subform-group-spacing">
                       <label htmlFor="interviewDateTime">Date & Time</label>
-                      <input 
+                      <input
                         id="interviewDateTime"
-                        type="datetime-local" 
-                        required 
-                        value={interviewForm.interviewDate} 
-                        onChange={(e) => setInterviewForm({ ...interviewForm, interviewDate: e.target.value })}
+                        type="datetime-local"
+                        required
+                        value={interviewForm.interviewDate}
+                        onChange={(e) =>
+                          setInterviewForm({
+                            ...interviewForm,
+                            interviewDate: e.target.value,
+                          })
+                        }
                         className="subform-select-padding"
                       />
                     </div>
 
                     <div className="db-form-group subform-group-spacing">
                       <label htmlFor="interviewNotes">Notes</label>
-                      <input 
+                      <input
                         id="interviewNotes"
-                        type="text" 
-                        placeholder="e.g., LeetCode medium, system architecture..." 
-                        value={interviewForm.notes} 
-                        onChange={(e) => setInterviewForm({ ...interviewForm, notes: e.target.value })}
+                        type="text"
+                        placeholder="e.g., LeetCode medium, system architecture..."
+                        value={interviewForm.notes}
+                        onChange={(e) =>
+                          setInterviewForm({
+                            ...interviewForm,
+                            notes: e.target.value,
+                          })
+                        }
                         className="subform-select-padding"
                       />
                     </div>
 
-                    <button type="submit" className="db-btn-submit subform-btn-layout">
+                    <button
+                      type="submit"
+                      className="db-btn-submit subform-btn-layout"
+                    >
                       + Save Interview Round
                     </button>
                   </form>
                 </div>
               )}
-              </div>
             </div>
           </div>
+        </div>
       )}
       {isArchiveViewOpen && (
-      <div className="db-modal-overlay">
-        <div className="db-archive-modal-frame">
-          <div className="db-archive-modal-header">
-            <h3>📁 Archived Job Applications</h3>
-            <button onClick={() => setIsArchiveViewOpen(false)} className="db-archive-close-btn">
-              &times;
-            </button>
-          </div>
-
-          {archivedJobs.length === 0 ? (
-            <p className="db-archive-empty-text">No archived job records found.</p>
-          ) : (
-            <div className="db-archive-list-container">
-              {archivedJobs.map((job) => (
-                <div key={job.id} className="db-archive-item-card">
-                  <div className="db-archive-item-details">
-                    <h4 className="db-archive-item-title">{job.title}</h4>
-                    <p className="db-archive-item-subtitle">
-                      {job.company} — <span className="db-archive-item-stage">{job.stage}</span>
-                    </p>
-                    {job.outcome_state && (
-                      <span className="db-archive-item-outcome-badge">
-                        Outcome: {job.outcome_state}
-                      </span>
-                    )}
-                  </div>
-                  
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      try {
-                        const token = await getToken();
-                        if (!token) return;
-                        
-                        const res = await fetch(`${BACKEND_URL}/api/jobs/${job.id}/restore`, {
-                          method: "POST",
-                          headers: { Authorization: `Bearer ${token}` },
-                        });
-                        
-                        if (res.ok) {
-                          fetchArchivedJobs();
-                          window.location.reload();
-                        }
-                      } catch (err) {
-                        console.error("Failed to restore entry:", err);
-                      }
-                    }}
-                    className="db-btn-restore"
-                  >
-                    ↩️ Restore
-                  </button>
-                </div>
-              ))}
+        <div className="db-modal-overlay">
+          <div className="db-archive-modal-frame">
+            <div className="db-archive-modal-header">
+              <h3>📁 Archived Job Applications</h3>
+              <button
+                onClick={() => setIsArchiveViewOpen(false)}
+                className="db-archive-close-btn"
+              >
+                &times;
+              </button>
             </div>
-          )}
+
+            {archivedJobs.length === 0 ? (
+              <p className="db-archive-empty-text">
+                No archived job records found.
+              </p>
+            ) : (
+              <div className="db-archive-list-container">
+                {archivedJobs.map((job: any) => (
+                  <div key={job.id} className="db-archive-item-card">
+                    <div className="db-archive-item-details">
+                      <h4 className="db-archive-item-title">{job.title}</h4>
+                      <p className="db-archive-item-subtitle">
+                        {job.company}
+                        {!job.outcome_state && (
+                          <>
+                            {" — "}
+                            <span className="db-archive-item-stage">
+                              {job.stage}
+                            </span>
+                          </>
+                        )}
+                      </p>
+                      {job.outcome_state && (
+                        <span className="db-archive-item-outcome-badge">
+                          Outcome: {job.outcome_state}
+                        </span>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          const token = await getToken();
+                          if (!token) return;
+
+                          const res = await fetch(
+                            `${BACKEND_URL}/api/jobs/${job.id}/restore`,
+                            {
+                              method: "POST",
+                              headers: { Authorization: `Bearer ${token}` },
+                            },
+                          );
+
+                          if (res.ok) {
+                            fetchArchivedJobs();
+                            window.location.reload();
+                          }
+                        } catch (err) {
+                          console.error("Failed to restore entry:", err);
+                        }
+                      }}
+                      className="db-btn-restore"
+                    >
+                      ↩️ Restore
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    )}
-      </div>
+      )}
+    </div>
   );
 }

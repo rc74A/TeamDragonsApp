@@ -167,14 +167,14 @@
   padding-right: 16px; /* Slightly adjusted to make room for your new scrollbars */
   border-radius: 12px;
   border: 1px solid #4a5568;
-  
+
   /* Layout Sizing & Structure Rules */
-  width: 900px;       
+  width: 900px;
   max-width: 95vw;
-  height: 85vh;        /* Strict height constraints force internal scrolling */
+  height: 85vh; /* Strict height constraints force internal scrolling */
   display: flex;
   flex-direction: column;
-  overflow: hidden;    /* Stops the main outer card from leaking off-screen */
+  overflow: hidden; /* Stops the main outer card from leaking off-screen */
 }
 
 .db-modal-content h3 {
@@ -320,16 +320,16 @@
 }
 
 .db-inline-stage-wrapper .db-card-status {
-  margin: 0 !important; 
+  margin: 0 !important;
 }
 
 .db-card-inline-select {
-  background-color: #1a202c; 
+  background-color: #1a202c;
   color: #ffffff;
-  border: 1px solid #4a5568; 
+  border: 1px solid #4a5568;
   border-radius: 4px;
   padding: 4px 8px;
-  font-size: 13px; 
+  font-size: 13px;
   cursor: pointer;
   outline: none;
   transition: border-color 0.15s ease;
@@ -340,35 +340,33 @@
 }
 
 .db-card-inline-select option {
-  background-color: #2d3748; 
+  background-color: #2d3748;
   color: #ffffff;
 }
 
-
 .db-modal-split {
   display: flex;
-  flex-direction: row;  /* Keeps left and right side-by-side */
-  gap: 24px;          
+  flex-direction: row; /* Keeps left and right side-by-side */
+  gap: 24px;
   width: 100%;
-  flex: 1;              /* Fills the remaining vertical space of the modal */
-  min-height: 0;        /* Required to break flex defaults and enable scrolling */
-  overflow: hidden;     /* Prevents the split box itself from expanding off-screen */
+  flex: 1; /* Fills the remaining vertical space of the modal */
+  min-height: 0; /* Required to break flex defaults and enable scrolling */
+  overflow: hidden; /* Prevents the split box itself from expanding off-screen */
 }
-
 
 .db-modal-col-right {
   flex: 1;
-  min-width: 300px;     /* Guarantees the column doesn't get crushed too narrow */
-  height: 100%;         /* Forces it to match the modal window height bounds */
-  overflow-y: auto;     /* TURNS ON YOUR SCROLLBAR! */
+  min-width: 300px; /* Guarantees the column doesn't get crushed too narrow */
+  height: 100%; /* Forces it to match the modal window height bounds */
+  overflow-y: auto; /* TURNS ON YOUR SCROLLBAR! */
   padding-left: 20px;
-  padding-right: 12px;  /* Leaves breathing room for the scrolling track */
+  padding-right: 12px; /* Leaves breathing room for the scrolling track */
   padding-bottom: 50px; /* Ensures your interactive buttons never get cut off at the bottom */
   border-left: 1px solid #334155; /* Clean slate-blue border line */
 }
 
 .db-modal-title-blue {
-  color: #4169E1;
+  color: #4169e1;
   margin-bottom: 20px;
 }
 
@@ -376,13 +374,13 @@
 .db-outcome-panel {
   margin-top: 20px;
   padding: 15px;
-  border: 1px solid #4169E1;
+  border: 1px solid #4169e1;
   border-radius: 6px;
   background-color: rgba(65, 105, 225, 0.05);
 }
 
 .db-outcome-title {
-  color: #4169E1;
+  color: #4169e1;
   margin-top: 0;
   margin-bottom: 10px;
 }
@@ -397,13 +395,13 @@
 
 /* Card Outcome Badge */
 .db-card-outcome-highlight {
-  color: #00FFFF;
+  color: #00ffff;
   font-weight: bold;
 }
 
 /* Chronological Timeline Element Engine */
 .db-timeline-loading {
-  color: #00FFFF;
+  color: #00ffff;
 }
 
 .db-timeline-empty {
@@ -418,44 +416,48 @@
   max-height: 450px;
   overflow-y: auto;
   padding-right: 5px;
+  margin-bottom: 2.5rem !important;
 }
 
 .db-timeline-node {
   display: flex;
-  gap: 10px;
-  position: relative;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .db-timeline-axis {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  min-width: 16px;
 }
 
 .db-timeline-dot {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: #00FFFF;
-  border: 2px solid #4169E1;
+  background-color: #00ffff;
+  border: 2px solid #4169e1;
   z-index: 2;
 }
 
 .db-timeline-line {
   width: 2px;
   flex-grow: 1;
-  background-color: #4169E1;
+  background-color: #4169e1;
   margin-top: 4px;
   margin-bottom: 4px;
 }
 
-db-timeline-card {
-  background-color: #f8f9fa;
-  padding: 14px;               
+.db-timeline-card {
+  background-color: #f8f9fa !important; /* 🌟 Force a crisp off-white backdrop card container */
+  border-left: 4px solid #00ffff; /* A nice glowing neon accent line on the left edge */
   border-radius: 6px;
-  flex-grow: 1;
-  border-left: 3px solid #00FFFF;
-  margin-bottom: 12px;         
+  padding: 12px 16px;
+  flex-grow: 1; /* Forces the card container to fill out the remaining width */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .db-timeline-card:last-child {
@@ -463,24 +465,26 @@ db-timeline-card {
 }
 
 .db-timeline-time {
-  font-size: 0.85rem;
-  color: #666;
+  font-size: 0.75rem;
+  color: #6c757d; /* Dark grey muted timestamp header text */
+  font-weight: 600;
+  margin-bottom: 4px;
 }
 
 .db-timeline-text {
-  font-size: 0.95rem;
-  margin-top: 4px;
-  color: #94a3b8;
+  font-size: 0.9rem;
+  color: #212529; /* 🌟 Bold near-black readable text color description label */
+  line-height: 1.4;
 }
 
 .db-timeline-old-stage {
-  font-weight: 600;
-  color: #666;
+  color: #6c757d; /* Muted gray for past historic state */
+  text-decoration: line-through;
 }
 
 .db-timeline-new-stage {
-  font-weight: 600;
-  color: #4169E1;
+  color: #0056b3; /* Bold vibrant blue accent for current state text */
+  font-weight: bold;
 }
 
 .db-form-group-no-margin {
@@ -490,18 +494,16 @@ db-timeline-card {
   margin-top: 20px;
 }
 
-
 .db-modal-col-left {
   flex: 1;
   min-width: 300px;
-  overflow-y: auto;   
+  overflow-y: auto;
   padding-right: 12px;
 }
 
-
 .db-interview-subform {
   margin-top: 24px;
-  margin-bottom: 16px;  /* Spacing below the save button */
+  margin-bottom: 16px; /* Spacing below the save button */
   display: flex;
   flex-direction: column;
 }
@@ -632,7 +634,7 @@ db-timeline-card {
 }
 
 .right-column-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.75rem; /* 🌟 This forces clean separation between stacked components */
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem; /* 🌟 This forces clean separation between stacked components */
 }
