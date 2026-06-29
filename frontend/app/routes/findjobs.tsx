@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { getAuth } from "@clerk/react-router/server";
-import { SignOutButton } from "@clerk/react-router";
+import { SignOutButton, useAuth } from "@clerk/react-router";
 import { Link, redirect } from "react-router";
-import type { Route } from "./+types/dashboard";
+import type { Route } from "./+types/findjobs";
+import ResumeModal from "~/components/ResumeModal";
+import type { TailoredResume } from "~/components/ResumeModal";
+import CoverLetterModal from "~/components/CoverLetterModal";
+import type { CoverLetter } from "~/components/CoverLetterModal";
 import "./app.css";
 import "./findjobs.css";
 
-interface FoundJob {
+export interface FoundJob {
   id: string;
   title: string;
   employer: string;
@@ -22,7 +26,7 @@ interface FoundJob {
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 export async function loader(args: Route.LoaderArgs) {
-  const { userId, sessionClaims } = await getAuth(args);
+  const { userId } = await getAuth(args);
   if (!userId) throw redirect("/login");
 }
 
@@ -38,13 +42,37 @@ const Spinner = () => (
 export default function FindJobs() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [currentResume, setCurrentResume] = useState<TailoredResume | null>(
+    null,
+  );
+  const [currentCoverLetter, setCurrentCoverLetter] =
+    useState<CoverLetter | null>(null);
+  const [coverLetterModalOpen, setCoverLetterModalOpen] = useState(true);
+  const [resumeModalOpen, setResumeModalOpen] = useState(true);
   const [searchForm, setSearchForm] = useState({
     title: "",
     employer: "",
     keywords: "",
     excluded_words: "",
   });
-  const [jobs, setJobs] = useState<FoundJob[]>([]);
+
+  const [jobs, setJobs] = useState<FoundJob[]>([
+    {
+      id: "0",
+      title: "Test Job",
+      employer: "Employer",
+      description: "This is a normal job.",
+      apply_link: "https://google.com",
+      salary: 36000,
+      employment_type: "Full-Time",
+      country: "United States",
+      state: "New Jersey",
+      city: "Newark",
+    },
+  ]);
+  const [selectedJob, setSelectedJob] = useState<FoundJob>();
+
+  const { getToken } = useAuth();
 
   const handleSearchSubmit = async () => {
     try {
@@ -91,9 +119,112 @@ export default function FindJobs() {
     }
   };
 
+  const handleGenerateResume = async (job: FoundJob) => {
+    try {
+      setIsLoading(true);
+      setError("");
+
+      const token = await getToken();
+      if (!token) return;
+
+      const response = await fetch(`${BACKEND_URL}/api/ai/create_resume`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          position_info: job.description,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.detail);
+        console.error(errorData.detail);
+        return;
+      }
+
+      const resume = await response.json();
+
+      if (resume.length == 0) {
+        setError("Failed to generate resume.");
+        return;
+      }
+
+      setCurrentResume(resume);
+      setResumeModalOpen(true);
+      setError("");
+
+      console.log(resume);
+    } catch {
+      setError("Network error while generating resume.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGenerateCover = async (job: FoundJob) => {
+    try {
+      setIsLoading(true);
+      setError("");
+
+      const token = await getToken();
+      if (!token) return;
+
+      const response = await fetch(
+        `${BACKEND_URL}/api/ai/create_cover_letter`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            position_info: job.description,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.detail);
+        console.error(errorData.detail);
+        return;
+      }
+
+      const cover = await response.json();
+
+      if (cover.length == 0) {
+        setError("Failed to generate cover letter.");
+        return;
+      }
+
+      setCurrentCoverLetter(cover);
+      setCoverLetterModalOpen(true);
+      setError("");
+
+      console.log(cover);
+    } catch {
+      setError("Network error while generating cover letter.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleApply = async (job: FoundJob) => {};
+
   return (
     <div className="search-root">
-      {isLoading && <Spinner />}
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-white rounded-xl p-8 flex flex-col items-center gap-4">
+            <Spinner />
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      )}
+
       <header className="search-header">Dragon Application</header>
       <div className="search-workspace">
         <aside className="sidebar">
@@ -216,27 +347,55 @@ export default function FindJobs() {
                   <div>
                     <h4>{job.title}</h4>
                     <p className="search-card-company">🏢 {job.employer}</p>
-                    <p className="search-card-company">🏢 {job.description}</p>
+                    <p className="search-card-company">{job.employment_type}</p>
                     <p className="search-card-company">
-                      🏢 {job.employment_type}
+                      {job.country}, {job.state}, {job.city}
                     </p>
-                    <p className="search-card-company">
-                      🏢 {job.country}, {job.state}, {job.city}
-                    </p>
-                    <p className="search-card-status">
-                      📋 salary: {job.salary}
-                    </p>
-                    <p className="search-card-company">🏢 {job.apply_link}</p>
+                    <a
+                      className="search-card-company underline"
+                      href={job.apply_link}
+                    >
+                      {" "}
+                      Link{" "}
+                    </a>{" "}
+                    <br />
+                    <br />
+                    <p className="search-card-status">salary: {job.salary}</p>
+                    <p className="search-card-company">{job.description}</p>
                   </div>
                   <div className="search-card-actions">
                     <button
                       type="button"
                       onClick={() => {
                         // TODO: Open link and add to applied jobs
+                        handleApply();
+                        if (job.apply_link) {
+                          window.open(job.apply_link);
+                        }
                       }}
                       className="search-btn-add"
                     >
                       Apply
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedJob(job);
+                        handleGenerateResume(job);
+                      }}
+                      className="search-btn-add"
+                    >
+                      Create Resume
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedJob(job);
+                        handleGenerateCover(job);
+                      }}
+                      className="search-btn-add"
+                    >
+                      Create Cover Letter
                     </button>
                     <button
                       type="button"
@@ -254,6 +413,28 @@ export default function FindJobs() {
           </div>
         </main>
       </div>
+
+      {resumeModalOpen && (
+        <ResumeModal
+          resume={currentResume}
+          job={selectedJob}
+          onClose={() => {
+            setResumeModalOpen(false);
+            setCurrentResumeLetter(null);
+          }}
+        />
+      )}
+
+      {coverLetterModalOpen && (
+        <CoverLetterModal
+          coverLetter={currentCoverLetter}
+          job={selectedJob}
+          onClose={() => {
+            setCoverLetterModalOpen(false);
+            setCurrentCoverLetter(null);
+          }}
+        />
+      )}
     </div>
   );
 }

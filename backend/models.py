@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import DateTime, Integer, String, Text
+from sqlalchemy import DateTime, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from database import Base
@@ -157,4 +157,24 @@ class JobStageHistory(Base):
     new_stage: Mapped[str] = mapped_column(String(50), nullable=False)
     changed_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=utc_now
+    )
+
+
+class Document(Base):
+    """
+    Generic document for saved documents,
+
+    This is especially useful for saved resumes and cover letters.
+    """
+
+    __tablename__ = "documents"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    owner_id: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
+    # "resume" | "cover_letter"
+    doc_type: Mapped[str] = mapped_column(String(20), nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    job_snapshot: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=func.now()
     )

@@ -1,0 +1,366 @@
+/* ── Backdrop ─────────────────────────────────────────── */
+.cl-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 18, 0.72);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+/* ── Modal shell ──────────────────────────────────────── */
+/* Expands to fit side-by-side papers when rewrite is active */
+.cl-modal {
+  width: 100%;
+  max-width: 820px;
+  background: #f7f6f2;
+  border-radius: 6px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: max-width 0.3s ease;
+}
+
+.cl-modal.cl-modal--wide {
+  max-width: 1400px;
+}
+
+/* ── Toolbar ──────────────────────────────────────────── */
+.cl-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1.25rem;
+  background: #1a1c24;
+  color: #9a9faf;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.cl-toolbar-label {
+  font-weight: 600;
+}
+
+.cl-toolbar-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.cl-btn-print {
+  background: #2f6df5;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-transform: none;
+  transition: background 0.15s;
+}
+
+.cl-btn-print:hover {
+  background: #1a57e0;
+}
+
+.cl-btn-success {
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-transform: none;
+  transition: background 0.15s;
+}
+
+.cl-btn-success:hover {
+  background: #15803d;
+}
+
+.cl-btn-close {
+  background: none;
+  border: none;
+  color: #9a9faf;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  transition:
+    color 0.15s,
+    background 0.15s;
+  line-height: 1;
+}
+
+.cl-btn-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Papers row ───────────────────────────────────────── */
+.cl-papers-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0;
+  overflow-x: auto;
+  flex: 1;
+}
+
+/* ── Paper wrap (label + paper) ───────────────────────── */
+.cl-paper-wrap {
+  flex: 1;
+  min-width: 340px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cl-paper-label {
+  font-family: "Arial", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9a9faf;
+  background: #f7f6f2;
+  padding: 0.5rem 1.25rem 0;
+  margin: 0;
+}
+
+/* ── Paper ────────────────────────────────────────────── */
+.cl-paper {
+  padding: 2.5rem 3rem;
+  font-family: "Georgia", "Times New Roman", serif;
+  color: #1a1c24;
+  line-height: 1.7;
+  background: #fff;
+  margin: 0.75rem 1.25rem 1.25rem;
+  border-radius: 3px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  flex: 1;
+}
+
+/* ── Sender block ─────────────────────────────────────── */
+.cl-sender {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 2px solid #1a1c24;
+}
+
+.cl-name {
+  font-family: "Georgia", serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.4rem;
+  color: #1a1c24;
+}
+
+.cl-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  font-family: "Arial", sans-serif;
+  font-size: 0.78rem;
+  color: #555;
+}
+
+.cl-contact span + span::before {
+  content: "·";
+  margin-right: 1.25rem;
+  color: #bbb;
+}
+
+/* ── Date ─────────────────────────────────────────────── */
+.cl-date {
+  font-family: "Arial", sans-serif;
+  font-size: 0.84rem;
+  color: #555;
+  margin: 1.5rem 0 0;
+}
+
+/* ── Recipient ────────────────────────────────────────── */
+.cl-recipient {
+  margin: 1rem 0 1.5rem;
+  font-family: "Arial", sans-serif;
+  font-size: 0.84rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+.cl-recipient p {
+  margin: 0;
+}
+
+/* ── Salutation ───────────────────────────────────────── */
+.cl-salutation {
+  font-size: 0.9rem;
+  margin: 0 0 1.25rem;
+}
+
+/* ── Body ─────────────────────────────────────────────── */
+.cl-body {
+  font-size: 0.875rem;
+  color: #222;
+}
+
+.cl-body p {
+  margin: 0 0 1rem;
+}
+
+.cl-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Sign-off ─────────────────────────────────────────── */
+.cl-signoff {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+}
+
+.cl-signoff p {
+  margin: 0;
+}
+
+.cl-sig-name {
+  margin-top: 2.5rem !important;
+  font-weight: 700;
+  font-family: "Arial", sans-serif;
+  font-size: 0.9rem;
+  color: #1a1c24;
+}
+
+/* ── Rewrite panel ────────────────────────────────────── */
+.cl-rewrite-panel {
+  width: 280px;
+  flex-shrink: 0;
+  background: #f7f6f2;
+  border-left: 1px solid #e2e0da;
+  border-right: 1px solid #e2e0da;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  align-self: stretch;
+}
+
+.cl-rewrite-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.cl-rewrite-label {
+  font-family: "Arial", sans-serif;
+  font-size: 0.82rem;
+  color: #555;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.cl-rewrite-input {
+  width: 100%;
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+  padding: 0.65rem 0.85rem;
+  font-family: "Arial", sans-serif;
+  font-size: 0.82rem;
+  color: #1a1c24;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.cl-rewrite-input:focus {
+  border-color: #2f6df5;
+}
+
+.cl-rewrite-input::placeholder {
+  color: #aaa;
+}
+
+/* ── Status messages ──────────────────────────────────── */
+.cl-msg-success {
+  font-family: "Arial", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #22c55e;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+.cl-msg-error {
+  font-family: "Arial", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #ef4444;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+/* ── Divider between papers ───────────────────────────── */
+.cl-paper-divider {
+  width: 1px;
+  background: #e2e0da;
+  align-self: stretch;
+  flex-shrink: 0;
+}
+
+/* ── Print ────────────────────────────────────────────── */
+@media print {
+  .cl-backdrop {
+    position: static;
+    background: none;
+    padding: 0;
+  }
+
+  .cl-modal {
+    box-shadow: none;
+    max-width: 100%;
+  }
+
+  .cl-toolbar {
+    display: none;
+  }
+
+  .cl-rewrite-panel {
+    display: none;
+  }
+
+  .cl-paper-label {
+    display: none;
+  }
+
+  .cl-papers-row {
+    display: block;
+  }
+
+  .cl-paper {
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  /* Only print the original, not the rewritten version */
+  .cl-paper-wrap + .cl-paper-divider,
+  .cl-paper-wrap + .cl-paper-divider + .cl-paper-wrap {
+    display: none;
+  }
+}

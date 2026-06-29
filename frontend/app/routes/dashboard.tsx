@@ -134,7 +134,7 @@ export default function Dashboard() {
   const [jobForm, setJobForm] = useState({
     title: "",
     company: "",
-    stage: "Wishlist",
+    stage: "Interested",
     location: "",
     deadline: "",
     deadlineState: "No Deadline",
@@ -550,7 +550,7 @@ export default function Dashboard() {
                   setJobForm({
                     title: "",
                     company: "",
-                    stage: "Wishlist",
+                    stage: "Interested",
                     location: "",
                     deadline: "",
                     deadlineState: "No Deadline",
@@ -846,6 +846,89 @@ export default function Dashboard() {
               )}
 
             </div>
+              <div className="db-form-group">
+                <label>Company</label>
+                <input
+                  type="text"
+                  id="modalCompany"
+                  required
+                  placeholder="e.g. Google"
+                  value={jobForm.company}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, company: e.target.value })
+                  }
+                />
+              </div>
+              <div className="db-form-group">
+                <label htmlFor="modalStage">Tracking Stage</label>
+                <select
+                  id="modalStage"
+                  value={jobForm.stage}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, stage: e.target.value })
+                  }
+                >
+                  <option value="Interested">Interested</option>
+                  <option value="Applied">Applied</option>
+                  <option value="Interview">Interview</option>
+                  <option value="Offer">Offer</option>
+                  <option value="Rejected">Rejected</option>
+                  <option value="Archived">Archived</option>
+                </select>
+              </div>
+              <div className="db-form-group">
+                <label>Location</label>
+                <input
+                  type="text"
+                  id="modalLocation"
+                  required
+                  placeholder="e.g. Houston, TX"
+                  value={jobForm.location}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, location: e.target.value })
+                  }
+                />
+              </div>
+              <div className="db-form-group">
+                <label>Deadline</label>
+                <input
+                  type="date"
+                  id="modalDeadline"
+                  required
+                  value={jobForm.deadline || ""}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, deadline: e.target.value })
+                  }
+                />
+              </div>
+              <div className="db-form-group">
+                <label htmlFor="modalDeadlineState">Tracking Stage</label>
+                <select
+                  id="modalDeadlineState"
+                  value={jobForm.deadlineState}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, deadlineState: e.target.value })
+                  }
+                >
+                  <option value="No Deadline">No Deadline</option>
+                  <option value="Upcoming">Upcoming</option>
+                  <option value="Past">Past</option>
+                  <option value="Extended">Extended</option>
+                </select>
+              </div>
+              <div className="db-form-actions">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="db-btn-cancel"
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="db-btn-submit">
+                  {editingJobId ? "Save Changes" : "Track Job"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
