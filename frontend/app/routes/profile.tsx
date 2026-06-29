@@ -18,7 +18,7 @@ const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Profile() {
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
   const { getToken } = useAuth();
 
   const [profile, setProfile] = useState({
@@ -29,7 +29,7 @@ export default function Profile() {
     summary: "",
   });
 
-  const [userId] = useState<string | null>(null);
+  const [_userId] = useState<string | null>(null);
 
   const [errors, setErrors] = useState({ email: "", phone: "", server: "" });
   const [successMessage, setSuccessMessage] = useState("");
@@ -63,7 +63,7 @@ export default function Profile() {
     }
 
     verifyAndLoad();
-  }, []);
+  }, [getToken]);
 
   const totalFields = Object.keys(profile).length;
   const filledFields = Object.values(profile).filter(

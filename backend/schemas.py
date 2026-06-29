@@ -1,6 +1,6 @@
 import re
 from datetime import date, datetime
-
+from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 _EMAIL_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
@@ -37,6 +37,8 @@ class JobCreate(BaseModel):
     location: str | None = Field(default=None, max_length=200)
     deadline: date | None = Field(default=None)
     deadline_state: str | None = Field(default="No Deadline", max_length=50)
+    outcome_state: str | None = Field(default=None, max_length=50)
+    outcome_notes: str | None = Field(default=None)
 
     _validate_title = field_validator("title")(_reject_blank)
     _validate_company = field_validator("company")(_reject_blank)
@@ -86,10 +88,13 @@ class JobOut(BaseModel):
     location: str | None
     deadline: date | None
     deadline_state: str | None
-    last_activity: datetime
-    created_at: datetime
-    outcome_state: str | None
-    outcome_notes: str | None
+    created_at: datetime | str | None = None
+    last_activity: datetime | str | None = None
+    outcome_state: str | None = None  
+    outcome_notes: str | None = None  
+    is_archived: bool
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class JobStageHistoryOut(BaseModel):

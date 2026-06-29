@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import DateTime, Integer, String, Text, func
+from sqlalchemy import Boolean, DateTime, Integer, String, Text, func, ForeignKey, Column
 from sqlalchemy.orm import Mapped, mapped_column
 
 from database import Base
@@ -44,6 +44,8 @@ class Job(Base):
     )
     outcome_state: Mapped[str | None] = mapped_column(String(50), nullable=True)
     outcome_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    is_archived: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
 class Profile(Base):
     """
@@ -178,3 +180,12 @@ class Document(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=func.now()
     )
+
+class Interview(Base):
+    __tablename__ = "interviews"
+
+    id = Column(Integer, primary_key=True, index=True)
+    job_id = Column(Integer, ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False)
+    round_type = Column(String, nullable=False)
+    interview_date = Column(String, nullable=True)  # Storing datetime-local string
+    notes = Column(String, nullable=True)

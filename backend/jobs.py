@@ -4,10 +4,10 @@ import jwt
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
-
+from sqlalchemy import or_
 from database import get_db
 from domain import compute_job_metrics
-from models import Job, utc_now, JobStageHistory
+from models import Job, utc_now, JobStageHistory, Interview
 from schemas import JobCreate, JobMetrics, JobOut, JobUpdate, JobStageHistoryOut
 
 jobsrouter = APIRouter(prefix="/api/jobs", tags=["jobs"])
@@ -128,11 +128,21 @@ def list_jobs(
     """
     return (
         db.query(Job)
-        .filter(Job.owner_id == user_id)
-        .order_by(Job.last_activity.desc())
+        .filter(Job.owner_id == user_id, or_ (Job.is_archived == False, Job.is_archived == None))
+        .order_by(Job.last_activity.desc()) 
         .all()
     )
 
+@jobsrouter.get("/archived", response_model=list[JobOut])
+def list_archived_jobs(
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    return (
+        db.query(Job)
+        .filter(Job.owner_id == user_id, Job.is_archived == True)
+        .all()
+    )
 
 @jobsrouter.get("/metrics", response_model=JobMetrics)
 def job_metrics(
@@ -244,6 +254,10 @@ def delete_job(
         None: Returns an empty body with a 204 Error status code on success.
     """
     job = get_owned_job(db, job_id, user_id)
+
+    db.query(JobStageHistory).filter(JobStageHistory.job_id == job_id).delete(synchronize_session=False)
+    db.query(Interview).filter(Interview.job_id == job_id).delete(synchronize_session=False)
+
     db.delete(job)
     db.commit()
     return None
@@ -263,8 +277,104 @@ def get_job_timeline(
     timeline = (
         db.query(JobStageHistory)
         .filter(JobStageHistory.job_id == job_id)
+        .populate_existing()
         .order_by(JobStageHistory.changed_at.asc())
         .all()
     )
     
     return timeline
+
+@jobsrouter.post("/{job_id}/interviews", status_code=201)
+def create_job_interview(
+    job_id: int,
+    payload: dict,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """
+    Log an interview round for an owned job and append it to the tracking log.
+    """
+    get_owned_job(db, job_id, user_id)
+    
+    from models import Interview, JobStageHistory
+    
+    round_type = payload.get("roundType") or payload.get("round_type") or "Technical Interview"
+    interview_date = payload.get("interviewDate") or payload.get("interview_date")
+    notes = payload.get("notes", "")
+
+    interview = Interview(
+        job_id=job_id,
+        round_type=round_type,
+        interview_date=interview_date,
+        notes=notes
+    )
+    db.add(interview)
+    
+    history_entry = JobStageHistory(
+        job_id=job_id,
+        old_stage="Interviewing",
+        new_stage=f"Logged: {round_type} Round",
+        changed_at=utc_now()
+    )
+    db.add(history_entry)
+    
+    db.commit()
+    return {"message": "Interview saved successfully!"}
+
+
+@jobsrouter.get("/{job_id}/interviews")
+def list_job_interviews(
+    job_id: int,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    get_owned_job(db, job_id, user_id)
+    from models import Interview
+    
+    return db.query(Interview).filter(Interview.job_id == job_id).all()
+
+@jobsrouter.post("/{job_id}/archive", response_model=JobOut)
+def archive_job(
+    job_id: int,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """Soft-delete/Archive a job position while keeping history intact (S2-014)."""
+    job = get_owned_job(db, job_id, user_id)
+    job.is_archived = True
+    job.last_activity = utc_now()
+    
+    # Write history snapshot node entry matching S2-010 tracking criteria
+    db.add(JobStageHistory(
+        job_id=job.id,
+        old_stage=job.stage,
+        new_stage="Archived",
+        changed_at=utc_now()
+    ))
+    db.commit()
+    db.refresh(job)
+    return job
+
+
+@jobsrouter.post("/{job_id}/restore", response_model=JobOut)
+def restore_job(
+    job_id: int,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """Restore an archived record back to functional workspace viewboards (S2-014)."""
+    job = get_owned_job(db, job_id, user_id)
+    job.is_archived = False
+    job.last_activity = utc_now()
+    
+    # Write a historical restoration record event entry log
+    db.add(JobStageHistory(
+        job_id=job.id,
+        old_stage="Archived",
+        new_stage=job.stage,
+        changed_at=utc_now()
+    ))
+    db.commit()
+    db.refresh(job)
+    return job
+
