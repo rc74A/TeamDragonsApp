@@ -28,7 +28,7 @@ async def lifespan(app: FastAPI):
     # Baseline migration approach (S1-019): create missing tables on
     # startup. Replace with real migrations (e.g. Alembic) when the
     # schema starts changing.
-    Base.metadata.drop_all(bind=engine, checkfirst=True)
+    
     Base.metadata.create_all(bind=engine)
 
     yield
