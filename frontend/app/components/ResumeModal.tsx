@@ -63,6 +63,18 @@ function groupSkills(skills: TailoredSkill[]): Record<string, TailoredSkill[]> {
   );
 }
 
+const Spinner = () => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="flex flex-col items-center gap-4 rounded-xl p-6 shadow-2xl dark:bg-zinc-900">
+      <div className="h-10 w-10 animate-spin rounded-full border-4 border-zinc-300 border-t-indigo-600" />
+
+      <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        Loading...
+      </p>
+    </div>
+  </div>
+);
+
 export default function ResumeModal({
   resume,
   job,
@@ -70,17 +82,21 @@ export default function ResumeModal({
 }: ResumeModalProps) {
   const { getToken } = useAuth();
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [errorType, setErrorType] = useState<"error" | "success">("error");
   const [rewriteModalOpen, setRewriteModalOpen] = useState(false);
   const [rewritePrompt, setRewritePrompt] = useState("");
-  const [activeResume, setActiveResume] = useState<TailoredResume>(resume);
+
+  const [localRewrite, setLocalRewrite] = useState<TailoredResume | null>(null);
   const [newResume, setNewResume] = useState<TailoredResume | null>(null);
 
   if (!resume) return null;
 
+  const activeResume = localRewrite || resume;
+
   const isWide = rewriteModalOpen || newResume !== null;
 
-  const { profile, experience, skills, education } = resume;
+  const { profile, experience, skills, education } = activeResume;
   const groupedSkills = groupSkills(skills);
   // For the rewrite logic
   const {
@@ -142,6 +158,8 @@ export default function ResumeModal({
   const handleRewrite = async () => {
     try {
       setError("");
+      setIsLoading(true);
+      setNewResume(null);
       const token = await getToken();
       if (!token) return;
 
@@ -170,6 +188,7 @@ export default function ResumeModal({
         } else {
           setError("An unexpected error occurred.");
         }
+        setIsLoading(false);
         return;
       }
 
@@ -180,12 +199,14 @@ export default function ResumeModal({
     } catch {
       setErrorType("error");
       setError("Network error while rewriting resume.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleUseNew = () => {
     if (!newResume) return;
-    setActiveResume(newResume);
+    setLocalRewrite(newResume);
     setRewriteModalOpen(false);
     setRewritePrompt("");
     setNewResume(null);
@@ -195,6 +216,8 @@ export default function ResumeModal({
 
   return (
     <div className="rm-backdrop" onClick={handleBackdropClick}>
+      {isLoading && <Spinner label="loading..." />}
+
       <div className={`rm-modal${isWide ? " rm-modal--wide" : ""}`}>
         {/* Toolbar */}
         <div className="rm-toolbar">
