@@ -268,7 +268,7 @@ export default function CoverLetterModal({
                 </div>
                 <div className="cl-rewrite-body">
                   <p className="cl-rewrite-label">
-                    Describe how you'd like the cover letter changed:
+                    Describe how you&apos;d like the cover letter changed:
                   </p>
                   <textarea
                     className="cl-rewrite-input"
