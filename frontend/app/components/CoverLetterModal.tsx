@@ -85,10 +85,14 @@ export default function CoverLetterModal({
   const [rewritePrompt, setRewritePrompt] = useState("");
 
   const [activeLetter, setActiveLetter] = useState<CoverLetter>(coverLetter);
-  const [newCoverLetter, setNewCoverLetter] = useState<CoverLetter | null>(null);
+  const [newCoverLetter, setNewCoverLetter] = useState<CoverLetter | null>(
+    null,
+  );
   const [newParagraphs, setNewParagraphs] = useState<string[]>([]);
 
-  const [prevCoverLetter, setPrevCoverLetter] = useState<CoverLetter | null>(coverLetter);
+  const [prevCoverLetter, setPrevCoverLetter] = useState<CoverLetter | null>(
+    coverLetter,
+  );
 
   if (coverLetter !== prevCoverLetter) {
     setPrevCoverLetter(coverLetter);
