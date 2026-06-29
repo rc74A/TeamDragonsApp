@@ -13,8 +13,11 @@ def create_test_token(clerk_str_id: str) -> dict:
 USER_1 = create_test_token("1")
 USER_2 = create_test_token("2")
 
-JOB_PAYLOAD = {"title": "Software Engineer", "company": "Dragon Corp",
-               "description": "Description"}
+JOB_PAYLOAD = {
+    "title": "Software Engineer",
+    "company": "Dragon Corp",
+    "description": "Description"
+}
 
 
 def test_create_and_retrieve_job(client):
