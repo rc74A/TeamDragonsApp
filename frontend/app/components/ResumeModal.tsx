@@ -71,8 +71,16 @@ export default function ResumeModal({
   const { getToken } = useAuth();
   const [error, setError] = useState("");
   const [errorType, setErrorType] = useState<"error" | "success">("error");
+  const [rewriteModalOpen, setRewriteModalOpen] = useState(false);
+  const [rewritePrompt, setRewritePrompt] = useState("");
+  const [activeResume, setActiveResume] = useState<TailoredResume>(resume);
+  const [newResume, setNewResume] = useState<TailoredResume | null>(
+    null,
+  );
 
   if (!resume) return null;
+
+  const isWide = rewriteModalOpen || newResume !== null;
 
   const { profile, experience, skills, education } = resume;
   const groupedSkills = groupSkills(skills);
@@ -124,12 +132,70 @@ export default function ResumeModal({
       setErrorType("error");
     }
   };
+
+  const handleRewrite = async () => {
+    try {
+      setError("");
+      const token = await getToken();
+      if (!token) return;
+
+      const response = await fetch(
+        `${BACKEND_URL}/api/ai/rewrite_resume`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            job,
+            existing_resume: resume,
+            rewrite_prompt: rewritePrompt,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setErrorType("error");
+        if (typeof errorData.detail === "string") {
+          setError(errorData.detail);
+        } else if (Array.isArray(errorData.detail)) {
+          setError(
+            errorData.detail.map((e: { msg: string }) => e.msg).join(", "),
+          );
+        } else {
+          setError("An unexpected error occurred.");
+        }
+        return;
+      }
+
+      const newResume: TailoredResume = await response.json();
+      setNewResume(newResume);
+      setErrorType("success");
+      setError("Rewrite complete!");
+    } catch {
+      setErrorType("error");
+      setError("Network error while rewriting resume.");
+    }
+  };
+
+  const handleUseNew = () => {
+    if (!newResume) return;
+    setActiveResume(newResume);
+    setRewriteModalOpen(false);
+    setRewritePrompt("");
+    setNewResume(null);
+    setErrorType("success");
+    setError("Now showing rewritten version.");
+  };
+
   return (
     <div className="rm-backdrop" onClick={handleBackdropClick}>
-      <div className="rm-modal">
+      <div className={`rm-modal${isWide ? " rm-modal--wide" : ""}`}>
         {/* Toolbar */}
         <div className="rm-toolbar">
-          <span className="rm-toolbar-label">Resume Preview</span>
+          <span className="rm-toolbar-label">resume Letter Preview</span>
           {error && (
             <p
               className={
@@ -146,6 +212,13 @@ export default function ResumeModal({
             <button
               type="button"
               className="rm-btn-print"
+              onClick={() => setRewriteModalOpen((o) => !o)}
+            >
+              {rewriteModalOpen ? "Hide Rewrite" : "Rewrite"}
+            </button>
+            <button
+              type="button"
+              className="rm-btn-print"
               onClick={() => window.print()}
             >
               Download / Print
@@ -156,99 +229,272 @@ export default function ResumeModal({
           </div>
         </div>
 
-        {/* Resume paper */}
-        <div className="rm-paper" id="resume-paper">
-          {/* Header */}
-          <header className="rm-header">
-            <h1 className="rm-name">{profile.full_name}</h1>
-            <div className="rm-contact">
-              {profile.email && <span>{profile.email}</span>}
-              {profile.phone && <span>{profile.phone}</span>}
-              {profile.location && <span>{profile.location}</span>}
+        {/* Papers row */}
+        <div className="rm-papers-row">
+          {/* Original */}
+          <div className="rm-paper-wrap">
+            <p className="rm-paper-label">Original</p>
+            {/* Resume paper */}
+            <div className="rm-paper" id="resume-paper">
+              {/* Header */}
+              <header className="rm-header">
+                <h1 className="rm-name">{profile.full_name}</h1>
+                <div className="rm-contact">
+                  {profile.email && <span>{profile.email}</span>}
+                  {profile.phone && <span>{profile.phone}</span>}
+                  {profile.location && <span>{profile.location}</span>}
+                </div>
+                {profile.summary && <p className="rm-summary">{profile.summary}</p>}
+              </header>
+
+              {/* Experience */}
+              {experience.length > 0 && (
+                <section className="rm-section">
+                  <h2 className="rm-section-title">Experience</h2>
+                  <div className="rm-section-rule" />
+                  {experience.map((exp, i) => (
+                    <div key={i} className="rm-entry">
+                      <div className="rm-entry-header">
+                        <div>
+                          <span className="rm-entry-title">{exp.title}</span>
+                          {exp.organization && (
+                            <span className="rm-entry-org">
+                              {" "}
+                              · {exp.organization}
+                            </span>
+                          )}
+                        </div>
+                        <span className="rm-entry-dates">
+                          {exp.start_date}
+                          {exp.end_date ? ` – ${exp.end_date}` : ""}
+                        </span>
+                      </div>
+                      {exp.description && (
+                        <p className="rm-entry-desc">{exp.description}</p>
+                      )}
+                    </div>
+                  ))}
+                </section>
+              )}
+
+              {/* Education */}
+              {education.length > 0 && (
+                <section className="rm-section">
+                  <h2 className="rm-section-title">Education</h2>
+                  <div className="rm-section-rule" />
+                  {education.map((edu, i) => (
+                    <div key={i} className="rm-entry">
+                      <div className="rm-entry-header">
+                        <div>
+                          <span className="rm-entry-title">{edu.degree}</span>
+                          {edu.field_of_study && (
+                            <span className="rm-entry-org">
+                              {" "}
+                              in {edu.field_of_study}
+                            </span>
+                          )}
+                          {edu.school && (
+                            <span className="rm-entry-org"> · {edu.school}</span>
+                          )}
+                        </div>
+                        <span className="rm-entry-dates">
+                          {edu.start_date}
+                          {edu.end_date ? ` – ${edu.end_date}` : ""}
+                          {edu.gpa ? ` · GPA ${edu.gpa}` : ""}
+                        </span>
+                      </div>
+                      {edu.description && (
+                        <p className="rm-entry-desc">{edu.description}</p>
+                      )}
+                    </div>
+                  ))}
+                </section>
+              )}
+
+              {/* Skills */}
+              {skills.length > 0 && (
+                <section className="rm-section">
+                  <h2 className="rm-section-title">Skills</h2>
+                  <div className="rm-section-rule" />
+                  <div className="rm-skills-grid">
+                    {Object.entries(groupedSkills).map(([category, items]) => (
+                      <div key={category} className="rm-skill-group">
+                        <span className="rm-skill-category">{category}</span>
+                        <span className="rm-skill-list">
+                          {items.map((s) => s.name).join(", ")}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
             </div>
-            {profile.summary && <p className="rm-summary">{profile.summary}</p>}
-          </header>
+          </div>
 
-          {/* Experience */}
-          {experience.length > 0 && (
-            <section className="rm-section">
-              <h2 className="rm-section-title">Experience</h2>
-              <div className="rm-section-rule" />
-              {experience.map((exp, i) => (
-                <div key={i} className="rm-entry">
-                  <div className="rm-entry-header">
-                    <div>
-                      <span className="rm-entry-title">{exp.title}</span>
-                      {exp.organization && (
-                        <span className="rm-entry-org">
-                          {" "}
-                          · {exp.organization}
-                        </span>
-                      )}
-                    </div>
-                    <span className="rm-entry-dates">
-                      {exp.start_date}
-                      {exp.end_date ? ` – ${exp.end_date}` : ""}
-                    </span>
+          {/* Rewrite panel */}
+          {rewriteModalOpen && (
+            <>
+              <div className="cl-paper-divider" />
+              <div className="cl-rewrite-panel">
+                <div className="cl-toolbar">
+                  <span className="cl-toolbar-label">Rewrite</span>
+                  <div className="cl-toolbar-actions">
+                    <button
+                      type="button"
+                      className="cl-btn-print"
+                      onClick={handleRewrite}
+                    >
+                      Submit
+                    </button>
+                    <button
+                      type="button"
+                      className="cl-btn-close"
+                      onClick={() => setRewriteModalOpen(false)}
+                    >
+                      ✕
+                    </button>
                   </div>
-                  {exp.description && (
-                    <p className="rm-entry-desc">{exp.description}</p>
-                  )}
                 </div>
-              ))}
-            </section>
-          )}
-
-          {/* Education */}
-          {education.length > 0 && (
-            <section className="rm-section">
-              <h2 className="rm-section-title">Education</h2>
-              <div className="rm-section-rule" />
-              {education.map((edu, i) => (
-                <div key={i} className="rm-entry">
-                  <div className="rm-entry-header">
-                    <div>
-                      <span className="rm-entry-title">{edu.degree}</span>
-                      {edu.field_of_study && (
-                        <span className="rm-entry-org">
-                          {" "}
-                          in {edu.field_of_study}
-                        </span>
-                      )}
-                      {edu.school && (
-                        <span className="rm-entry-org"> · {edu.school}</span>
-                      )}
-                    </div>
-                    <span className="rm-entry-dates">
-                      {edu.start_date}
-                      {edu.end_date ? ` – ${edu.end_date}` : ""}
-                      {edu.gpa ? ` · GPA ${edu.gpa}` : ""}
-                    </span>
-                  </div>
-                  {edu.description && (
-                    <p className="rm-entry-desc">{edu.description}</p>
-                  )}
+                <div className="cl-rewrite-body">
+                  <p className="cl-rewrite-label">
+                    Describe how you&apos;d like the resume changed:
+                  </p>
+                  <textarea
+                    className="cl-rewrite-input"
+                    value={rewritePrompt}
+                    onChange={(e) => setRewritePrompt(e.target.value)}
+                    placeholder="e.g. Make it more formal, emphasize Python experience..."
+                    rows={6}
+                  />
                 </div>
-              ))}
-            </section>
-          )}
-
-          {/* Skills */}
-          {skills.length > 0 && (
-            <section className="rm-section">
-              <h2 className="rm-section-title">Skills</h2>
-              <div className="rm-section-rule" />
-              <div className="rm-skills-grid">
-                {Object.entries(groupedSkills).map(([category, items]) => (
-                  <div key={category} className="rm-skill-group">
-                    <span className="rm-skill-category">{category}</span>
-                    <span className="rm-skill-list">
-                      {items.map((s) => s.name).join(", ")}
-                    </span>
-                  </div>
-                ))}
               </div>
-            </section>
+            </>
+          )}
+
+          {/* Rewritten version */}
+          {newResume && (
+            <>
+              <div className="cl-paper-divider" />
+              <div className="cl-paper-wrap">
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    paddingRight: "1.25rem",
+                  }}
+                >
+                  <p className="rm-paper-label">Rewritten</p>
+                  <button
+                    type="button"
+                    className="rm-btn-success"
+                    style={{
+                      fontSize: "0.68rem",
+                      padding: "0.2rem 0.6rem",
+                      marginTop: "0.4rem",
+                    }}
+                    onClick={handleUseNew}
+                  >
+                    Use New ✓
+                  </button>
+                </div>
+                {/* Resume paper */}
+                <div className="rm-paper" id="resume-paper">
+                  {/* Header */}
+                  <header className="rm-header">
+                    <h1 className="rm-name">{profile.full_name}</h1>
+                    <div className="rm-contact">
+                      {profile.email && <span>{profile.email}</span>}
+                      {profile.phone && <span>{profile.phone}</span>}
+                      {profile.location && <span>{profile.location}</span>}
+                    </div>
+                    {profile.summary && <p className="rm-summary">{profile.summary}</p>}
+                  </header>
+
+                  {/* Experience */}
+                  {experience.length > 0 && (
+                    <section className="rm-section">
+                      <h2 className="rm-section-title">Experience</h2>
+                      <div className="rm-section-rule" />
+                      {experience.map((exp, i) => (
+                        <div key={i} className="rm-entry">
+                          <div className="rm-entry-header">
+                            <div>
+                              <span className="rm-entry-title">{exp.title}</span>
+                              {exp.organization && (
+                                <span className="rm-entry-org">
+                                  {" "}
+                                  · {exp.organization}
+                                </span>
+                              )}
+                            </div>
+                            <span className="rm-entry-dates">
+                              {exp.start_date}
+                              {exp.end_date ? ` – ${exp.end_date}` : ""}
+                            </span>
+                          </div>
+                          {exp.description && (
+                            <p className="rm-entry-desc">{exp.description}</p>
+                          )}
+                        </div>
+                      ))}
+                    </section>
+                  )}
+
+                  {/* Education */}
+                  {education.length > 0 && (
+                    <section className="rm-section">
+                      <h2 className="rm-section-title">Education</h2>
+                      <div className="rm-section-rule" />
+                      {education.map((edu, i) => (
+                        <div key={i} className="rm-entry">
+                          <div className="rm-entry-header">
+                            <div>
+                              <span className="rm-entry-title">{edu.degree}</span>
+                              {edu.field_of_study && (
+                                <span className="rm-entry-org">
+                                  {" "}
+                                  in {edu.field_of_study}
+                                </span>
+                              )}
+                              {edu.school && (
+                                <span className="rm-entry-org"> · {edu.school}</span>
+                              )}
+                            </div>
+                            <span className="rm-entry-dates">
+                              {edu.start_date}
+                              {edu.end_date ? ` – ${edu.end_date}` : ""}
+                              {edu.gpa ? ` · GPA ${edu.gpa}` : ""}
+                            </span>
+                          </div>
+                          {edu.description && (
+                            <p className="rm-entry-desc">{edu.description}</p>
+                          )}
+                        </div>
+                      ))}
+                    </section>
+                  )}
+
+                  {/* Skills */}
+                  {skills.length > 0 && (
+                    <section className="rm-section">
+                      <h2 className="rm-section-title">Skills</h2>
+                      <div className="rm-section-rule" />
+                      <div className="rm-skills-grid">
+                        {Object.entries(groupedSkills).map(([category, items]) => (
+                          <div key={category} className="rm-skill-group">
+                            <span className="rm-skill-category">{category}</span>
+                            <span className="rm-skill-list">
+                              {items.map((s) => s.name).join(", ")}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>

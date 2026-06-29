@@ -1,3 +1,4 @@
+
 /* ── Backdrop ─────────────────────────────────────────── */
 .rm-backdrop {
   position: fixed;
@@ -13,15 +14,21 @@
 }
 
 /* ── Modal shell ──────────────────────────────────────── */
+/* Expands to fit side-by-side papers when rewrite is active */
 .rm-modal {
   width: 100%;
-  max-width: 780px;
+  max-width: 820px;
   background: #f7f6f2;
   border-radius: 6px;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: max-width 0.3s ease;
+}
+
+.rm-modal.rm-modal--wide {
+  max-width: 1400px;
 }
 
 /* ── Toolbar ──────────────────────────────────────────── */
@@ -35,6 +42,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  flex-shrink: 0;
 }
 
 .rm-toolbar-label {
@@ -65,6 +73,24 @@
   background: #1a57e0;
 }
 
+.rm-btn-success {
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-transform: none;
+  transition: background 0.15s;
+}
+
+.rm-btn-success:hover {
+  background: #15803d;
+}
+
 .rm-btn-close {
   background: none;
   border: none;
@@ -84,20 +110,51 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* ── Paper ────────────────────────────────────────────── */
-.rm-paper {
-  padding: 3rem 3.5rem;
-  font-family: "Georgia", "Times New Roman", serif;
-  color: #1a1c24;
-  line-height: 1.55;
-  background: #fff;
-  margin: 1.25rem;
-  border-radius: 3px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+/* ── Papers row ───────────────────────────────────────── */
+.rm-papers-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0;
+  overflow-x: auto;
+  flex: 1;
 }
 
-/* ── Header ───────────────────────────────────────────── */
-.rm-header {
+/* ── Paper wrap (label + paper) ───────────────────────── */
+.rm-paper-wrap {
+  flex: 1;
+  min-width: 340px;
+  display: flex;
+  flex-direction: column;
+}
+
+.rm-paper-label {
+  font-family: "Arial", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9a9faf;
+  background: #f7f6f2;
+  padding: 0.5rem 1.25rem 0;
+  margin: 0;
+}
+
+/* ── Paper ────────────────────────────────────────────── */
+.rm-paper {
+  padding: 2.5rem 3rem;
+  font-family: "Georgia", "Times New Roman", serif;
+  color: #1a1c24;
+  line-height: 1.7;
+  background: #fff;
+  margin: 0.75rem 1.25rem 1.25rem;
+  border-radius: 3px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  flex: 1;
+}
+
+/* ── Sender block ─────────────────────────────────────── */
+.rm-sender {
   margin-bottom: 1.75rem;
   padding-bottom: 1.25rem;
   border-bottom: 2px solid #1a1c24;
@@ -105,7 +162,7 @@
 
 .rm-name {
   font-family: "Georgia", serif;
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   margin: 0 0 0.4rem;
@@ -119,11 +176,6 @@
   font-family: "Arial", sans-serif;
   font-size: 0.78rem;
   color: #555;
-  margin-bottom: 0.85rem;
-}
-
-.rm-contact span::before {
-  content: "";
 }
 
 .rm-contact span + span::before {
@@ -132,102 +184,144 @@
   color: #bbb;
 }
 
-.rm-summary {
-  font-size: 0.875rem;
-  color: #333;
-  margin: 0;
-  font-style: italic;
-  line-height: 1.6;
-}
-
-/* ── Sections ─────────────────────────────────────────── */
-.rm-section {
-  margin-bottom: 1.5rem;
-}
-
-.rm-section-title {
+/* ── Date ─────────────────────────────────────────────── */
+.rm-date {
   font-family: "Arial", sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.84rem;
+  color: #555;
+  margin: 1.5rem 0 0;
+}
+
+/* ── Recipient ────────────────────────────────────────── */
+.rm-recipient {
+  margin: 1rem 0 1.5rem;
+  font-family: "Arial", sans-serif;
+  font-size: 0.84rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+.rm-recipient p {
+  margin: 0;
+}
+
+/* ── Salutation ───────────────────────────────────────── */
+.rm-salutation {
+  font-size: 0.9rem;
+  margin: 0 0 1.25rem;
+}
+
+/* ── Body ─────────────────────────────────────────────── */
+.rm-body {
+  font-size: 0.875rem;
+  color: #222;
+}
+
+.rm-body p {
+  margin: 0 0 1rem;
+}
+
+.rm-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Sign-off ─────────────────────────────────────────── */
+.rm-signoff {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+}
+
+.rm-signoff p {
+  margin: 0;
+}
+
+.rm-sig-name {
+  margin-top: 2.5rem !important;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #2f6df5;
-  margin: 0 0 0.3rem;
-}
-
-.rm-section-rule {
-  height: 1px;
-  background: #d8d8d8;
-  margin-bottom: 0.85rem;
-}
-
-/* ── Entries ──────────────────────────────────────────── */
-.rm-entry {
-  margin-bottom: 0.9rem;
-}
-
-.rm-entry-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.rm-entry-title {
   font-family: "Arial", sans-serif;
   font-size: 0.9rem;
-  font-weight: 700;
   color: #1a1c24;
 }
 
-.rm-entry-org {
-  font-family: "Arial", sans-serif;
-  font-size: 0.875rem;
-  color: #444;
-}
-
-.rm-entry-dates {
-  font-family: "Arial", sans-serif;
-  font-size: 0.75rem;
-  color: #777;
-  white-space: nowrap;
+/* ── Rewrite panel ────────────────────────────────────── */
+.rm-rewrite-panel {
+  width: 280px;
   flex-shrink: 0;
-}
-
-.rm-entry-desc {
-  font-size: 0.85rem;
-  color: #333;
-  margin: 0.3rem 0 0;
-  line-height: 1.55;
-}
-
-/* ── Skills ───────────────────────────────────────────── */
-.rm-skills-grid {
+  background: #f7f6f2;
+  border-left: 1px solid #e2e0da;
+  border-right: 1px solid #e2e0da;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  position: sticky;
+  top: 0;
+  align-self: stretch;
 }
 
-.rm-skill-group {
+.rm-rewrite-body {
+  padding: 1.25rem;
   display: flex;
+  flex-direction: column;
   gap: 0.75rem;
-  font-size: 0.84rem;
-  align-items: baseline;
+  flex: 1;
 }
 
-.rm-skill-category {
+.rm-rewrite-label {
   font-family: "Arial", sans-serif;
-  font-weight: 700;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
+  color: #555;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.rm-rewrite-input {
+  width: 100%;
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+  padding: 0.65rem 0.85rem;
+  font-family: "Arial", sans-serif;
+  font-size: 0.82rem;
   color: #1a1c24;
-  min-width: 110px;
-  flex-shrink: 0;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+  background: #fff;
 }
 
-.rm-skill-list {
-  color: #333;
+.rm-rewrite-input:focus {
+  border-color: #2f6df5;
+}
+
+.rm-rewrite-input::placeholder {
+  color: #aaa;
+}
+
+/* ── Status messages ──────────────────────────────────── */
+.rm-msg-success {
   font-family: "Arial", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #22c55e;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+.rm-msg-error {
+  font-family: "Arial", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #ef4444;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+/* ── Divider between papers ───────────────────────────── */
+.rm-paper-divider {
+  width: 1px;
+  background: #e2e0da;
+  align-self: stretch;
+  flex-shrink: 0;
 }
 
 /* ── Print ────────────────────────────────────────────── */
@@ -247,27 +341,27 @@
     display: none;
   }
 
+  .rm-rewrite-panel {
+    display: none;
+  }
+
+  .rm-paper-label {
+    display: none;
+  }
+
+  .rm-papers-row {
+    display: block;
+  }
+
   .rm-paper {
     margin: 0;
     padding: 0;
     box-shadow: none;
   }
-}
 
-.rm-msg-success {
-  font-family: "Arial", sans-serif;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #22c55e;
-  letter-spacing: 0.03em;
-  margin: 0;
-}
-
-.rm-msg-error {
-  font-family: "Arial", sans-serif;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #ef4444;
-  letter-spacing: 0.03em;
-  margin: 0;
+  /* Only print the original, not the rewritten version */
+  .rm-paper-wrap + .rm-paper-divider,
+  .rm-paper-wrap + .rm-paper-divider + .rm-paper-wrap {
+    display: none;
+  }
 }
