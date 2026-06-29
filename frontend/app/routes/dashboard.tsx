@@ -12,6 +12,7 @@ interface Job {
   company: string;
   stage: string;
   location: string | null;
+  description: string | null;
   deadline: string | null;
   deadlineState: string | null;
   lastActivity: string | null;
@@ -122,6 +123,7 @@ export default function Dashboard() {
     company: "",
     stage: "Interested",
     location: "",
+    description: "",
     deadline: "",
     deadlineState: "No Deadline",
   });
@@ -133,6 +135,7 @@ export default function Dashboard() {
       company: String(rawJob.company),
       stage: String(rawJob.stage),
       location: (rawJob.location as string) ?? null,
+      description: String(rawJob.description),
       deadline: (rawJob.deadline as string) ?? null,
       deadlineState: (rawJob.deadline_state as string) ?? null,
       lastActivity: (rawJob.last_activity as string) ?? null,
@@ -237,6 +240,7 @@ export default function Dashboard() {
           company: jobForm.company,
           stage: jobForm.stage,
           location: jobForm.location || null,
+          description: jobForm.description,
           deadline: jobForm.deadline || null,
           deadline_state: jobForm.deadlineState,
         }),
@@ -473,6 +477,7 @@ export default function Dashboard() {
                           company: job.company,
                           stage: job.stage,
                           location: job.location || "",
+                          description: job.description,
                           deadline: job.deadline || "",
                           deadlineState: job.deadlineState,
                         });
@@ -559,6 +564,19 @@ export default function Dashboard() {
                   value={jobForm.location}
                   onChange={(e) =>
                     setJobForm({ ...jobForm, location: e.target.value })
+                  }
+                />
+              </div>
+              <div className="db-form-group">
+                <label>Description</label>
+                <input
+                  type="text"
+                  id="modalDescription"
+                  required
+                  placeholder="add description"
+                  value={jobForm.description}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, description: e.target.value })
                   }
                 />
               </div>

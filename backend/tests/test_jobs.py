@@ -13,7 +13,11 @@ def create_test_token(clerk_str_id: str) -> dict:
 USER_1 = create_test_token("1")
 USER_2 = create_test_token("2")
 
-JOB_PAYLOAD = {"title": "Software Engineer", "company": "Dragon Corp"}
+JOB_PAYLOAD = {
+    "title": "Software Engineer",
+    "company": "Dragon Corp",
+    "description": "Description",
+}
 
 
 def test_create_and_retrieve_job(client):
@@ -24,6 +28,7 @@ def test_create_and_retrieve_job(client):
     assert body["title"] == "Software Engineer"
     assert body["company"] == "Dragon Corp"
     assert body["stage"] == "Saved"
+    assert body["description"] == "Description"
 
     # 🔄 FIX 2: Owner ID is now verified and returned as a string
     assert body["owner_id"] == "1"
