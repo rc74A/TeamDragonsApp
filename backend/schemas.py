@@ -457,6 +457,14 @@ class SavedResume(BaseModel):
     resume: TailoredResume
 
 
+class RewriteResumeRequest(BaseModel):
+    """All information needed to request a rewrite of a resume"""
+
+    job: FoundJob
+    existing_resume: TailoredResume
+    rewrite_prompt: str
+
+
 # Cover Letter
 
 

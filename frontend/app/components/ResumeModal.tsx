@@ -74,9 +74,7 @@ export default function ResumeModal({
   const [rewriteModalOpen, setRewriteModalOpen] = useState(false);
   const [rewritePrompt, setRewritePrompt] = useState("");
   const [activeResume, setActiveResume] = useState<TailoredResume>(resume);
-  const [newResume, setNewResume] = useState<TailoredResume | null>(
-    null,
-  );
+  const [newResume, setNewResume] = useState<TailoredResume | null>(null);
 
   if (!resume) return null;
 
@@ -84,6 +82,14 @@ export default function ResumeModal({
 
   const { profile, experience, skills, education } = resume;
   const groupedSkills = groupSkills(skills);
+  // For the rewrite logic
+  const {
+    profile: newProfile,
+    experience: newExperience,
+    skills: newSkills,
+    education: newEducation,
+  } = newResume ?? {};
+  const newGroupedSkills = newSkills ? groupSkills(newSkills) : null;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
@@ -139,21 +145,18 @@ export default function ResumeModal({
       const token = await getToken();
       if (!token) return;
 
-      const response = await fetch(
-        `${BACKEND_URL}/api/ai/rewrite_resume`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            job,
-            existing_resume: resume,
-            rewrite_prompt: rewritePrompt,
-          }),
+      const response = await fetch(`${BACKEND_URL}/api/ai/rewrite_resume`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          job,
+          existing_resume: resume,
+          rewrite_prompt: rewritePrompt,
+        }),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -206,7 +209,7 @@ export default function ResumeModal({
             </p>
           )}
           <div className="rm-toolbar-actions">
-            <button type="button" className="cl-btn-print" onClick={handleSave}>
+            <button type="button" className="rm-btn-print" onClick={handleSave}>
               Save
             </button>
             <button
@@ -244,7 +247,9 @@ export default function ResumeModal({
                   {profile.phone && <span>{profile.phone}</span>}
                   {profile.location && <span>{profile.location}</span>}
                 </div>
-                {profile.summary && <p className="rm-summary">{profile.summary}</p>}
+                {profile.summary && (
+                  <p className="rm-summary">{profile.summary}</p>
+                )}
               </header>
 
               {/* Experience */}
@@ -294,7 +299,10 @@ export default function ResumeModal({
                             </span>
                           )}
                           {edu.school && (
-                            <span className="rm-entry-org"> · {edu.school}</span>
+                            <span className="rm-entry-org">
+                              {" "}
+                              · {edu.school}
+                            </span>
                           )}
                         </div>
                         <span className="rm-entry-dates">
@@ -334,33 +342,33 @@ export default function ResumeModal({
           {/* Rewrite panel */}
           {rewriteModalOpen && (
             <>
-              <div className="cl-paper-divider" />
-              <div className="cl-rewrite-panel">
-                <div className="cl-toolbar">
-                  <span className="cl-toolbar-label">Rewrite</span>
-                  <div className="cl-toolbar-actions">
+              <div className="rm-paper-divider" />
+              <div className="rm-rewrite-panel">
+                <div className="rm-toolbar">
+                  <span className="rm-toolbar-label">Rewrite</span>
+                  <div className="rm-toolbar-actions">
                     <button
                       type="button"
-                      className="cl-btn-print"
+                      className="rm-btn-print"
                       onClick={handleRewrite}
                     >
                       Submit
                     </button>
                     <button
                       type="button"
-                      className="cl-btn-close"
+                      className="rm-btn-close"
                       onClick={() => setRewriteModalOpen(false)}
                     >
                       ✕
                     </button>
                   </div>
                 </div>
-                <div className="cl-rewrite-body">
-                  <p className="cl-rewrite-label">
+                <div className="rm-rewrite-body">
+                  <p className="rm-rewrite-label">
                     Describe how you&apos;d like the resume changed:
                   </p>
                   <textarea
-                    className="cl-rewrite-input"
+                    className="rm-rewrite-input"
                     value={rewritePrompt}
                     onChange={(e) => setRewritePrompt(e.target.value)}
                     placeholder="e.g. Make it more formal, emphasize Python experience..."
@@ -374,8 +382,8 @@ export default function ResumeModal({
           {/* Rewritten version */}
           {newResume && (
             <>
-              <div className="cl-paper-divider" />
-              <div className="cl-paper-wrap">
+              <div className="rm-paper-divider" />
+              <div className="rm-paper-wrap">
                 <div
                   style={{
                     display: "flex",
@@ -402,13 +410,17 @@ export default function ResumeModal({
                 <div className="rm-paper" id="resume-paper">
                   {/* Header */}
                   <header className="rm-header">
-                    <h1 className="rm-name">{profile.full_name}</h1>
+                    <h1 className="rm-name">{newProfile.full_name}</h1>
                     <div className="rm-contact">
-                      {profile.email && <span>{profile.email}</span>}
-                      {profile.phone && <span>{profile.phone}</span>}
-                      {profile.location && <span>{profile.location}</span>}
+                      {newProfile.email && <span>{newProfile.email}</span>}
+                      {newProfile.phone && <span>{newProfile.phone}</span>}
+                      {newProfile.location && (
+                        <span>{newProfile.location}</span>
+                      )}
                     </div>
-                    {profile.summary && <p className="rm-summary">{profile.summary}</p>}
+                    {newProfile.summary && (
+                      <p className="rm-summary">{newProfile.summary}</p>
+                    )}
                   </header>
 
                   {/* Experience */}
@@ -416,11 +428,13 @@ export default function ResumeModal({
                     <section className="rm-section">
                       <h2 className="rm-section-title">Experience</h2>
                       <div className="rm-section-rule" />
-                      {experience.map((exp, i) => (
+                      {newExperience.map((exp, i) => (
                         <div key={i} className="rm-entry">
                           <div className="rm-entry-header">
                             <div>
-                              <span className="rm-entry-title">{exp.title}</span>
+                              <span className="rm-entry-title">
+                                {exp.title}
+                              </span>
                               {exp.organization && (
                                 <span className="rm-entry-org">
                                   {" "}
@@ -446,11 +460,13 @@ export default function ResumeModal({
                     <section className="rm-section">
                       <h2 className="rm-section-title">Education</h2>
                       <div className="rm-section-rule" />
-                      {education.map((edu, i) => (
+                      {newEducation.map((edu, i) => (
                         <div key={i} className="rm-entry">
                           <div className="rm-entry-header">
                             <div>
-                              <span className="rm-entry-title">{edu.degree}</span>
+                              <span className="rm-entry-title">
+                                {edu.degree}
+                              </span>
                               {edu.field_of_study && (
                                 <span className="rm-entry-org">
                                   {" "}
@@ -458,7 +474,10 @@ export default function ResumeModal({
                                 </span>
                               )}
                               {edu.school && (
-                                <span className="rm-entry-org"> · {edu.school}</span>
+                                <span className="rm-entry-org">
+                                  {" "}
+                                  · {edu.school}
+                                </span>
                               )}
                             </div>
                             <span className="rm-entry-dates">
@@ -476,19 +495,23 @@ export default function ResumeModal({
                   )}
 
                   {/* Skills */}
-                  {skills.length > 0 && (
+                  {newSkills.length > 0 && (
                     <section className="rm-section">
                       <h2 className="rm-section-title">Skills</h2>
                       <div className="rm-section-rule" />
                       <div className="rm-skills-grid">
-                        {Object.entries(groupedSkills).map(([category, items]) => (
-                          <div key={category} className="rm-skill-group">
-                            <span className="rm-skill-category">{category}</span>
-                            <span className="rm-skill-list">
-                              {items.map((s) => s.name).join(", ")}
-                            </span>
-                          </div>
-                        ))}
+                        {Object.entries(newGroupedSkills).map(
+                          ([category, items]) => (
+                            <div key={category} className="rm-skill-group">
+                              <span className="rm-skill-category">
+                                {category}
+                              </span>
+                              <span className="rm-skill-list">
+                                {items.map((s) => s.name).join(", ")}
+                              </span>
+                            </div>
+                          ),
+                        )}
                       </div>
                     </section>
                   )}
