@@ -83,15 +83,27 @@ export default function CoverLetterModal({
   const [errorType, setErrorType] = useState<"error" | "success">("error");
   const [rewriteModalOpen, setRewriteModalOpen] = useState(false);
   const [rewritePrompt, setRewritePrompt] = useState("");
+
   const [activeLetter, setActiveLetter] = useState<CoverLetter>(coverLetter);
   const [newCoverLetter, setNewCoverLetter] = useState<CoverLetter | null>(
     null,
   );
   const [newParagraphs, setNewParagraphs] = useState<string[]>([]);
 
+  const [prevCoverLetter, setPrevCoverLetter] = useState<CoverLetter | null>(
+    coverLetter,
+  );
+
+  if (coverLetter !== prevCoverLetter) {
+    setPrevCoverLetter(coverLetter);
+    setActiveLetter(coverLetter);
+  }
+
+  // 3. Early return if there's no data yet
   if (!coverLetter) return null;
 
-  const paragraphs = splitParagraphs(activeLetter.body);
+  // 4. Safely split the body text with a fallback string guard
+  const paragraphs = splitParagraphs(activeLetter?.body || "");
   const isWide = rewriteModalOpen || newCoverLetter !== null;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
