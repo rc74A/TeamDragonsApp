@@ -16,7 +16,7 @@ USER_2 = create_test_token("2")
 JOB_PAYLOAD = {
     "title": "Software Engineer",
     "company": "Dragon Corp",
-    "description": "Description"
+    "description": "Description",
 }
 
 
