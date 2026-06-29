@@ -225,6 +225,19 @@ def update_job(
                 changed_at=utc_now()
             )
             db.add(history_entry)
+        
+        if "outcome_state" in updates:
+            old_outcome = job.outcome_state
+            new_outcome = updates["outcome_state"]
+        
+        if old_outcome != new_outcome and new_outcome is not None:
+            outcome_history_entry = JobStageHistory(
+                job_id=job.id,
+                old_stage=job.stage,
+                new_stage=f"Outcome: {new_outcome}",
+                changed_at=utc_now()
+            )
+            db.add(outcome_history_entry)
 
     # Apply the field updates to our record
     for field, value in updates.items():

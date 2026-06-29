@@ -449,12 +449,17 @@
   margin-bottom: 4px;
 }
 
-.db-timeline-card {
+db-timeline-card {
   background-color: #f8f9fa;
-  padding: 10px;
+  padding: 14px;               
   border-radius: 6px;
   flex-grow: 1;
   border-left: 3px solid #00FFFF;
+  margin-bottom: 12px;         
+}
+
+.db-timeline-card:last-child {
+  margin-bottom: 0;
 }
 
 .db-timeline-time {
@@ -624,4 +629,10 @@
 
 .db-btn-restore:hover {
   background-color: #0369a1;
+}
+
+.right-column-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem; /* 🌟 This forces clean separation between stacked components */
 }

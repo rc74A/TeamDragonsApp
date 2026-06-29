@@ -27,7 +27,6 @@ def _reject_blank(value: str) -> str:
 
 # ----- Jobs -----
 
-
 class JobCreate(BaseModel):
     """Request body for creating a job record."""
 
@@ -40,10 +39,26 @@ class JobCreate(BaseModel):
     outcome_state: str | None = Field(default=None, max_length=50)
     outcome_notes: str | None = Field(default=None)
 
+    interview_date: datetime | str | None = Field(default=None)
+    notes: str | None = Field(default=None)
+
     _validate_title = field_validator("title")(_reject_blank)
     _validate_company = field_validator("company")(_reject_blank)
     _validate_stage = field_validator("stage")(_reject_blank)
 
+    @field_validator("interview_date", mode="before")
+    @classmethod
+    def parse_flexible_interview_date(cls, value):
+        if not value:
+            return None
+        if isinstance(value, datetime):
+            return value
+        for fmt in ("%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M", "%Y-%m-%d", "%m/%d/%Y"):
+            try:
+                return datetime.strptime(value, fmt)
+            except ValueError:
+                continue
+        raise ValueError("Invalid date format. Use YYYY-MM-DD HH:MM or MM/DD/YYYY")
 
 class JobUpdate(BaseModel):
     """Request body for updating a job record; all fields optional."""
@@ -57,6 +72,9 @@ class JobUpdate(BaseModel):
 
     outcome_state: str | None = Field(default=None, max_length=50)
     outcome_notes: str | None = Field(default=None)
+
+    interview_date: datetime | str | None = Field(default=None)
+    notes: str | None = Field(default=None)
 
     @field_validator("title", "company", "stage", "location", "deadline_state")
     @classmethod
@@ -74,6 +92,19 @@ class JobUpdate(BaseModel):
             return None
         return _reject_blank(value)
 
+    @field_validator("interview_date", mode="before")
+    @classmethod
+    def parse_flexible_interview_date(cls, value):
+        if not value:
+            return None
+        if isinstance(value, datetime):
+            return value
+        for fmt in ("%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M", "%Y-%m-%d", "%m/%d/%Y"):
+            try:
+                return datetime.strptime(value, fmt)
+            except ValueError:
+                continue
+        raise ValueError("Invalid date format. Use YYYY-MM-DD HH:MM or MM/DD/YYYY")
 
 class JobOut(BaseModel):
     """Response body for a job record."""
@@ -93,6 +124,9 @@ class JobOut(BaseModel):
     outcome_state: str | None = None  
     outcome_notes: str | None = None  
     is_archived: bool
+    
+    interview_date: datetime | None = None
+    notes: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 

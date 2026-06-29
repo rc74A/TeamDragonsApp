@@ -32,6 +32,7 @@ class Job(Base):
     company: Mapped[str] = mapped_column(String(200), nullable=False)
     location: Mapped[str] = mapped_column(String(200), nullable=True)
     stage: Mapped[str] = mapped_column(String(50), nullable=False, default="Saved")
+    interview_date: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     last_activity: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=utc_now
     )
@@ -44,6 +45,8 @@ class Job(Base):
     )
     outcome_state: Mapped[str | None] = mapped_column(String(50), nullable=True)
     outcome_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     is_archived: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
