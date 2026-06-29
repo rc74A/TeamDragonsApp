@@ -193,24 +193,26 @@ export default function FindJobs() {
         return;
       }
 
-      const resume = await response.json();
+      const cover = await response.json();
 
-      if (resume.length == 0) {
+      if (cover.length == 0) {
         setError("Failed to generate cover letter.");
         return;
       }
 
-      setCurrentCoverLetter(resume);
+      setCurrentCoverLetter(cover);
       setCoverLetterModalOpen(true);
       setError("");
 
-      console.log(resume);
+      console.log(cover);
     } catch {
       setError("Network error while generating cover letter.");
     } finally {
       setIsLoading(false);
     }
   };
+
+  const handleApply = async (job: FoundJob) => {};
 
   return (
     <div className="search-root">
@@ -366,6 +368,10 @@ export default function FindJobs() {
                       type="button"
                       onClick={() => {
                         // TODO: Open link and add to applied jobs
+                        handleApply();
+                        if (job.apply_link) {
+                          window.open(job.apply_link);
+                        }
                       }}
                       className="search-btn-add"
                     >

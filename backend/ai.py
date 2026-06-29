@@ -13,6 +13,7 @@ from jobs import get_current_user_id
 from models import Document, Education, Experience, Profile, Skill
 from schemas import (
     CoverLetter,
+    RewriteCoverLetterRequest,
     SaveCoverLetterRequest,
     SaveResumeRequest,
     TailoredEducation,
@@ -20,7 +21,6 @@ from schemas import (
     TailoredProfile,
     TailoredResume,
     TailoredSkill,
-    RewriteCoverLetterRequest
 )
 
 airouter = APIRouter(prefix="/api/ai", tags=["ai"])
@@ -456,14 +456,15 @@ def create_cover_letter(
     print(cover_letter.model_dump_json(indent=2))
     return cover_letter
 
+
 @airouter.post("/rewrite_cover_letter", response_model=CoverLetter)
-def create_cover_letter(
+def rewrite_cover_letter(
     body: RewriteCoverLetterRequest,
     user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
 ):
     """
-    Modifes an existing cover letter based off of the user's inputted 
+    Modifes an existing cover letter based off of the user's inputted
     suggestions of improvement
 
     Args:
@@ -476,6 +477,7 @@ def create_cover_letter(
         decide to format this as a png or jpg, etc.
     """
     profile = db.query(Profile).filter(Profile.owner_id == user_id).first()
+    print("BEFORE")
     if not profile:
         raise HTTPException(
             status_code=422,
@@ -484,6 +486,7 @@ def create_cover_letter(
                 "Please complete your profile before generating a cover letter."
             ),
         )
+    print("HERE")
     experience = db.query(Experience).filter(Experience.owner_id == user_id).all()
     skills = db.query(Skill).filter(Skill.owner_id == user_id).all()
     education = db.query(Education).filter(Education.owner_id == user_id).all()
@@ -496,7 +499,7 @@ def create_cover_letter(
             experience=fmt_experience(experience),
             skills=fmt_skills(skills),
             education=fmt_education(education),
-            position_info=position_info,
+            position_info=body.job.description,
         ),
         CoverLetter,
     )
