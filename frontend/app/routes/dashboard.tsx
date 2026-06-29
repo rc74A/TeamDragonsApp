@@ -455,6 +455,7 @@ export default function Dashboard() {
                 <div key={job.id} className="db-card">
                   <div>
                     <h4>{job.title}</h4>
+                    <p className="db-card-company"> {job.description}</p>
                     <p className="db-card-company">🏢 {job.company}</p>
                     <p className="db-card-status">📋 Status: {job.stage}</p>
                     <p className="db-card-status">
