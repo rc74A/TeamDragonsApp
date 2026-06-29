@@ -35,7 +35,7 @@ class JobCreate(BaseModel):
     company: str = Field(max_length=200)
     stage: str = Field(default="Saved", max_length=50)
     location: str | None = Field(default=None, max_length=200)
-    description: str | None = (Field(default=None, max_length=500)
+    description: str | None = Field(default=None, max_length=500)
     deadline: date | None = Field(default=None)
     deadline_state: str | None = Field(default="No Deadline", max_length=50)
 
