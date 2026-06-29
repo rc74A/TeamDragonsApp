@@ -13,6 +13,7 @@ from jobs import get_current_user_id
 from models import Document, Education, Experience, Profile, Skill
 from schemas import (
     CoverLetter,
+    RewriteCoverLetterRequest,
     SaveCoverLetterRequest,
     SaveResumeRequest,
     TailoredEducation,
@@ -151,6 +152,42 @@ INSTRUCTIONS:
 - Do not include salutation, sign-off, or contact info — those are handled separately
 - Return today's date in the format "Month DD, YYYY" for the date field
 - For hiring_manager, use an empty string if unknown
+
+CANDIDATE PROFILE:
+{profile_info}
+
+CANDIDATE EXPERIENCE:
+{experience}
+
+CANDIDATE SKILLS:
+{skills}
+
+CANDIDATE EDUCATION:
+{education}
+
+POSITION INFORMATION:
+{position_info}
+"""
+
+REWRITE_COVER_LETTER_PROMPT = """
+You are a professional cover letter writer. Rewrite the existing cover letter
+based on the candidate's instructions while keeping it tailored to the role.
+
+INSTRUCTIONS:
+- Apply the rewrite instructions exactly as requested
+- Keep all facts truthful — do not invent experience or skills
+- Maintain 3–4 paragraphs unless the instructions say otherwise
+- Keep a professional but personable tone — avoid buzzwords and clichés
+- Each paragraph should be separated by a blank line
+- Do not include salutation, sign-off, or contact info — those are handled separately
+- Preserve the date, hiring_manager, company, and job_title from the original
+- Only rewrite the body unless explicitly told otherwise
+
+EXISTING COVER LETTER:
+{existing_cover_letter}
+
+REWRITE INSTRUCTIONS:
+{rewrite_prompt}
 
 CANDIDATE PROFILE:
 {profile_info}
@@ -412,6 +449,57 @@ def create_cover_letter(
             skills=fmt_skills(skills),
             education=fmt_education(education),
             position_info=position_info,
+        ),
+        CoverLetter,
+    )
+
+    print(cover_letter.model_dump_json(indent=2))
+    return cover_letter
+
+
+@airouter.post("/rewrite_cover_letter", response_model=CoverLetter)
+def rewrite_cover_letter(
+    body: RewriteCoverLetterRequest,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """
+    Modifes an existing cover letter based off of the user's inputted
+    suggestions of improvement
+
+    Args:
+        body (RewriteCoverLetterRequest): Previous cover letter combined with
+        prompt for suggested improvements
+        user_id: Used to find the users profile information
+        db (Session): Database session, where the data is extracted from
+    Returns:
+        CoverLetter: Cover letter represented as json, the frontend might
+        decide to format this as a png or jpg, etc.
+    """
+    profile = db.query(Profile).filter(Profile.owner_id == user_id).first()
+    print("BEFORE")
+    if not profile:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                "Profile not found. "
+                "Please complete your profile before generating a cover letter."
+            ),
+        )
+    print("HERE")
+    experience = db.query(Experience).filter(Experience.owner_id == user_id).all()
+    skills = db.query(Skill).filter(Skill.owner_id == user_id).all()
+    education = db.query(Education).filter(Education.owner_id == user_id).all()
+
+    cover_letter = call_gemini(
+        REWRITE_COVER_LETTER_PROMPT.format(
+            existing_cover_letter=body.existing_cover_letter.model_dump_json(),
+            rewrite_prompt=body.rewrite_prompt,
+            profile_info=fmt_profile(profile),
+            experience=fmt_experience(experience),
+            skills=fmt_skills(skills),
+            education=fmt_education(education),
+            position_info=body.job.description,
         ),
         CoverLetter,
     )
