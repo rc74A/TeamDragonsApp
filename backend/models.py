@@ -30,7 +30,7 @@ class Job(Base):
     A job application record owned by a single user (S1-BR-006).
 
     Baseline fields follow S1-BR-014: title, company, stage, and the
-    last activity date.
+    last activity date. Also stores advanced information.
     """
 
     __tablename__ = "jobs"
