@@ -101,6 +101,7 @@ def create_job(
         title=payload.title,
         company=payload.company,
         stage=payload.stage,
+        description=payload.description,
         location=payload.location,
         deadline=payload.deadline,
         deadline_state=payload.deadline_state,

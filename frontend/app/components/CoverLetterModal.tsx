@@ -23,6 +23,18 @@ interface CoverLetterModalProps {
   onClose: () => void;
 }
 
+const Spinner = () => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="flex flex-col items-center gap-4 rounded-xl p-6 shadow-2xl dark:bg-zinc-900">
+      <div className="h-10 w-10 animate-spin rounded-full border-4 border-zinc-300 border-t-indigo-600" />
+
+      <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        Loading...
+      </p>
+    </div>
+  </div>
+);
+
 function PaperContent({
   letter,
   paragraphs,
@@ -80,18 +92,31 @@ export default function CoverLetterModal({
 }: CoverLetterModalProps) {
   const { getToken } = useAuth();
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [errorType, setErrorType] = useState<"error" | "success">("error");
   const [rewriteModalOpen, setRewriteModalOpen] = useState(false);
   const [rewritePrompt, setRewritePrompt] = useState("");
+
   const [activeLetter, setActiveLetter] = useState<CoverLetter>(coverLetter);
   const [newCoverLetter, setNewCoverLetter] = useState<CoverLetter | null>(
     null,
   );
   const [newParagraphs, setNewParagraphs] = useState<string[]>([]);
 
+  const [prevCoverLetter, setPrevCoverLetter] = useState<CoverLetter | null>(
+    coverLetter,
+  );
+
+  if (coverLetter !== prevCoverLetter) {
+    setPrevCoverLetter(coverLetter);
+    setActiveLetter(coverLetter);
+  }
+
+  // 3. Early return if there's no data yet
   if (!coverLetter) return null;
 
-  const paragraphs = splitParagraphs(activeLetter.body);
+  // 4. Safely split the body text with a fallback string guard
+  const paragraphs = splitParagraphs(activeLetter?.body || "");
   const isWide = rewriteModalOpen || newCoverLetter !== null;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -139,6 +164,7 @@ export default function CoverLetterModal({
   const handleRewrite = async () => {
     try {
       setError("");
+      setIsLoading(true);
       const token = await getToken();
       if (!token) return;
 
@@ -168,6 +194,7 @@ export default function CoverLetterModal({
             errorData.detail.map((e: { msg: string }) => e.msg).join(", "),
           );
         } else {
+          setIsLoading(false);
           setError("An unexpected error occurred.");
         }
         return;
@@ -181,6 +208,8 @@ export default function CoverLetterModal({
     } catch {
       setErrorType("error");
       setError("Network error while rewriting cover letter.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -197,6 +226,7 @@ export default function CoverLetterModal({
 
   return (
     <div className="cl-backdrop" onClick={handleBackdropClick}>
+      {isLoading && <Spinner label="loading..." />}
       <div className={`cl-modal${isWide ? " cl-modal--wide" : ""}`}>
         {/* Toolbar */}
         <div className="cl-toolbar">

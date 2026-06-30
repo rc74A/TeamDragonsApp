@@ -30,6 +30,7 @@ class Job(Base):
     owner_id: Mapped[str] = mapped_column(String(50), index=True, nullable=False)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     company: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False, default="")
     location: Mapped[str] = mapped_column(String(200), nullable=True)
     stage: Mapped[str] = mapped_column(String(50), nullable=False, default="Saved")
     last_activity: Mapped[datetime] = mapped_column(

@@ -31,10 +31,13 @@ export async function loader(args: Route.LoaderArgs) {
 }
 
 const Spinner = () => (
-  <div className="spinner-overlay">
-    <div className="spinner-box">
-      <div className="spinner" />
-      <p className="spinner-label">Searching for jobs...</p>
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="flex flex-col items-center gap-4 rounded-xl p-6 shadow-2xl dark:bg-zinc-900">
+      <div className="h-10 w-10 animate-spin rounded-full border-4 border-zinc-300 border-t-indigo-600" />
+
+      <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        loading...
+      </p>
     </div>
   </div>
 );
@@ -216,14 +219,7 @@ export default function FindJobs() {
 
   return (
     <div className="search-root">
-      {isLoading && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-          <div className="bg-white rounded-xl p-8 flex flex-col items-center gap-4">
-            <Spinner />
-            <p className="text-gray-600">Loading...</p>
-          </div>
-        </div>
-      )}
+      {isLoading && <Spinner label="loading..." />}
 
       <header className="search-header">Dragon Application</header>
       <div className="search-workspace">

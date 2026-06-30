@@ -12,6 +12,7 @@ interface Job {
   company: string;
   stage: string;
   location: string | null;
+  description: string | null;
   deadline: string | null;
   deadlineState: string | null;
   lastActivity: string | null;
@@ -356,6 +357,7 @@ export default function Dashboard() {
           company: jobForm.company,
           stage: jobForm.stage,
           location: jobForm.location || null,
+          description: jobForm.description,
           deadline: jobForm.deadline || null,
           deadline_state: jobForm.deadlineState,
           outcome_state: jobForm.outcomeState || null,
@@ -645,6 +647,7 @@ export default function Dashboard() {
                 <div key={job.id} className="db-card">
                   <div>
                     <h4>{job.title}</h4>
+                    <p className="db-card-company"> {job.description}</p>
                     <p className="db-card-company">🏢 {job.company}</p>
                     <div className="db-inline-stage-wrapper">
                       <span className="db-card-status">📋 Status:</span>
@@ -683,6 +686,7 @@ export default function Dashboard() {
                           company: job.company,
                           stage: job.stage,
                           location: job.location || "",
+                          description: job.description,
                           deadline: job.deadline || "",
                           deadlineState: job.deadlineState,
                           outcomeState: "",
