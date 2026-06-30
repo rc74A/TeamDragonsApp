@@ -561,6 +561,7 @@ export default function Dashboard() {
                     {stage}
                   </option>
                 ))}
+                </select>
               </div>
               <div className="db-form-group">
                 <label>Location</label>
