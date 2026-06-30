@@ -552,7 +552,9 @@ export default function Dashboard() {
                 <select
                   id="modalStage"
                   value={jobForm.stage}
-                  onChange={(e) => setJobForm({ ...jobForm, stage: e.target.value })}
+                  onChange={(e) =>
+                    setJobForm({ ...jobForm, stage: e.target.value })
+                  }
                   >
                   {stageTransitions[jobForm.stage].map((stage) => (
                     <option key={stage} value={stage}>
