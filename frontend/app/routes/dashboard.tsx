@@ -140,6 +140,7 @@ export default function Dashboard() {
     company: "",
     stage: "Interested",
     location: "",
+    description: "",
     deadline: "",
     deadlineState: "No Deadline",
     outcomeState: "",
@@ -184,6 +185,7 @@ export default function Dashboard() {
         company: String(rawJob.company),
         stage: String(rawJob.stage),
         location: (rawJob.location as string) ?? null,
+        description: String(rawJob.description),
         deadline: (rawJob.deadline as string) ?? null,
         deadlineState: (rawJob.deadline_state as string) ?? null,
         lastActivity: (rawJob.last_activity as string) ?? null,
@@ -615,6 +617,7 @@ export default function Dashboard() {
                     deadlineState: "No Deadline",
                     outcomeState: "",
                     outcomeNotes: "",
+                    description: "",
                   });
                   setIsModalOpen(true);
                 }}
@@ -684,6 +687,7 @@ export default function Dashboard() {
                           deadlineState: job.deadlineState,
                           outcomeState: "",
                           outcomeNotes: "",
+                          description: job.description || "",
                         });
                         setIsModalOpen(true);
                         fetchJobInterviews(job.id);
@@ -726,6 +730,7 @@ export default function Dashboard() {
                     <label>Job Title</label>
                     <input
                       type="text"
+                      id="modalJobTitle"
                       required
                       placeholder="e.g. Software Engineer"
                       value={jobForm.title}
@@ -738,6 +743,7 @@ export default function Dashboard() {
                     <label>Company</label>
                     <input
                       type="text"
+                      id="modalCompany"
                       required
                       placeholder="e.g. Google"
                       value={jobForm.company}
@@ -749,6 +755,7 @@ export default function Dashboard() {
                   <div className="db-form-group">
                     <label htmlFor="modalStage">Tracking Stage</label>
                     <select
+                      id="modalStage"
                       value={jobForm.stage}
                       aria-label="Select current application tracking stage"
                       onChange={(e) =>
@@ -766,11 +773,26 @@ export default function Dashboard() {
                     <label>Location</label>
                     <input
                       type="text"
+                      id="modalLocation"
                       required
                       placeholder="e.g. Houston, TX"
                       value={jobForm.location}
                       onChange={(e) =>
                         setJobForm({ ...jobForm, location: e.target.value })
+                      }
+                    />
+                  </div>
+                  {/* 🌟 KEPT FROM MAIN: Description Form Group Input field block */}
+                  <div className="db-form-group">
+                    <label>Description</label>
+                    <input
+                      type="text"
+                      id="modalDescription"
+                      required
+                      placeholder="add description"
+                      value={jobForm.description}
+                      onChange={(e) =>
+                        setJobForm({ ...jobForm, description: e.target.value })
                       }
                     />
                   </div>
@@ -937,19 +959,19 @@ export default function Dashboard() {
                           {/* Historical Node Description Label Cards */}
                           <div className="db-timeline-card">
                             <div className="db-timeline-time">
-  {(() => {
-    const utcString = entry.changed_at.endsWith("Z") 
-      ? entry.changed_at 
-      : `${entry.changed_at}Z`;
-    
-    return new Date(utcString).toLocaleString([], {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  })()}
-</div>
+                              {(() => {
+                                const utcString = entry.changed_at.endsWith("Z")
+                                  ? entry.changed_at
+                                  : `${entry.changed_at}Z`;
+
+                                return new Date(utcString).toLocaleString([], {
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                });
+                              })()}
+                            </div>
                             <div className="db-timeline-text">
                               Moved from{" "}
                               <span className="db-timeline-old-stage">
