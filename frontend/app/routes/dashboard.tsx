@@ -555,7 +555,7 @@ export default function Dashboard() {
                   onChange={(e) =>
                     setJobForm({ ...jobForm, stage: e.target.value })
                   }
-                  >
+                >
                   {stageTransitions[jobForm.stage].map((stage) => (
                     <option key={stage} value={stage}>
                       {stage}
