@@ -38,10 +38,30 @@ class JobCreate(BaseModel):
     description: str = Field(default=None, max_length=500)
     deadline: date | None = Field(default=None)
     deadline_state: str | None = Field(default="No Deadline", max_length=50)
+    outcome_state: str | None = Field(default=None, max_length=50)
+    outcome_notes: str | None = Field(default=None)
+
+    interview_date: datetime | str | None = Field(default=None)
+    notes: str | None = Field(default=None)
 
     _validate_title = field_validator("title")(_reject_blank)
     _validate_company = field_validator("company")(_reject_blank)
     _validate_stage = field_validator("stage")(_reject_blank)
+
+    @field_validator("interview_date", mode="before")
+    @classmethod
+    def parse_flexible_interview_date(cls, value):
+        """Parse incoming interview date values into structured date formats safely."""
+        if not value:
+            return None
+        if isinstance(value, datetime):
+            return value
+        for fmt in ("%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M", "%Y-%m-%d", "%m/%d/%Y"):
+            try:
+                return datetime.strptime(value, fmt)
+            except ValueError:
+                continue
+        raise ValueError("Invalid date format. Use YYYY-MM-DD HH:MM or MM/DD/YYYY")
 
 
 class JobUpdate(BaseModel):
@@ -54,6 +74,12 @@ class JobUpdate(BaseModel):
     description: str | None = Field(default=None, max_length=500)
     deadline: date | None = Field(default=None)
     deadline_state: str | None = Field(default=None, max_length=50)
+
+    outcome_state: str | None = Field(default=None, max_length=50)
+    outcome_notes: str | None = Field(default=None)
+
+    interview_date: datetime | str | None = Field(default=None)
+    notes: str | None = Field(default=None)
 
     @field_validator("title", "company", "stage", "location", "deadline_state")
     @classmethod
@@ -71,6 +97,21 @@ class JobUpdate(BaseModel):
             return None
         return _reject_blank(value)
 
+    @field_validator("interview_date", mode="before")
+    @classmethod
+    def parse_flexible_interview_date(cls, value):
+        """Parse incoming interview date values into structured date formats safely."""
+        if not value:
+            return None
+        if isinstance(value, datetime):
+            return value
+        for fmt in ("%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M", "%Y-%m-%d", "%m/%d/%Y"):
+            try:
+                return datetime.strptime(value, fmt)
+            except ValueError:
+                continue
+        raise ValueError("Invalid date format. Use YYYY-MM-DD HH:MM or MM/DD/YYYY")
+
 
 class JobOut(BaseModel):
     """Response body for a job record."""
@@ -86,8 +127,28 @@ class JobOut(BaseModel):
     description: str
     deadline: date | None
     deadline_state: str | None
-    last_activity: datetime
-    created_at: datetime
+    created_at: datetime | str | None = None
+    last_activity: datetime | str | None = None
+    outcome_state: str | None = None
+    outcome_notes: str | None = None
+    is_archived: bool
+
+    interview_date: datetime | None = None
+    notes: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class JobStageHistoryOut(BaseModel):
+    """Response body representing a single historical point on the job timeline."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    job_id: int
+    old_stage: str
+    new_stage: str
+    changed_at: datetime
 
 
 # ----- Profile -----

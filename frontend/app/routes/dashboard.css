@@ -164,10 +164,17 @@
 .db-modal-content {
   background-color: #2d3748;
   padding: 32px;
+  padding-right: 16px; /* Slightly adjusted to make room for your new scrollbars */
   border-radius: 12px;
-  width: 100%;
-  max-width: 450px;
   border: 1px solid #4a5568;
+
+  /* Layout Sizing & Structure Rules */
+  width: 900px;
+  max-width: 95vw;
+  height: 85vh; /* Strict height constraints force internal scrolling */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Stops the main outer card from leaking off-screen */
 }
 
 .db-modal-content h3 {
@@ -303,4 +310,331 @@
   margin-top: 4px;
   font-size: 13px;
   color: #a0aec0;
+}
+
+.db-inline-stage-wrapper {
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.db-inline-stage-wrapper .db-card-status {
+  margin: 0 !important;
+}
+
+.db-card-inline-select {
+  background-color: #1a202c;
+  color: #ffffff;
+  border: 1px solid #4a5568;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.db-card-inline-select:focus {
+  border-color: #06b6d4;
+}
+
+.db-card-inline-select option {
+  background-color: #2d3748;
+  color: #ffffff;
+}
+
+.db-modal-split {
+  display: flex;
+  flex-direction: row; /* Keeps left and right side-by-side */
+  gap: 24px;
+  width: 100%;
+  flex: 1; /* Fills the remaining vertical space of the modal */
+  min-height: 0; /* Required to break flex defaults and enable scrolling */
+  overflow: hidden; /* Prevents the split box itself from expanding off-screen */
+}
+
+.db-modal-col-right {
+  flex: 1;
+  min-width: 300px; /* Guarantees the column doesn't get crushed too narrow */
+  height: 100%; /* Forces it to match the modal window height bounds */
+  overflow-y: auto; /* TURNS ON YOUR SCROLLBAR! */
+  padding-left: 20px;
+  padding-right: 12px; /* Leaves breathing room for the scrolling track */
+  padding-bottom: 50px; /* Ensures your interactive buttons never get cut off at the bottom */
+  border-left: 1px solid #334155; /* Clean slate-blue border line */
+}
+
+.db-modal-title-blue {
+  color: #4169e1;
+  margin-bottom: 20px;
+}
+
+/* Outcome Panel Section */
+.db-outcome-panel {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #4169e1;
+  border-radius: 6px;
+  background-color: rgba(65, 105, 225, 0.05);
+}
+
+.db-outcome-title {
+  color: #4169e1;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.db-outcome-textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+/* Card Outcome Badge */
+.db-card-outcome-highlight {
+  color: #00ffff;
+  font-weight: bold;
+}
+
+/* Chronological Timeline Element Engine */
+.db-timeline-loading {
+  color: #00ffff;
+}
+
+.db-timeline-empty {
+  color: #666;
+  font-style: italic;
+}
+
+.db-timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 450px;
+  overflow-y: auto;
+  padding-right: 5px;
+  margin-bottom: 2.5rem !important;
+}
+
+.db-timeline-node {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.db-timeline-axis {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  min-width: 16px;
+}
+
+.db-timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #00ffff;
+  border: 2px solid #4169e1;
+  z-index: 2;
+}
+
+.db-timeline-line {
+  width: 2px;
+  flex-grow: 1;
+  background-color: #4169e1;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.db-timeline-card {
+  background-color: #f8f9fa !important; /* 🌟 Force a crisp off-white backdrop card container */
+  border-left: 4px solid #00ffff; /* A nice glowing neon accent line on the left edge */
+  border-radius: 6px;
+  padding: 12px 16px;
+  flex-grow: 1; /* Forces the card container to fill out the remaining width */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.db-timeline-card:last-child {
+  margin-bottom: 0;
+}
+
+.db-timeline-time {
+  font-size: 0.75rem;
+  color: #6c757d; /* Dark grey muted timestamp header text */
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.db-timeline-text {
+  font-size: 0.9rem;
+  color: #212529; /* 🌟 Bold near-black readable text color description label */
+  line-height: 1.4;
+}
+
+.db-timeline-old-stage {
+  color: #6c757d; /* Muted gray for past historic state */
+  text-decoration: line-through;
+}
+
+.db-timeline-new-stage {
+  color: #0056b3; /* Bold vibrant blue accent for current state text */
+  font-weight: bold;
+}
+
+.db-form-group-no-margin {
+  margin-bottom: 0 !important;
+}
+.db-form-actions-spaced {
+  margin-top: 20px;
+}
+
+.db-modal-col-left {
+  flex: 1;
+  min-width: 300px;
+  overflow-y: auto;
+  padding-right: 12px;
+}
+
+.db-interview-subform {
+  margin-top: 24px;
+  margin-bottom: 16px; /* Spacing below the save button */
+  display: flex;
+  flex-direction: column;
+}
+
+.subform-group-spacing {
+  margin-bottom: 12px;
+}
+
+.db-btn-archive {
+  background-color: #475569;
+  color: #ffffff;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: auto; /* 🌟 Pushes Cancel and Submit entirely to the right edge! */
+  transition: background-color 0.2s ease;
+}
+
+.db-btn-archive:hover {
+  background-color: #334155;
+}
+
+.db-link-view-archived {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+  margin-right: 16px;
+  transition: color 0.2s ease;
+}
+
+.db-link-view-archived:hover {
+  color: #cbd5e1; /* Lights up slightly on hover to give feedback */
+}
+
+/* Archive Modal Structure Layout */
+.db-archive-modal-frame {
+  width: 100%;
+  max-width: 600px;
+  background-color: #1e293b;
+  padding: 24px;
+  border-radius: 12px;
+  color: #ffffff;
+}
+
+.db-archive-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.db-archive-close-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* List Elements Scroll Box */
+.db-archive-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.db-archive-empty-text {
+  color: #94a3b8;
+  text-align: center;
+  padding: 40px 0;
+}
+
+/* Individual Row Job Items */
+.db-archive-item-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0f172a;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.db-archive-item-title {
+  margin: 0;
+}
+
+.db-archive-item-subtitle {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+.db-archive-item-stage {
+  color: #38bdf8;
+}
+
+.db-archive-item-outcome-badge {
+  font-size: 12px;
+  background-color: #334155;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-top: 6px;
+  display: inline-block;
+}
+
+/* Action Restore Interactivity Toggles */
+.db-btn-restore {
+  background-color: #0284c7;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s ease;
+}
+
+.db-btn-restore:hover {
+  background-color: #0369a1;
+}
+
+.right-column-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem; /* 🌟 This forces clean separation between stacked components */
 }

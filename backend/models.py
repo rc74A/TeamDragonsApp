@@ -1,6 +1,15 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import DateTime, Integer, String, Text, func
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    func,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from database import Base
@@ -43,6 +52,10 @@ class Job(Base):
     deadline_state: Mapped[str] = mapped_column(
         String(50), nullable=True, default="No Deadline"
     )
+    outcome_state: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    outcome_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    is_archived: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
 
 class Profile(Base):
@@ -143,6 +156,25 @@ class Skill(Base):
     )
 
 
+class JobStageHistory(Base):
+    """
+    An automated tracking log recording a job's stage changes over time (S2-009).
+
+    Captures chronological data points to construct the job activity timeline (S2-010)
+    and preserve state transition paths.
+    """
+
+    __tablename__ = "job_stage_history"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    job_id: Mapped[int] = mapped_column(Integer, index=True, nullable=False)
+    old_stage: Mapped[str] = mapped_column(String(50), nullable=False)
+    new_stage: Mapped[str] = mapped_column(String(50), nullable=False)
+    changed_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=utc_now
+    )
+
+
 class Document(Base):
     """
     Generic document for saved documents,
@@ -161,3 +193,15 @@ class Document(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=func.now()
     )
+
+
+class Interview(Base):
+    """Database model representing an interview schedule."""
+
+    __tablename__ = "interviews"
+
+    id = Column(Integer, primary_key=True, index=True)
+    job_id = Column(Integer, ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False)
+    round_type = Column(String(64), nullable=False)
+    interview_date = Column(String(64), nullable=True)
+    notes = Column(Text, nullable=True)

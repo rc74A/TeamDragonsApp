@@ -215,7 +215,7 @@ export default function FindJobs() {
     }
   };
 
-  const handleApply = async (job: FoundJob) => {};
+  const handleApply = async (_job: FoundJob) => {};
 
   return (
     <div className="search-root">

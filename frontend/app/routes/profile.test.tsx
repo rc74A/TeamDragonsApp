@@ -25,7 +25,7 @@ const EMPTY: ProfileResponse = {
 
 function mockFetch(getBody: ProfileResponse = EMPTY) {
   return vi.fn(
-    async (url: string, options?: RequestInit): Promise<Response> => {
+    async (url: string, _options?: RequestInit): Promise<Response> => {
       if (url.includes("/auth/me")) {
         return {
           ok: true,

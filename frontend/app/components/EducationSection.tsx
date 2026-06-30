@@ -58,7 +58,7 @@ export default function EducationSection() {
     // synchronously — the standard on-mount data fetch.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
-  }, []);
+  }, [load]);
 
   function resetForm() {
     setForm(EMPTY_FORM);
