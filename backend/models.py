@@ -1,6 +1,15 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import Boolean, DateTime, Integer, String, Text, func, ForeignKey, Column
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    func,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from database import Base
@@ -47,6 +56,7 @@ class Job(Base):
     outcome_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     is_archived: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+
 
 class Profile(Base):
     """
@@ -144,6 +154,8 @@ class Skill(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=utc_now
     )
+
+
 class JobStageHistory(Base):
     """
     An automated tracking log recording a job's stage changes over time (S2-009).
@@ -182,11 +194,13 @@ class Document(Base):
         DateTime(timezone=True), default=func.now()
     )
 
+
 class Interview(Base):
-    __tablename__ = "interviews"  
+    """Database model representing an interview schedule."""
+    __tablename__ = "interviews"
 
     id = Column(Integer, primary_key=True, index=True)
     job_id = Column(Integer, ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False)
     round_type = Column(String(64), nullable=False)
-    interview_date = Column(String(64), nullable=True)  
-    notes = Column(Text, nullable=True)                
+    interview_date = Column(String(64), nullable=True)
+    notes = Column(Text, nullable=True)

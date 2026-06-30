@@ -1,6 +1,6 @@
 import re
 from datetime import date, datetime
-from typing import Optional
+
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 _EMAIL_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
@@ -27,6 +27,7 @@ def _reject_blank(value: str) -> str:
 
 # ----- Jobs -----
 
+
 class JobCreate(BaseModel):
     """Request body for creating a job record."""
 
@@ -50,6 +51,7 @@ class JobCreate(BaseModel):
     @field_validator("interview_date", mode="before")
     @classmethod
     def parse_flexible_interview_date(cls, value):
+        """Parse incoming interview date values into structured date formats safely."""
         if not value:
             return None
         if isinstance(value, datetime):
@@ -60,6 +62,7 @@ class JobCreate(BaseModel):
             except ValueError:
                 continue
         raise ValueError("Invalid date format. Use YYYY-MM-DD HH:MM or MM/DD/YYYY")
+
 
 class JobUpdate(BaseModel):
     """Request body for updating a job record; all fields optional."""
@@ -97,6 +100,7 @@ class JobUpdate(BaseModel):
     @field_validator("interview_date", mode="before")
     @classmethod
     def parse_flexible_interview_date(cls, value):
+        """Parse incoming interview date values into structured date formats safely."""
         if not value:
             return None
         if isinstance(value, datetime):
@@ -107,6 +111,7 @@ class JobUpdate(BaseModel):
             except ValueError:
                 continue
         raise ValueError("Invalid date format. Use YYYY-MM-DD HH:MM or MM/DD/YYYY")
+
 
 class JobOut(BaseModel):
     """Response body for a job record."""
@@ -124,10 +129,10 @@ class JobOut(BaseModel):
     deadline_state: str | None
     created_at: datetime | str | None = None
     last_activity: datetime | str | None = None
-    outcome_state: str | None = None  
-    outcome_notes: str | None = None  
+    outcome_state: str | None = None
+    outcome_notes: str | None = None
     is_archived: bool
-    
+
     interview_date: datetime | None = None
     notes: str | None = None
 
@@ -136,7 +141,7 @@ class JobOut(BaseModel):
 
 class JobStageHistoryOut(BaseModel):
     """Response body representing a single historical point on the job timeline."""
-    
+
     model_config = ConfigDict(from_attributes=True)
 
     id: int
@@ -144,6 +149,7 @@ class JobStageHistoryOut(BaseModel):
     old_stage: str
     new_stage: str
     changed_at: datetime
+
 
 # ----- Profile -----
 
