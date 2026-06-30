@@ -548,23 +548,19 @@ export default function Dashboard() {
                 />
               </div>
               <div className="db-form-group">
-                <label htmlFor="modalStage">Tracking Stage</label>
-                <select
-                 id="modalStage"
-                 value={jobForm.stage}
-                 onChange={(e) =>
-                   setJobForm({ ...jobForm, stage: e.target.value })
-                 }
-                 >
-                 {
-                   stageTransitions[jobForm.stage].map((stage) => (
-                   <option key={stage} value={stage}>
-                     {stage}
-                   </option>
-                 ))
-                 }
-               </select>
-              </div>
+  <label htmlFor="modalStage">Tracking Stage</label>
+  <select
+    id="modalStage"
+    value={jobForm.stage}
+    onChange={(e) => setJobForm({ ...jobForm, stage: e.target.value })}
+  >
+    {stageTransitions[jobForm.stage].map((stage) => (
+      <option key={stage} value={stage}>
+        {stage}
+      </option>
+    ))}
+  </select>
+</div>
               <div className="db-form-group">
                 <label>Location</label>
                 <input
