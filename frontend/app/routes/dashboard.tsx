@@ -54,37 +54,6 @@ const EMPTY_METRICS: JobMetrics = {
   response_rate: 0,
 };
 
-const transitions = {
-  Interested: ["Interested", "Applied", "Rejected"],
-  Applied: ["Applied", "Interview", "Rejected"],
-  Interview: ["Interview", "Offer", "Rejected"],
-  Offer: ["Offer", "Archived", "Rejected"],
-  Rejected: ["Rejected"], // terminal state
-  Archived: ["Archived"], // terminal state
-};
-
-const select = document.getElementById("status");
-
-// The status the record currently has (e.g. loaded from the database)
-let currentStatus = "Applied";
-
-function updateOptions(current) {
-  const allowed = transitions[current];
-
-  for (const option of select.options) {
-    option.disabled = !allowed.includes(option.value);
-  }
-
-  select.value = current;
-}
-
-updateOptions(currentStatus);
-
-select.addEventListener("change", function () {
-  currentStatus = this.value;
-  updateOptions(currentStatus);
-});
-
 interface DashboardData {
   username: string;
   jobs: Job[];
