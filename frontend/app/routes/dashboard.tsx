@@ -659,12 +659,11 @@ export default function Dashboard() {
                         }
                         className="db-card-inline-select"
                       >
-                        {
-                          stageTransitions[jobForm.stage].map((stage) => (
-                            <option key={stage} value={stage}>
-                              {stage}
-                            </option>
-                          ))}
+                        {stageTransitions[jobForm.stage].map((stage) => (
+                        <option key={stage} value={stage}>
+                          {stage}
+                        </option>
+                      ))}
                       </select>
                     </div>
                     <p className="db-card-status">
