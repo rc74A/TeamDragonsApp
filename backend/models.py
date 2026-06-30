@@ -32,7 +32,6 @@ class Job(Base):
     company: Mapped[str] = mapped_column(String(200), nullable=False)
     location: Mapped[str] = mapped_column(String(200), nullable=True)
     stage: Mapped[str] = mapped_column(String(50), nullable=False, default="Saved")
-    interview_date: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     last_activity: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=utc_now
     )
@@ -45,8 +44,6 @@ class Job(Base):
     )
     outcome_state: Mapped[str | None] = mapped_column(String(50), nullable=True)
     outcome_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
-    
-    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     is_archived: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
@@ -185,10 +182,10 @@ class Document(Base):
     )
 
 class Interview(Base):
-    __tablename__ = "interviews"
+    __tablename__ = "interviews"  
 
     id = Column(Integer, primary_key=True, index=True)
     job_id = Column(Integer, ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False)
-    round_type = Column(String, nullable=False)
-    interview_date = Column(String, nullable=True)  # Storing datetime-local string
-    notes = Column(String, nullable=True)
+    round_type = Column(String(64), nullable=False)
+    interview_date = Column(String(64), nullable=True)  
+    notes = Column(Text, nullable=True)                

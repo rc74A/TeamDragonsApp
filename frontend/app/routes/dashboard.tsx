@@ -937,13 +937,19 @@ export default function Dashboard() {
                           {/* Historical Node Description Label Cards */}
                           <div className="db-timeline-card">
                             <div className="db-timeline-time">
-                              {new Date(entry.changed_at).toLocaleString([], {
-                                month: "short",
-                                day: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </div>
+  {(() => {
+    const utcString = entry.changed_at.endsWith("Z") 
+      ? entry.changed_at 
+      : `${entry.changed_at}Z`;
+    
+    return new Date(utcString).toLocaleString([], {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  })()}
+</div>
                             <div className="db-timeline-text">
                               Moved from{" "}
                               <span className="db-timeline-old-stage">
