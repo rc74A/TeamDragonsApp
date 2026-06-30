@@ -42,15 +42,6 @@ interface Interview {
   interview_date: string;
   notes: string | null;
 }
-
-interface JobArchiveItem {
-  id: number;
-  title: string;
-  company: string;
-  stage: string;
-  outcome_state?: string | null;
-}
-
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 enum SortByValues {
@@ -691,7 +682,6 @@ export default function Dashboard() {
                           deadlineState: job.deadlineState,
                           outcomeState: "",
                           outcomeNotes: "",
-                          description: job.description || "",
                         });
                         setIsModalOpen(true);
                         fetchJobInterviews(job.id);
@@ -1148,57 +1138,61 @@ export default function Dashboard() {
               </p>
             ) : (
               <div className="db-archive-list-container">
-                {archivedJobs.map((job: any) => (
-                  <div key={job.id} className="db-archive-item-card">
-                    <div className="db-archive-item-details">
-                      <h4 className="db-archive-item-title">{job.title}</h4>
-                      <p className="db-archive-item-subtitle">
-                        {job.company}
-                        {!job.outcome_state && (
-                          <>
-                            {" — "}
-                            <span className="db-archive-item-stage">
-                              {job.stage}
-                            </span>
-                          </>
+                {(archivedJobs as unknown as Record<string, unknown>[]).map(
+                  (job) => (
+                    <div key={String(job.id)} className="db-archive-item-card">
+                      <div className="db-archive-item-details">
+                        <h4 className="db-archive-item-title">
+                          {String(job.title)}
+                        </h4>
+                        <p className="db-archive-item-subtitle">
+                          {String(job.company)}
+                          {!job.outcome_state && (
+                            <>
+                              {" — "}
+                              <span className="db-archive-item-stage">
+                                {String(job.stage)}
+                              </span>
+                            </>
+                          )}
+                        </p>
+                        {!!job.outcome_state && (
+                          <span className="db-archive-item-outcome-badge">
+                            Outcome: {String(job.outcome_state)}
+                          </span>
                         )}
-                      </p>
-                      {job.outcome_state && (
-                        <span className="db-archive-item-outcome-badge">
-                          Outcome: {job.outcome_state}
-                        </span>
-                      )}
-                    </div>
+                      </div>
 
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        try {
-                          const token = await getToken();
-                          if (!token) return;
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            const token = await getToken();
+                            if (!token) return;
 
-                          const res = await fetch(
-                            `${BACKEND_URL}/api/jobs/${job.id}/restore`,
-                            {
-                              method: "POST",
-                              headers: { Authorization: `Bearer ${token}` },
-                            },
-                          );
+                            const res = await fetch(
+                              `${BACKEND_URL}/api/jobs/${job.id}/restore`,
+                              {
+                                method: "POST",
+                                headers: { Authorization: `Bearer ${token}` },
+                              },
+                            );
 
-                          if (res.ok) {
-                            fetchArchivedJobs();
-                            window.location.reload();
+                            if (res.ok) {
+                              fetchArchivedJobs();
+                              window.location.reload();
+                            }
+                          } catch (err) {
+                            console.error("Failed to restore entry:", err);
                           }
-                        } catch (err) {
-                          console.error("Failed to restore entry:", err);
-                        }
-                      }}
-                      className="db-btn-restore"
-                    >
-                      ↩️ Restore
-                    </button>
-                  </div>
-                ))}
+                        }}
+                        className="db-btn-restore"
+                      >
+                        ↩️ Restore
+                      </button>
+                    </div>
+                  ),
+                )}
               </div>
             )}
           </div>
