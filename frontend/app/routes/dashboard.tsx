@@ -659,11 +659,11 @@ export default function Dashboard() {
                         }
                         className="db-card-inline-select"
                       >
-                        <option value="Wishlist">Wishlist</option>
-                        <option value="Applied">Applied</option>
-                        <option value="Interviewing">Interviewing</option>
-                        <option value="Offer">Offer</option>
-                        <option value="Rejected">Rejected</option>
+                        {stageTransitions[jobForm.stage].map((stage) => (
+                        <option key={stage} value={stage}>
+                          {stage}
+                        </option>
+                      ))}
                       </select>
                     </div>
                     <p className="db-card-status">
@@ -764,7 +764,7 @@ export default function Dashboard() {
                       onChange={(e) =>
                         setJobForm({ ...jobForm, stage: e.target.value })
                       }
-                    >
+                     >
                       {stageTransitions[jobForm.stage].map((stage) => (
                         <option key={stage} value={stage}>
                           {stage}
