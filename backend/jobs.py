@@ -145,8 +145,9 @@ def list_archived_jobs(
     db: Annotated[Session, Depends(get_db)],
 ):
     """Retrieve all archived jobs for the authenticated user."""
-    return (db.query(Job).filter(Job.owner_id == user_id,
-    Job.is_archived.is_(True)).all())
+    return (
+        db.query(Job).filter(Job.owner_id == user_id, Job.is_archived.is_(True)).all()
+    )
 
 
 @jobsrouter.get("/metrics", response_model=JobMetrics)

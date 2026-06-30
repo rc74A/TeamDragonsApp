@@ -197,6 +197,7 @@ class Document(Base):
 
 class Interview(Base):
     """Database model representing an interview schedule."""
+
     __tablename__ = "interviews"
 
     id = Column(Integer, primary_key=True, index=True)
