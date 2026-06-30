@@ -54,6 +54,15 @@ const EMPTY_METRICS: JobMetrics = {
   response_rate: 0,
 };
 
+const stageTransitions = {
+  Interested: ["Interested", "Applied", "Rejected"],
+  Applied: ["Applied", "Interview", "Rejected"],
+  Interview: ["Interview", "Offer", "Rejected"],
+  Offer: ["Offer", "Archived", "Rejected"],
+  Rejected: ["Rejected"],
+  Archived: ["Archived"],
+};
+
 interface DashboardData {
   username: string;
   jobs: Job[];
@@ -547,13 +556,11 @@ export default function Dashboard() {
                     setJobForm({ ...jobForm, stage: e.target.value })
                   }
                 >
-                  <option value="Interested">Interested</option>
-                  <option value="Applied">Applied</option>
-                  <option value="Interview">Interview</option>
-                  <option value="Offer">Offer</option>
-                  <option value="Rejected">Rejected</option>
-                  <option value="Archived">Archived</option>
-                </select>
+                  {stageTransitions[jobForm.stage].map((stage) => (
+                  <option key={stage} value={stage}>
+                    {stage}
+                  </option>
+                ))}
               </div>
               <div className="db-form-group">
                 <label>Location</label>
