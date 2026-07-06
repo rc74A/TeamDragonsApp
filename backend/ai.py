@@ -633,3 +633,57 @@ def save_cover_letter(
         raise HTTPException(
             status_code=500, detail="Failed to save cover letter."
         ) from e
+
+class ResearchRequest(BaseModel):
+    """Input payload mapping from the Dashboard AI Brief button action"""
+    company_name: str
+    job_title: str
+    location: str | None = None
+    job_description: str | None = None
+
+
+@airouter.post("/research")
+def generate_company_research(
+    body: ResearchRequest,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+):
+    """
+    Generates an expert, location-aware corporate interview briefing 
+    tailored to the specific title and raw job description requirements.
+    """
+    # Build out a pristine targeted prompt injecting all 4 schema fields
+    prompt = f"""
+    You are an expert career coach and corporate intelligence researcher. Provide a 
+    comprehensive, highly actionable interview preparation briefing for a candidate.
+    
+    Target Parameters:
+    - **Company**: {body.company_name}
+    - **Role Title**: {body.job_title}
+    - **Location context**: {body.location or 'Not Specified'}
+    
+    Raw Job Description Requirements:
+    \"\"\"
+    {body.job_description or 'No explicit description provided. Analyze general expectations for this title.'}
+    \"\"\"
+    
+    Please provide the research structured exactly with these clear markdown headers:
+    1. **Company Mission & Regional Culture** (Tailored to the location context if relevant)
+    2. **Core Tech Stack & Skills Matrix** (Deep-dive into keywords extracted from the Job Description)
+    3. **Key Strategic Focus or Recent Trends** (What this team/company is building right now)
+    4. **3 Precision Questions to Ask the Interviewer** (High-impact, role-specific questions)
+    
+    Keep the tone professional, objective, direct, and crisp. Do not include introductory conversational fluff.
+    """
+    
+    try:
+        # Reuses the exact same verified 'genai.Client()' pattern initialization
+        client = genai.Client()
+        response = client.models.generate_content(
+            model=MODEL, # Reuses your teammate's defined "gemini-2.5-flash" variable string
+            contents=prompt
+        )
+        
+        return {"research_notes": response.text}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Gemini API Error: {str(e)}")

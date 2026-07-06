@@ -5,6 +5,7 @@ import { useLoaderData, Link, useNavigate, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
 import "./app.css";
 import "./dashboard.css";
+import { AIResearchButton } from "../components/AIResearchButton"; 
 
 interface Job {
   id: number;
@@ -449,6 +450,11 @@ export default function Dashboard() {
     }
   };
 
+
+  const [activeAINotes, setActiveAINotes] = useState<string | null>(null);
+const [activeAICompany, setActiveAICompany] = useState<string>("");
+
+
   return (
     <div className="db-root">
       <header className="db-header">Dragon Application</header>
@@ -700,6 +706,16 @@ export default function Dashboard() {
                     >
                       Edit Tracking
                     </button>
+                    <AIResearchButton 
+                    company={job.company}
+                    title={job.title}
+                    location={job.location}
+                    description={job.description}
+                    onResearchComplete={(generatedText) => {
+            setActiveAINotes(generatedText);
+            setActiveAICompany(job.company);
+          }}
+        />
                     <button
                       type="button"
                       onClick={() => handleDeleteJob(job.id)}
