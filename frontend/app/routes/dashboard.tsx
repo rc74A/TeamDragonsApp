@@ -362,6 +362,7 @@ export default function Dashboard() {
           deadline_state: jobForm.deadlineState,
           outcome_state: jobForm.outcomeState || null,
           outcome_notes: jobForm.outcomeNotes || null,
+          interview_notes: jobForm.interview_notes || null,
         }),
       });
 
