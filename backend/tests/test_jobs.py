@@ -105,3 +105,36 @@ def test_cross_user_access_is_denied(client):
     # Owner's record is unchanged by the denied write.
     fetched = client.get(f"/api/jobs/{job['id']}", headers=USER_1)
     assert fetched.json()["stage"] == "Saved"
+def test_update_interview_notes_success(client):
+    # Happy Path Test- Targets the main PUT Endpoint
+    job = client.post("/api/jobs", json=JOB_PAYLOAD, headers=USER_1).json()
+    response = client.put(
+        f"/api/jobs/{job['id']}",
+        json={
+            "title": job["title"],
+            "company": job["company"],
+            "stage": job["stage"],
+            "interview_notes": "Remember to ask the employer some questions"
+        },
+        headers=USER_1
+    )
+    assert response.status_code == 200
+    data = response.json()
+
+    # Verifies that the notes are saved with time stamps
+    assert data["interview_notes"] == "Remember to ask the employer some questions"
+    assert "notes_updated_at" in data
+
+def test_update_interview_notes_invalid_job(client):
+    # Edge Case/Failure Test - Fake ID targets main PUT Endpoint
+    response = client.put(
+        "/api/jobs/99999",
+        json={
+            "title": "False Title",
+            "company": "False Company",
+            "stage": "Applied",
+            "interview_notes": "This shouldn't save anything"
+        },
+        headers=USER_1
+    )
+    assert response.status_code == 404
