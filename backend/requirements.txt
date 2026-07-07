@@ -7,6 +7,7 @@ pymysql
 python-jose 
 bcrypt
 google-genai
+supabase
 
 # Testing (kept here so CI installs them and runs pytest)
 pytest

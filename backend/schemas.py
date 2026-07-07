@@ -566,3 +566,15 @@ class RewriteCoverLetterRequest(BaseModel):
     job: FoundJob
     existing_cover_letter: CoverLetter
     rewrite_prompt: str
+
+
+# General Documents
+
+
+class DocumentPost(BaseModel):
+    """Information needed to upload filse to supabase storage"""
+
+    doc_type: str  # resume / cover_letter
+    content: str  # str version of document text
+    job_snapshot: str  # json string of FoundJob
+    file_name: str  # resume.pdf
