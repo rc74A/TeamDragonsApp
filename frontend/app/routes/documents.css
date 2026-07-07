@@ -1,0 +1,53 @@
+dc-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #1a202c;
+  color: #ffffff;
+  font-family: sans-serif;
+}
+
+dc-header {
+  background-color: #2d3748;
+  padding: 16px 24px;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 1px solid #4a5568;
+  color: #06b6d4;
+}
+
+dc-workspace {
+  display: flex;
+  flex: 1;
+}
+
+dc-main {
+  flex: 1;
+  padding: 40px;
+}
+
+dc-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+dc-caption {
+  color: #a0aec0;
+  margin-bottom: 32px;
+}
+
+/* Subsection Grid Headers */
+dc-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #2d3748;
+  padding-bottom: 8px;
+}
+
+dc-section-header h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}

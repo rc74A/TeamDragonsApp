@@ -578,3 +578,32 @@ class DocumentPost(BaseModel):
     content: str  # str version of document text
     job_snapshot: str  # json string of FoundJob
     file_name: str  # resume.pdf
+
+
+class DocumentVersionOut(BaseModel):
+    """Used for retrieving documents versions from the bacakend to the frontend"""
+
+    id: int
+    version_number: int
+    file_name: str
+    created_at: datetime
+    download_url: str | None = None
+
+    class Config:
+        """Config"""
+
+        from_attributes = True
+
+
+class DocumentOut(BaseModel):
+    """Used for retrieving documents from the bacakend to the frontend"""
+
+    id: int
+    doc_type: str
+    created_at: datetime
+    latest_version: DocumentVersionOut
+
+    class Config:
+        """Config"""
+
+        from_attributes = True

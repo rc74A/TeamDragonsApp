@@ -1,7 +1,7 @@
 import datetime
 import json
 import os
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy import select
@@ -11,7 +11,7 @@ from supabase import create_client
 from database import get_db
 from jobs import get_current_user_id
 from models import Document, DocumentVersion
-from schemas import DocumentPost
+from schemas import DocumentOut, DocumentPost, DocumentVersionOut
 
 documentrouter = APIRouter(prefix="/api/documents", tags=["documents"])
 
@@ -135,3 +135,97 @@ async def upload_document_request(
         "version_number": new_version.version_number,
         "download_url": signed_url_data.get("signedURL"),
     }
+
+
+@documentrouter.get("", response_model=list[DocumentOut])
+async def list_documents(
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+    doc_type: Literal["resume", "cover_letter"] | None = None,
+    sort_by: Literal["created_at", "file_name"] = "created_at",
+    order: Literal["asc", "desc"] = "desc",
+):
+    """
+    Lists all parent documents owned by the current user, each annotated
+    with its most recent version and a short-lived signed preview URL.
+    """
+    stmt = select(Document).where(Document.owner_id == user_id)
+    if doc_type:
+        stmt = stmt.where(Document.doc_type == doc_type)
+
+    documents = db.scalars(stmt).all()
+
+    results = []
+    for doc in documents:
+        if not doc.versions:
+            continue  # skip parents with no uploaded version yet
+
+        latest = doc.versions[0]  # relationship is already ordered desc
+        bucket_name = "resumes" if doc.doc_type == "resume" else "cover_letters"
+
+        try:
+            signed = supabase.storage.from_(bucket_name).create_signed_url(
+                latest.storage_url, 900
+            )
+            download_url = signed.get("signedURL")
+        except Exception:
+            download_url = None
+
+        results.append(
+            DocumentOut(
+                id=doc.id,
+                doc_type=doc.doc_type,
+                created_at=doc.created_at,
+                latest_version=DocumentVersionOut(
+                    id=latest.id,
+                    version_number=latest.version_number,
+                    file_name=latest.file_name,
+                    created_at=latest.created_at,
+                    download_url=download_url,
+                ),
+            )
+        )
+
+    reverse = order == "desc"
+    if sort_by == "created_at":
+        results.sort(key=lambda d: d.created_at, reverse=reverse)
+    else:
+        results.sort(key=lambda d: d.latest_version.file_name.lower(), reverse=reverse)
+
+    return results
+
+
+@documentrouter.get("/{document_id}/versions", response_model=list[DocumentVersionOut])
+async def list_document_versions(
+    document_id: int,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """Returns full version history for a single document, newest first."""
+    stmt = select(Document).where(
+        Document.id == document_id, Document.owner_id == user_id
+    )
+    doc = db.scalars(stmt).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    bucket_name = "resumes" if doc.doc_type == "resume" else "cover_letters"
+    out = []
+    for v in doc.versions:
+        try:
+            signed = supabase.storage.from_(bucket_name).create_signed_url(
+                v.storage_url, 900
+            )
+            download_url = signed.get("signedURL")
+        except Exception:
+            download_url = None
+        out.append(
+            DocumentVersionOut(
+                id=v.id,
+                version_number=v.version_number,
+                file_name=v.file_name,
+                created_at=v.created_at,
+                download_url=download_url,
+            )
+        )
+    return out
