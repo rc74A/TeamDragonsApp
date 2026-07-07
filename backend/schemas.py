@@ -220,6 +220,32 @@ class JobMetrics(BaseModel):
     response_rate: float
 
 
+class StageConversion(BaseModel):
+    """Conversion between two consecutive funnel stages (S3-014)."""
+
+    from_stage: str
+    to_stage: str
+    reached_from: int
+    reached_to: int
+    rate: float
+
+
+class StageDwell(BaseModel):
+    """Average completed time spent in one stage (S3-014)."""
+
+    stage: str
+    avg_days: float
+    samples: int
+
+
+class JobAnalytics(BaseModel):
+    """Conversion and time-in-stage analytics from stage events (S3-014)."""
+
+    funnel: dict[str, int]
+    conversion: list[StageConversion]
+    time_in_stage: list[StageDwell]
+
+
 # ----- Experience -----
 
 ENTRY_TYPES = {"employment", "project"}
