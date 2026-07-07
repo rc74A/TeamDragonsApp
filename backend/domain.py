@@ -101,6 +101,13 @@ def compute_stage_analytics(jobs: list[dict], events: list[dict]) -> dict:
         for event in events_by_job.get(job["id"], []):
             seen.add(event["old_stage"])
             seen.add(event["new_stage"])
+        # Reaching a funnel stage implies passing the earlier ones, so a
+        # move that skips a stage (or a job created mid-funnel) still
+        # counts toward every prior step. This keeps reach monotonic
+        # along FUNNEL_PATH and conversion rates within [0, 1].
+        funnel_hits = [i for i, stage in enumerate(FUNNEL_PATH) if stage in seen]
+        if funnel_hits:
+            seen.update(FUNNEL_PATH[: max(funnel_hits)])
         for stage in seen:
             reached[stage] += 1
 

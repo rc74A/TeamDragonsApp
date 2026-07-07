@@ -173,12 +173,66 @@ def test_analytics_ignores_outcome_pseudo_stages():
     assert {d["stage"]: d["samples"] for d in a["time_in_stage"]}["Applied"] == 0
 
 
-def test_analytics_skips_undatable_intervals():
-    """Missing created_at or out-of-order timestamps never crash or go negative."""
+def test_analytics_sorts_events_and_skips_missing_created_at():
+    """Out-of-order events are sorted into a timeline; no created_at means
+    no creation interval. Pinned exactly so the mechanism can't regress.
+    """
     events = [
         _event(1, "Interested", "Applied", datetime(2026, 7, 5)),
         _event(1, "Applied", "Interview", datetime(2026, 7, 2)),  # out of order
     ]
     a = compute_stage_analytics([_job(1, "Interview", None)], events)
-    for d in a["time_in_stage"]:
-        assert d["avg_days"] >= 0.0
+    dwell = {d["stage"]: d for d in a["time_in_stage"]}
+    # Sorted timeline: (Applied->Interview 7/2) then (Interested->Applied 7/5),
+    # so the one completed interval is 3 days spent in Interview.
+    assert dwell["Interview"] == {"stage": "Interview", "avg_days": 3.0, "samples": 1}
+    assert dwell["Interested"]["samples"] == 0
+    assert dwell["Applied"]["samples"] == 0
+
+
+def test_analytics_skips_creation_interval_when_created_after_first_event():
+    """A created_at later than the first event (backfilled/imported data)
+    contributes no dwell sample instead of a negative one.
+    """
+    events = [_event(1, "Interested", "Applied", datetime(2026, 7, 5))]
+    a = compute_stage_analytics([_job(1, "Applied", datetime(2026, 7, 10))], events)
+    dwell = {d["stage"]: d for d in a["time_in_stage"]}
+    assert dwell["Interested"] == {"stage": "Interested", "avg_days": 0.0, "samples": 0}
+    assert all(d["avg_days"] >= 0.0 for d in a["time_in_stage"])
+
+
+def test_analytics_skipped_stage_keeps_conversion_within_bounds():
+    """A move that skips a funnel stage counts the skipped stage as passed,
+    so conversion can never exceed 100% (S3-BR-013).
+    """
+    events = [
+        _event(1, "Interested", "Interview", datetime(2026, 7, 2)),  # skips Applied
+        _event(2, "Interested", "Interview", datetime(2026, 7, 2)),
+        _event(3, "Interested", "Applied", datetime(2026, 7, 2)),
+    ]
+    jobs = [_job(1, "Interview"), _job(2, "Interview"), _job(3, "Applied")]
+    a = compute_stage_analytics(jobs, events)
+    assert a["funnel"]["Applied"] == 3  # includes the two that skipped past it
+    steps = {(c["from_stage"], c["to_stage"]): c for c in a["conversion"]}
+    assert steps[("Interested", "Applied")]["rate"] == 1.0
+    assert steps[("Applied", "Interview")]["rate"] == 0.67
+    assert all(c["rate"] <= 1.0 for c in a["conversion"])
+
+
+def test_analytics_revisited_stage_pools_dwell_and_counts_once():
+    """Moving back into a stage pools its dwell samples but the funnel
+    still counts the job once per stage.
+    """
+    events = [
+        _event(1, "Interested", "Applied", datetime(2026, 7, 1)),
+        _event(1, "Applied", "Interview", datetime(2026, 7, 3)),
+        _event(1, "Interview", "Applied", datetime(2026, 7, 4)),
+        _event(1, "Applied", "Interview", datetime(2026, 7, 8)),
+    ]
+    a = compute_stage_analytics([_job(1, "Interview", None)], events)
+    assert a["funnel"]["Applied"] == 1
+    assert a["funnel"]["Interview"] == 1
+    dwell = {d["stage"]: d for d in a["time_in_stage"]}
+    # Applied was occupied 7/1-7/3 (2d) and 7/4-7/8 (4d): pooled avg 3.0.
+    assert dwell["Applied"] == {"stage": "Applied", "avg_days": 3.0, "samples": 2}
+    assert dwell["Interview"]["samples"] == 1
