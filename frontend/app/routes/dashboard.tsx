@@ -883,16 +883,34 @@ export default function Dashboard() {
                     </div>
                   )}
                   {/* S3-013 Add Interview Notes Section in Job Details */}
-                  <div className="db-outcome-panel" style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
-                    <h4 className="db-outcome-title"> Interview Notes Preparation </h4>
+                  <div
+                    className="db-outcome-panel"
+                    style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}
+                  >
+                    <h4 className="db-outcome-title">
+                      {" "}
+                      Interview Notes Preparation{" "}
+                    </h4>
                     <div className="db-form-group db-form-group-no-margin">
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          marginBottom: '0.5rem',
+                        }}
+                      >
                         <label htmlFor="modalInterviewNotes">
                           Interview Preparation and Notes
                         </label>
                         {jobForm.notes_updated_at && (
-                          <span style={{ fontSize: '0.75rem', color: '#9ca3af' }}>
-                            Last Saved At: {new Date(jobForm.notes_updated_at).toLocaleString()}
+                          <span
+                            style={{ fontSize: '0.75rem', color: '#9ca3af' }}
+                          >
+                            Last Saved At:{" "}
+                            {new Date(
+                             jobForm.notes_updated_at,
+                            ).toLocaleString()}
                           </span>
                         )}
                       </div>
@@ -908,9 +926,9 @@ export default function Dashboard() {
                           interview_notes: e.target.value,
                         })
                       }
-                      />
-                    </div>
+                    />
                   </div>
+                </div>
                   <div className="db-form-actions db-form-actions-spaced">
                     {/* S2-014: Render Archive button first to float left via CSS */}
                     {editingJobId && (
