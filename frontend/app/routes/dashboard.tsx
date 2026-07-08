@@ -885,7 +885,7 @@ export default function Dashboard() {
                   {/* S3-013 Add Interview Notes Section in Job Details */}
                   <div
                     className="db-outcome-panel"
-                    style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}
+                    style={{ marginTop: "1.5rem", marginBottom: "1.5rem" }}
                   >
                     <h4 className="db-outcome-title">
                       {" "}
@@ -894,10 +894,10 @@ export default function Dashboard() {
                     <div className="db-form-group db-form-group-no-margin">
                       <div
                         style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          marginBottom: '0.5rem',
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "0.5rem",
                         }}
                       >
                         <label htmlFor="modalInterviewNotes">
@@ -905,30 +905,30 @@ export default function Dashboard() {
                         </label>
                         {jobForm.notes_updated_at && (
                           <span
-                            style={{ fontSize: '0.75rem', color: '#9ca3af' }}
+                            style={{ fontSize: "0.75rem", color: "#9ca3af" }}
                           >
                             Last Saved At:{" "}
                             {new Date(
-                             jobForm.notes_updated_at,
+                              jobForm.notes_updated_at,
                             ).toLocaleString()}
                           </span>
                         )}
                       </div>
-                    <textarea
-                      id="modalInterviewNotes"
-                      placeholder="Write down Notes for your Upcoming Interview, Like Questions, etc..."
-                      value={jobForm.interview_notes || ""}
-                      rows={5}
-                      className="db-outcome-textarea"
-                      onChange={(e) =>
-                        setJobForm({
-                          ...jobForm,
-                          interview_notes: e.target.value,
-                        })
-                      }
-                    />
+                      <textarea
+                        id="modalInterviewNotes"
+                        placeholder="Write down Notes for your Upcoming Interview, Like Questions, etc..."
+                        value={jobForm.interview_notes || ""}
+                        rows={5}
+                        className="db-outcome-textarea"
+                        onChange={(e) =>
+                          setJobForm({
+                            ...jobForm,
+                            interview_notes: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
                   </div>
-                </div>
                   <div className="db-form-actions db-form-actions-spaced">
                     {/* S2-014: Render Archive button first to float left via CSS */}
                     {editingJobId && (
