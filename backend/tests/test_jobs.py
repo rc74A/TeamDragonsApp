@@ -106,7 +106,7 @@ def test_cross_user_access_is_denied(client):
     fetched = client.get(f"/api/jobs/{job['id']}", headers=USER_1)
     assert fetched.json()["stage"] == "Saved"
 def test_update_interview_notes_success(client):
-    """ Happy Path Test- Targets the main PUT Endpoint """
+    """Happy Path Test- Targets the main PUT Endpoint."""
     job = client.post("/api/jobs", json=JOB_PAYLOAD, headers=USER_1).json()
     response = client.put(
         f"/api/jobs/{job['id']}",
@@ -126,7 +126,7 @@ def test_update_interview_notes_success(client):
     assert "notes_updated_at" in data
 
 def test_update_interview_notes_invalid_job(client):
-    """ Edge Case/Failure Test - Fake ID targets main PUT Endpoint """
+    """Edge Case/Failure Test - Fake ID targets main PUT Endpoint."""
     response = client.put(
         "/api/jobs/99999",
         json={
