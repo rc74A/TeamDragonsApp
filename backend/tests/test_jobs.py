@@ -105,6 +105,8 @@ def test_cross_user_access_is_denied(client):
     # Owner's record is unchanged by the denied write.
     fetched = client.get(f"/api/jobs/{job['id']}", headers=USER_1)
     assert fetched.json()["stage"] == "Saved"
+
+
 def test_update_interview_notes_success(client):
     """Happy Path Test- Targets the main PUT Endpoint."""
     job = client.post("/api/jobs", json=JOB_PAYLOAD, headers=USER_1).json()
@@ -124,6 +126,7 @@ def test_update_interview_notes_success(client):
     # Verifies that the notes are saved with time stamps
     assert data["interview_notes"] == "Remember to ask the employer some questions"
     assert "notes_updated_at" in data
+
 
 def test_update_interview_notes_invalid_job(client):
     """Edge Case/Failure Test - Fake ID targets main PUT Endpoint."""
