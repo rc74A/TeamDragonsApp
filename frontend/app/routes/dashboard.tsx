@@ -146,6 +146,7 @@ export default function Dashboard() {
     description: "",
     deadline: "",
     deadlineState: "No Deadline",
+    interview_notes: "",
     outcomeState: "",
     outcomeNotes: "",
   });
@@ -191,6 +192,7 @@ export default function Dashboard() {
         description: String(rawJob.description),
         deadline: (rawJob.deadline as string) ?? null,
         deadlineState: (rawJob.deadline_state as string) ?? null,
+        interview_notes: String(rawJob.interview_notes),
         lastActivity: (rawJob.last_activity as string) ?? null,
         createdAt: (rawJob.created_at as string) || new Date().toISOString(),
         outcome_state: (rawJob.outcome_state as string) ?? null,
@@ -362,6 +364,7 @@ export default function Dashboard() {
           description: jobForm.description,
           deadline: jobForm.deadline || null,
           deadline_state: jobForm.deadlineState,
+          interview_notes: jobForm.interview_notes,
           outcome_state: jobForm.outcomeState || null,
           outcome_notes: jobForm.outcomeNotes || null,
           interview_notes: jobForm.interview_notes || null,
@@ -625,6 +628,7 @@ export default function Dashboard() {
                     outcomeState: "",
                     outcomeNotes: "",
                     description: "",
+                    interview_notes: "",
                   });
                   setIsModalOpen(true);
                 }}
@@ -694,6 +698,7 @@ export default function Dashboard() {
                           description: job.description,
                           deadline: job.deadline || "",
                           deadlineState: job.deadlineState,
+                          interview_notes: job.interview_notes,
                           outcomeState: "",
                           outcomeNotes: "",
                         });
