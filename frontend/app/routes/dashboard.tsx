@@ -364,7 +364,7 @@ export default function Dashboard() {
           description: jobForm.description,
           deadline: jobForm.deadline || null,
           deadline_state: jobForm.deadlineState,
-          interview_notes: jobForm.interview_notes
+          interview_notes: jobForm.interview_notes,
           outcome_state: jobForm.outcomeState || null,
           outcome_notes: jobForm.outcomeNotes || null,
           interview_notes: jobForm.interview_notes || null,
