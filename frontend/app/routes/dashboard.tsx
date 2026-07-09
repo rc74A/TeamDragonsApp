@@ -3,6 +3,7 @@ import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton, useAuth } from "@clerk/react-router";
 import { useLoaderData, Link, useNavigate, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
+import AnalyticsPanel from "../components/AnalyticsPanel";
 import "./app.css";
 import "./dashboard.css";
 
@@ -515,6 +516,8 @@ export default function Dashboard() {
                 <span className="db-metric-label">Response Rate</span>
               </div>
             </section>
+
+            <AnalyticsPanel />
 
             <div className="db-section-header">
               <h3>Job Applications</h3>
