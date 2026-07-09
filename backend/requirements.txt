@@ -3,8 +3,9 @@ fastapi-clerk-auth
 uvicorn
 pydantic
 sqlalchemy
+alembic
 pymysql
-python-jose 
+python-jose
 bcrypt
 google-genai
 

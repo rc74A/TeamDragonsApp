@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 from profile import profilerouter
 
@@ -9,6 +10,7 @@ from database import Base, engine
 from education import educationrouter
 from experience import experiencerouter
 from jobs import jobsrouter
+from migration_runner import run_migrations
 from search import searchrouter
 from skills import skillsrouter
 
@@ -25,10 +27,15 @@ async def lifespan(app: FastAPI):
     """Run startup and shutdown work around the app's lifetime."""
     # Init
     print("Starting Up")
-    # Baseline migration approach (S1-019): create missing tables on
-    # startup. Replace with real migrations (e.g. Alembic) when the
-    # schema starts changing.
-    Base.metadata.create_all(bind=engine)
+    # Production runs Alembic migrations (S3-016): adopts pre-Alembic
+    # databases, applies schema repairs, and records the version so
+    # rollbacks are possible (S3-BR-018). Dev and tests keep the fast
+    # create-missing-tables path (S1-019); set RUN_DB_MIGRATIONS=1 to
+    # exercise migrations locally.
+    if os.getenv("PYTHON_ENV") == "production" or os.getenv("RUN_DB_MIGRATIONS") == "1":
+        run_migrations()
+    else:
+        Base.metadata.create_all(bind=engine)
 
     yield
 
