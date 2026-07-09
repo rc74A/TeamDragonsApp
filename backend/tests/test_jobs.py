@@ -141,3 +141,38 @@ def test_update_interview_notes_invalid_job(client):
         headers=USER_1,
     )
     assert response.status_code == 404
+
+def test_update_research_notes_success(client):
+    """Happy Path Test- Targets the main PUT Endpoint for Company Research """
+    job = client.post("/api/jobs", json=JOB_PAYLOAD, headers=USER_1).json()
+    response = client.put(
+        f"/api/jobs/{job['id']}",
+        json={
+            "title": job["title"],
+            "company": job["company"],
+            "stage": job["stage"],
+            "research_notes": "Questions, Statistics, and Reviews about the Company",
+        },
+        headers=USER_1,
+    )
+    assert response.status_code == 200
+    data = response.json()
+
+    # Verifies that the research notes are saved with timestamps
+    assert data["research_notes"] == "Questions, Statistics, and Reviews about the Company"
+    assert "research_updated_at" in data
+
+def test_update_research_notes_invalid_job(client):
+    """Edge Case/Failure Test - Fake ID targets main PUT Endpoint."""
+    response = client.put(
+    "/api/jobs/99999",
+        json={
+            "title": "False Title",
+            "company": "False Company",
+            "stage": "Applied",
+            "research_notes": "This shouldn't save anything",
+        },
+        headers=USER_1,
+    )
+    assert response.status_code == 404
+    
