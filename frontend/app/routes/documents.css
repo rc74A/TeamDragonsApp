@@ -1,4 +1,4 @@
-dc-root {
+.doc-root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -7,7 +7,7 @@ dc-root {
   font-family: sans-serif;
 }
 
-dc-header {
+.doc-header {
   background-color: #2d3748;
   padding: 16px 24px;
   font-size: 20px;
@@ -16,38 +16,341 @@ dc-header {
   color: #06b6d4;
 }
 
-dc-workspace {
+.doc-workspace {
   display: flex;
   flex: 1;
 }
 
-dc-main {
+/* Sidebar — inferred to match theme; send app.css to match exactly */
+.doc-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background-color: #2d3748;
+  border-right: 1px solid #4a5568;
+  padding: 24px 0;
+}
+
+.doc-sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.doc-nav-link,
+.doc-nav-link-active {
+  display: block;
+  padding: 10px 24px;
+  text-decoration: none;
+  font-size: 14px;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.doc-nav-link {
+  color: #a0aec0;
+}
+
+.doc-nav-link:hover {
+  background-color: #1a202c;
+  color: #e2e8f0;
+}
+
+.doc-nav-link-active {
+  color: #06b6d4;
+  background-color: #1a202c;
+  border-right: 3px solid #06b6d4;
+  font-weight: bold;
+}
+
+.doc-logout-item {
+  margin-top: 24px;
+  padding: 0 24px;
+}
+
+.doc-btn-logout {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #4a5568;
+  background-color: transparent;
+  color: #a0aec0;
+  cursor: pointer;
+  font-size: 13px;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.doc-btn-logout:hover {
+  border-color: #e53e3e;
+  color: #e53e3e;
+}
+
+.doc-main {
   flex: 1;
   padding: 40px;
 }
 
-dc-container {
-  max-width: 1200px;
-  margin: 0 auto;
+/* Buttons */
+.doc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #06b6d4;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  transition:
+    background-color 0.15s ease,
+    opacity 0.15s ease;
+  text-decoration: none;
 }
 
-dc-caption {
-  color: #a0aec0;
+.doc-btn:hover {
+  background-color: #0891b2;
+}
+
+.doc-btn:disabled {
+  background-color: #4a5568;
+  color: #718096;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.doc-btn-ghost {
+  background-color: transparent;
+  border: 1px solid #4a5568;
+  color: #e2e8f0;
+  box-shadow: none;
+}
+
+.doc-btn-ghost:hover {
+  background-color: #1a202c;
+  border-color: #06b6d4;
+  color: #06b6d4;
+}
+
+/* Toolbar (filter/sort) */
+.doc-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.doc-select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #4a5568;
+  background-color: #2d3748;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.doc-select:focus {
+  border-color: #06b6d4;
+}
+
+.doc-select option {
+  background-color: #2d3748;
+  color: #ffffff;
+}
+
+/* Upload panel */
+.doc-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background-color: #2d3748;
+  border: 1px dashed #4a5568;
+  border-radius: 12px;
+  padding: 20px 24px;
   margin-bottom: 32px;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
 
-/* Subsection Grid Headers */
-dc-section-header {
+.doc-upload:has(input[type="file"]:hover) {
+  border-color: #06b6d4;
+}
+
+.doc-upload input[type="file"] {
+  flex: 1;
+  min-width: 200px;
+  color: #a0aec0;
+  font-size: 13px;
+}
+
+.doc-upload input[type="file"]::file-selector-button {
+  background-color: #1a202c;
+  color: #e2e8f0;
+  border: 1px solid #4a5568;
+  border-radius: 6px;
+  padding: 6px 12px;
+  margin-right: 12px;
+  cursor: pointer;
+  font-size: 13px;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.doc-upload input[type="file"]::file-selector-button:hover {
+  border-color: #06b6d4;
+  color: #06b6d4;
+}
+
+.doc-error {
+  color: #f56565;
+  font-size: 14px;
+  margin: 8px 0;
+  width: 100%;
+}
+
+.doc-empty {
+  color: #a0aec0;
+  text-align: center;
+  padding: 60px 0;
+  font-size: 14px;
+  border: 1px dashed #4a5568;
+  border-radius: 12px;
+}
+
+/* Card grid */
+.doc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.doc-card {
+  padding: 24px;
+  background-color: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.doc-card:hover {
+  border-color: #06b6d4;
+  transform: translateY(-2px);
+}
+
+.doc-card-type {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.doc-card[data-doc-type="resume"] .doc-card-type {
+  background-color: rgba(6, 182, 212, 0.15);
+  color: #06b6d4;
+}
+
+.doc-card[data-doc-type="cover_letter"] .doc-card-type {
+  background-color: rgba(65, 105, 225, 0.15);
+  color: #4169e1;
+}
+
+.doc-card-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+.doc-card-meta {
+  font-size: 13px;
+  color: #a0aec0;
+  margin-bottom: 16px;
+}
+
+.doc-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.doc-card-actions .doc-btn {
+  flex: 1;
+  justify-content: center;
+  padding: 8px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+/* Version history */
+.doc-version-list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid #4a5568;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.doc-version-list li {
+  font-size: 13px;
+  color: #a0aec0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  border-bottom: 2px solid #2d3748;
-  padding-bottom: 8px;
 }
 
-dc-section-header h3 {
-  font-size: 20px;
+.doc-version-list a {
+  color: #06b6d4;
+  text-decoration: none;
   font-weight: bold;
-  margin: 0;
+}
+
+.doc-version-list a:hover {
+  text-decoration: underline;
+}
+
+.doc-input {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #4a5568;
+  background-color: #1a202c;
+  color: #ffffff;
+  font-size: 14px;
+  min-width: 200px;
+}
+
+.doc-input:focus {
+  outline: none;
+  border-color: #06b6d4;
+}
+
+.doc-card-filename {
+  font-size: 12px;
+  color: #718096;
+  margin-bottom: 6px;
+  word-break: break-word;
 }

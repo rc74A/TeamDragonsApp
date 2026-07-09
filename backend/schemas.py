@@ -574,10 +574,11 @@ class RewriteCoverLetterRequest(BaseModel):
 class DocumentPost(BaseModel):
     """Information needed to upload filse to supabase storage"""
 
-    doc_type: str  # resume / cover_letter
-    content: str  # str version of document text
-    job_snapshot: str  # json string of FoundJob
-    file_name: str  # resume.pdf
+    doc_type: str
+    title: str
+    content: str
+    job_snapshot: str
+    file_name: str
 
 
 class DocumentVersionOut(BaseModel):
@@ -600,6 +601,7 @@ class DocumentOut(BaseModel):
 
     id: int
     doc_type: str
+    title: str
     created_at: datetime
     latest_version: DocumentVersionOut
 

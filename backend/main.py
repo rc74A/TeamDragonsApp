@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from ai import airouter
 from database import Base, engine
+from documents import documentrouter
 from education import educationrouter
 from experience import experiencerouter
 from jobs import jobsrouter
@@ -52,6 +53,7 @@ app.include_router(experiencerouter)
 app.include_router(educationrouter)
 app.include_router(skillsrouter)
 app.include_router(airouter)
+app.include_router(documentrouter)
 
 # ----- API Endpoints -----
 

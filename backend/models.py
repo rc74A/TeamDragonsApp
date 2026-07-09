@@ -185,15 +185,15 @@ class Document(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     owner_id: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
-    # "resume" | "cover_letter"
     doc_type: Mapped[str] = mapped_column(String(20), nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)  # NEW
     content: Mapped[str] = mapped_column(Text, nullable=False)
     job_snapshot: Mapped[str] = mapped_column(Text, nullable=False)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=func.now()
     )
 
-    # Relationship to access all historical versions
     versions: Mapped[list["DocumentVersion"]] = relationship(
         "DocumentVersion",
         back_populates="document",

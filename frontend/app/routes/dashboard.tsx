@@ -3,6 +3,7 @@ import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton, useAuth } from "@clerk/react-router";
 import { useLoaderData, Link, useNavigate, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
+import { uploadDocument, type DocType } from "~/lib/document";
 import "./app.css";
 import "./dashboard.css";
 
@@ -448,6 +449,18 @@ export default function Dashboard() {
       console.error("Deletion request failed entirely:", error);
     }
   };
+
+  /*
+  const handleGenerateResume() = async () => {
+  await uploadDocument({
+      file: generatedPdfFile,
+      docType: "cover_letter",
+      content: generatedText,
+      jobSnapshot: JSON.stringify(foundJob),
+      getToken,
+    });
+  }
+    */
 
   return (
     <div className="db-root">

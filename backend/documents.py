@@ -32,8 +32,9 @@ async def upload_document_request(
 
     Parses a multipart form containing metadata details and an associated binary
     document. Verifies if an overarching parent document tracking record exists
-    to calculate the sequential version sequence number. Uploads files directly
-    to cloud storage and writes immutable metadata rows to an Aiven MySQL DB.
+    (matched by owner, doc_type, and title) to calculate the sequential version
+    sequence number. Uploads files directly to cloud storage and writes immutable
+    metadata rows to an Aiven MySQL DB.
 
     Params:
         file (UploadFile): The raw document asset uploaded via the form request.
@@ -53,20 +54,27 @@ async def upload_document_request(
             status_code=400, detail="Invalid JSON format in payload_str"
         ) from None
 
-    # Force strict content type checking
-    allowed_types = ["application/pdf", "image/png", "image/jpeg"]
-    if file.content_type not in allowed_types:
-        raise HTTPException(
-            status_code=400, detail="Only PDF, PNG, or JPEG files are allowed."
-        )
+    # Force strict content type checking, with an extension fallback for
+    # browsers/OSes that send an empty or unreliable content_type
+    allowed_types = [
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "text/plain",
+    ]
+    allowed_extensions = {".png", ".docx", ".txt"}
+    file_ext = os.path.splitext(file.filename or "")[1].lower()
+    if file.content_type not in allowed_types and file_ext not in allowed_extensions:
+        raise HTTPException(status_code=400, detail="Only DOCX, TXT, PDF are allowed.")
 
     bucket_name = "resumes" if payload.doc_type == "resume" else "cover_letters"
 
-    # Check if a parent document already exists for this owner and type
-    # For a truer match, you could also track a
-    # document "title" or "id" from the frontend
+    # Check if a parent document already exists for this owner, type, and title.
+    # Title lets a user have multiple distinct documents of the same doc_type
+    # (e.g. "Backend Resume" and "Frontend Resume"), each with its own version history.
     stmt = select(Document).where(
-        Document.owner_id == user_id, Document.doc_type == payload.doc_type
+        Document.owner_id == user_id,
+        Document.doc_type == payload.doc_type,
+        Document.title == payload.title,
     )
     parent_doc = db.scalars(stmt).first()
 
@@ -75,6 +83,7 @@ async def upload_document_request(
         parent_doc = Document(
             owner_id=user_id,
             doc_type=payload.doc_type,
+            title=payload.title,
             content=payload.content,  # Keep fallback aggregate text on parent
             job_snapshot=payload.job_snapshot,
         )
@@ -93,7 +102,7 @@ async def upload_document_request(
         parent_doc.job_snapshot = payload.job_snapshot
 
     # Unique storage identifier for supabase files
-    timestamp = int(datetime.now().timestamp())
+    timestamp = int(datetime.datetime.now().timestamp())
     safe_file_name = f"{timestamp}_v{next_version}_{payload.file_name}"
     file_path = f"users/{user_id}/{payload.doc_type}/{safe_file_name}"
 
@@ -103,7 +112,9 @@ async def upload_document_request(
         supabase.storage.from_(bucket_name).upload(
             path=file_path,
             file=file_bytes,
-            file_options={"content-type": file.content_type or "application/pdf"},
+            file_options={
+                "content-type": file.content_type or "application/octet-stream"
+            },
         )
     except Exception as e:
         db.rollback()
@@ -142,12 +153,34 @@ async def list_documents(
     user_id: Annotated[str, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
     doc_type: Literal["resume", "cover_letter"] | None = None,
-    sort_by: Literal["created_at", "file_name"] = "created_at",
+    sort_by: Literal["created_at", "file_name", "title"] = "created_at",
     order: Literal["asc", "desc"] = "desc",
 ):
     """
-    Lists all parent documents owned by the current user, each annotated
-    with its most recent version and a short-lived signed preview URL.
+    Lists all documents owned by the current user, one entry per distinct
+    (doc_type, title) pair, each annotated with its most recent version
+    and a short-lived signed preview URL.
+
+    Documents are grouped by title, so a user can maintain several distinct
+    documents of the same doc_type (e.g. "Backend Resume" and "Frontend
+    Resume"), each carrying its own independent version history. Only the
+    latest version of each document is returned here; call
+    GET /api/documents/{document_id}/versions for full history.
+
+    Params:
+        user_id (str): Extracted authenticated user token from dependency injection.
+        db (Session): Active context transaction handle tracking the local instance.
+        doc_type (str | None): Optional filter to "resume" or "cover_letter".
+            Omit to return both types.
+        sort_by (str): Field to sort results by — "created_at", "file_name"
+            (of the latest version), or "title". Defaults to "created_at".
+        order (str): Sort direction, "asc" or "desc". Defaults to "desc".
+
+    Returns:
+        list[DocumentOut]: One entry per document, each including its id,
+        doc_type, title, creation timestamp, and latest version details
+        (version number, file name, upload timestamp, signed download URL).
+        Documents with no uploaded versions are omitted.
     """
     stmt = select(Document).where(Document.owner_id == user_id)
     if doc_type:
@@ -158,9 +191,9 @@ async def list_documents(
     results = []
     for doc in documents:
         if not doc.versions:
-            continue  # skip parents with no uploaded version yet
+            continue
 
-        latest = doc.versions[0]  # relationship is already ordered desc
+        latest = doc.versions[0]
         bucket_name = "resumes" if doc.doc_type == "resume" else "cover_letters"
 
         try:
@@ -175,6 +208,7 @@ async def list_documents(
             DocumentOut(
                 id=doc.id,
                 doc_type=doc.doc_type,
+                title=doc.title,
                 created_at=doc.created_at,
                 latest_version=DocumentVersionOut(
                     id=latest.id,
@@ -189,6 +223,8 @@ async def list_documents(
     reverse = order == "desc"
     if sort_by == "created_at":
         results.sort(key=lambda d: d.created_at, reverse=reverse)
+    elif sort_by == "title":
+        results.sort(key=lambda d: d.title.lower(), reverse=reverse)
     else:
         results.sort(key=lambda d: d.latest_version.file_name.lower(), reverse=reverse)
 

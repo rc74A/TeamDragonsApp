@@ -3,8 +3,9 @@ import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton, useAuth } from "@clerk/react-router";
 import { Link, redirect } from "react-router";
 import type { Route } from "./+types/findjobs";
+import { uploadDocument, type DocType } from "~/lib/document";
 import "./app.css";
-import "./dashboard.css"; // Ngl I'm way too lazy so we're doing this
+import "./documents.css";
 
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
@@ -23,6 +24,7 @@ interface DocumentVersion {
 interface DocumentItem {
   id: number;
   doc_type: DocType;
+  title: string;
   created_at: string;
   latest_version: DocumentVersion;
 }
@@ -47,18 +49,22 @@ const Spinner = () => (
 export default function Documents() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
+
   const [filterType, setFilterType] = useState<DocType | "all">("all");
   const [sortBy, setSortBy] = useState<SortBy>("created_at");
   const [order, setOrder] = useState<Order>("desc");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [versions, setVersions] = useState<DocumentVersion[]>([]);
 
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadTitle, setUploadTitle] = useState("");
+  const [uploadDocType, setUploadDocType] = useState<DocType>("resume");
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
   const { getToken } = useAuth();
-
-  const handleSortDocuments = () => {};
-
-  const handleFilterDocuments = () => {};
 
   const fetchDocuments = async () => {
     try {
@@ -93,9 +99,39 @@ export default function Documents() {
     }
   };
 
+  const handleUpload = async () => {
+    if (!uploadFile) {
+      setUploadError("Choose a file first.");
+      return;
+    }
+    if (!uploadTitle.trim()) {
+      setUploadError("Give this document a title.");
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      setUploadError("");
+
+      await uploadDocument({
+        file: uploadFile,
+        docType: uploadDocType,
+        title: uploadTitle,
+        getToken,
+      });
+
+      setUploadFile(null);
+      setUploadTitle("");
+      await fetchDocuments();
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Upload failed.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   useEffect(() => {
     fetchDocuments();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterType, sortBy, order]);
 
   const toggleVersionHistory = async (docId: number) => {
@@ -125,139 +161,185 @@ export default function Documents() {
   };
 
   return (
-    <div className="db-root">
+    <div className="doc-root">
       {isLoading && <Spinner label="loading..." />}
 
-      <header className="db-header">Dragon Application</header>
-      <div className="db-workspace">
-        <aside className="sidebar">
+      <header className="doc-header">Dragon Application</header>
+      <div className="doc-workspace">
+        <aside className="doc-sidebar">
           <ul>
             <li>
-              <Link to="/" className="nav-link">
+              <Link to="/" className="doc-nav-link">
                 Dashboard
               </Link>
             </li>
             <li>
-              <Link to="/documents" className="nav-link-active">
+              <Link to="/documents" className="doc-nav-link-active">
                 Documents
               </Link>
             </li>
             <li>
-              <Link to="/findjobs" className="nav-link">
+              <Link to="/findjobs" className="doc-nav-link">
                 Find Jobs
               </Link>
             </li>
             <li>
-              <Link to="/profile" className="nav-link">
+              <Link to="/profile" className="doc-nav-link">
                 Profile
               </Link>
             </li>
             <li>
-              <Link to="/settings" className="nav-link">
+              <Link to="/settings" className="doc-nav-link">
                 Settings
               </Link>
             </li>
-            <li className="logout-item">
+            <li className="doc-logout-item">
               <SignOutButton redirectUrl="/login">
-                <button className="btn-logout">Sign Out</button>
+                <button className="doc-btn-logout">Sign Out</button>
               </SignOutButton>
             </li>
           </ul>
         </aside>
-      </div>
-      <main className="db-main">
-        <div className="db-toolbar">
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value as DocType | "all")}
-            className="db-select"
-          >
-            <option value="all">All documents</option>
-            <option value="resume">Resumes</option>
-            <option value="cover_letter">Cover letters</option>
-          </select>
 
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as SortBy)}
-            className="db-select"
-          >
-            <option value="created_at">Sort by date</option>
-            <option value="file_name">Sort by name</option>
-          </select>
+        <main className="doc-main">
+          <div className="doc-upload">
+            <select
+              value={uploadDocType}
+              onChange={(e) => setUploadDocType(e.target.value as DocType)}
+              className="doc-select"
+            >
+              <option value="resume">Resume</option>
+              <option value="cover_letter">Cover letter</option>
+            </select>
 
-          <button
-            type="button"
-            onClick={() => setOrder(order === "asc" ? "desc" : "asc")}
-            className="db-btn-add-job"
-          >
-            {order === "asc" ? "Oldest first" : "Newest first"}
-          </button>
-        </div>
+            <input
+              type="text"
+              placeholder="Title (e.g. Backend Resume)"
+              value={uploadTitle}
+              onChange={(e) => setUploadTitle(e.target.value)}
+              className="doc-input"
+            />
 
-        {error && <p className="db-error">{error}</p>}
+            <input
+              type="file"
+              accept=".pdf,.docx,.txt"
+              onChange={(e) => setUploadFile(e.target.files?.[0] ?? null)}
+            />
 
-        {!isLoading && documents.length === 0 && !error && (
-          <p className="db-empty">
-            No documents yet. Upload a resume or cover letter to see it here.
-          </p>
-        )}
+            <button
+              type="button"
+              onClick={handleUpload}
+              disabled={isUploading || !uploadFile || !uploadTitle.trim()}
+              className="doc-btn"
+            >
+              {isUploading ? "Uploading..." : "Upload"}
+            </button>
 
-        <div className="db-grid">
-          {documents.map((doc) => (
-            <div key={doc.id} className="db-card">
-              <div className="db-card-type">
-                {doc.doc_type === "resume" ? "Resume" : "Cover Letter"}
-              </div>
-              <div className="db-card-name">{doc.latest_version.file_name}</div>
-              <div className="db-card-meta">
-                v{doc.latest_version.version_number} ·{" "}
-                {new Date(doc.latest_version.created_at).toLocaleDateString()}
-              </div>
+            {uploadError && <p className="doc-error">{uploadError}</p>}
+          </div>
 
-              <div className="db-card-actions">
-                {doc.latest_version.download_url && (
-                  <a
-                    href={doc.latest_version.download_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="db-btn-add-job"
+          <div className="doc-toolbar">
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value as DocType | "all")}
+              className="doc-select"
+            >
+              <option value="all">All documents</option>
+              <option value="resume">Resumes</option>
+              <option value="cover_letter">Cover letters</option>
+            </select>
+
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortBy)}
+              className="doc-select"
+            >
+              <option value="created_at">Sort by date</option>
+              <option value="file_name">Sort by name</option>
+            </select>
+
+            <button
+              type="button"
+              onClick={() => setOrder(order === "asc" ? "desc" : "asc")}
+              className="doc-btn doc-btn-ghost"
+            >
+              {order === "asc" ? "Oldest first" : "Newest first"}
+            </button>
+          </div>
+
+          {error && <p className="doc-error">{error}</p>}
+
+          {!isLoading && documents.length === 0 && !error && (
+            <p className="doc-empty">
+              No documents yet. Upload a resume or cover letter to see it here.
+            </p>
+          )}
+
+          <div className="doc-grid">
+            {documents.map((doc) => (
+              <div
+                key={doc.id}
+                className="doc-card"
+                data-doc-type={doc.doc_type}
+              >
+                <div className="doc-card-type">
+                  {doc.doc_type === "resume" ? "Resume" : "Cover Letter"}
+                </div>
+                <div className="doc-card-name">{doc.title}</div>
+                <div className="doc-card-filename">
+                  {doc.latest_version.file_name}
+                </div>
+                <div className="doc-card-meta">
+                  v{doc.latest_version.version_number} ·{" "}
+                  {new Date(doc.latest_version.created_at).toLocaleDateString()}
+                </div>
+
+                <div className="doc-card-actions">
+                  {doc.latest_version.download_url && (
+                    <a
+                      href={doc.latest_version.download_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="doc-btn"
+                    >
+                      Preview
+                    </a>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => toggleVersionHistory(doc.id)}
+                    className="doc-btn doc-btn-ghost"
                   >
-                    Preview
-                  </a>
-                )}
-                <button
-                  type="button"
-                  onClick={() => toggleVersionHistory(doc.id)}
-                  className="db-btn-add-job"
-                >
-                  {expandedId === doc.id ? "Hide history" : "History"}
-                </button>
-              </div>
+                    {expandedId === doc.id ? "Hide history" : "History"}
+                  </button>
+                </div>
 
-              {expandedId === doc.id && (
-                <ul className="db-version-list">
-                  {versions.map((v) => (
-                    <li key={v.id}>
-                      v{v.version_number} —{" "}
-                      {new Date(v.created_at).toLocaleDateString()}{" "}
-                      {v.download_url && (
-                        <a
-                          href={v.download_url}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          open
-                        </a>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </div>
-      </main>
+                {expandedId === doc.id && (
+                  <ul className="doc-version-list">
+                    {versions.map((v) => (
+                      <li key={v.id}>
+                        <span>
+                          v{v.version_number} —{" "}
+                          {new Date(v.created_at).toLocaleDateString()}
+                        </span>
+                        {v.download_url && (
+                          <a
+                            href={v.download_url}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            open
+                          </a>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
