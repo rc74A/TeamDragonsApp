@@ -41,8 +41,10 @@ class JobCreate(BaseModel):
     outcome_state: str | None = Field(default=None, max_length=50)
     outcome_notes: str | None = Field(default=None)
 
+    research_notes: str | None = Field(default=None)
+    
     interview_date: datetime | str | None = Field(default=None)
-    notes: str | None = Field(default=None)
+    interview_notes: str | None = Field(default=None)
 
     _validate_title = field_validator("title")(_reject_blank)
     _validate_company = field_validator("company")(_reject_blank)
@@ -78,6 +80,8 @@ class JobUpdate(BaseModel):
     outcome_state: str | None = Field(default=None, max_length=50)
     outcome_notes: str | None = Field(default=None)
 
+    research_notes: str | None = Field(default=None)
+    
     interview_date: datetime | str | None = Field(default=None)
     interview_notes: str | None = Field(default=None)
 
@@ -133,6 +137,8 @@ class JobOut(BaseModel):
     outcome_notes: str | None = None
     is_archived: bool
 
+    research_notes: str | None = Field(default=None)
+    research_updated_at: datetime | None = None
     interview_date: datetime | None = None
     interview_notes: str | None = None
     notes_updated_at: datetime | None = None
