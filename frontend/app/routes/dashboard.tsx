@@ -698,7 +698,7 @@ export default function Dashboard() {
                           description: job.description,
                           deadline: job.deadline || "",
                           deadlineState: job.deadlineState,
-                          interview_notes: job.interview_notes
+                          interview_notes: job.interview_notes,
                           outcomeState: "",
                           outcomeNotes: "",
                         });
