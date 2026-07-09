@@ -56,20 +56,57 @@ python -m alembic downgrade 0001      # back to the baseline
 python -m alembic history             # see where you are
 ```
 
+**Targeting production:** with no env vars set, these commands hit the local
+`backend/ats_local.db` SQLite file, not production. To roll back the real
+database, run them from the Render service Shell (where the `DB_*` variables
+are set), or point Alembic at MySQL explicitly first:
+
+```bash
+export ALEMBIC_DATABASE_URL='mysql+pymysql://USER:PASS@HOST:PORT/NAME'
+```
+
 Caveats:
 
-- Downgrading `0002` narrows owner ids back to INTEGER, which only succeeds
-  while all stored ids are numeric — it exists to mirror the legacy layout,
-  not for use after real Clerk users have written data.
-- Schema rollback does not restore lost rows. For data problems, restore
-  from a database backup (Render/MySQL dump), then re-run migrations.
+- **Take a backup before any downgrade.** Schema rollback never restores
+  lost rows; for data problems, restore from a MySQL dump and re-run
+  migrations.
+- **A manual downgrade is undone on the next boot.** Startup auto-upgrades
+  to head, so a rollback only persists if you also ship a build whose
+  `migrations/versions/` no longer contains the reverted revision (git
+  revert the migration commit), or keep the service stopped until the fixed
+  code deploys.
+- **Downgrading `0002` is guarded.** Narrowing owner ids back to INTEGER
+  with real Clerk ids stored would fail on strict MySQL and silently
+  coerce every id to 0 on non-strict MySQL, destroying row ownership —
+  so the migration now refuses to downgrade if any non-numeric owner_id
+  exists. It exists to mirror the legacy layout on pre-Clerk data only.
 
 ## Render checklist (requires console access)
 
-1. Service → Environment: confirm `DB_HOST`, `DB_USER`, `DB_PASSWORD`,
-   `DB_NAME`, `DB_PORT` point at the production MySQL instance.
-2. Set `PYTHON_ENV=production` so startup runs migrations.
-3. Redeploy and check the logs for Alembic's `Running upgrade` lines on boot.
+1. Take a database backup (MySQL dump) before changing anything.
+2. Service → Environment: confirm `DB_HOST`, `DB_USER`, `DB_PASSWORD`,
+   `DB_NAME`, `DB_PORT` point at the production MySQL instance. (If
+   `DB_HOST` is unset, the service is silently running on throwaway
+   SQLite — see the warning above.)
+3. Set `PYTHON_ENV=production`. (Startup also runs migrations whenever
+   `DB_HOST` is set, so this is belt and braces.)
+4. Redeploy and check the boot logs: the line `DB startup: alembic
+   migrations` confirms the migration path ran; on the first migrated
+   deploy you'll also see Alembic `Running upgrade` lines. On later
+   deploys, no Alembic errors is the normal, healthy state — to confirm
+   positively, run `SELECT version_num FROM alembic_version` against
+   MySQL and check it matches the newest file in
+   `backend/migrations/versions/`.
+
+## Recovering a half-migrated database
+
+MySQL DDL is not transactional, so an interrupted migration can leave a
+partial schema. The startup runner detects this (missing baseline tables,
+or an empty `alembic_version` table) and refuses to guess, crashing with a
+descriptive error instead of stamping a wrong version. To recover: compare
+the actual tables against `migrations/versions/`, finish or drop the
+partial objects manually, then `python -m alembic stamp <revision>` for the
+revision the schema actually matches and redeploy.
 
 ## Tests
 

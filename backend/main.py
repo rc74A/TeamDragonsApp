@@ -29,10 +29,19 @@ async def lifespan(app: FastAPI):
     print("Starting Up")
     # Production runs Alembic migrations (S3-016): adopts pre-Alembic
     # databases, applies schema repairs, and records the version so
-    # rollbacks are possible (S3-BR-018). Dev and tests keep the fast
-    # create-missing-tables path (S1-019); set RUN_DB_MIGRATIONS=1 to
-    # exercise migrations locally.
-    if os.getenv("PYTHON_ENV") == "production" or os.getenv("RUN_DB_MIGRATIONS") == "1":
+    # rollbacks are possible (S3-BR-018). DB_HOST set means production
+    # MySQL (same convention database.py uses), so the gate can't be
+    # missed by forgetting PYTHON_ENV on Render. Dev and tests keep the
+    # fast create-missing-tables path (S1-019); set RUN_DB_MIGRATIONS=1
+    # to exercise migrations locally.
+    use_migrations = (
+        os.getenv("DB_HOST")
+        or os.getenv("PYTHON_ENV") == "production"
+        or os.getenv("RUN_DB_MIGRATIONS") == "1"
+    )
+    db_path = "alembic migrations" if use_migrations else "create_all (dev fallback)"
+    print(f"DB startup: {db_path}")
+    if use_migrations:
         run_migrations()
     else:
         Base.metadata.create_all(bind=engine)

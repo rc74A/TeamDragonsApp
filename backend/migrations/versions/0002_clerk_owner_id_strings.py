@@ -41,9 +41,26 @@ def upgrade() -> None:
 def downgrade() -> None:
     """Restore the pre-Clerk integer owner_id columns.
 
-    Only safe while every stored owner_id is still numeric; a Clerk
-    `sub` value cannot be narrowed back to INTEGER.
+    Guarded: narrowing VARCHAR to INTEGER with real Clerk subs stored
+    would error on strict MySQL, silently coerce every id to 0 on
+    non-strict MySQL (merging all users' rows), and only pretend to
+    work on SQLite. Refuses to run unless every stored id is numeric.
     """
+    connection = op.get_bind()
+    for table in _TABLES:
+        rows = connection.execute(
+            sa.text(f"SELECT DISTINCT owner_id FROM {table}")  # noqa: S608
+        ).fetchall()
+        bad = [
+            row[0] for row in rows if row[0] is not None and not str(row[0]).isdigit()
+        ]
+        if bad:
+            raise RuntimeError(
+                f"Cannot narrow {table}.owner_id back to INTEGER: non-numeric "
+                f"Clerk ids present (e.g. {bad[0]!r}). Restore from a database "
+                "backup instead of downgrading this revision."
+            )
+
     for table in _TABLES:
         with op.batch_alter_table(table, schema=None) as batch_op:
             batch_op.alter_column(
