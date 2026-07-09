@@ -650,9 +650,20 @@ def generate_company_research(
 ):
     """
     Generates an expert, location-aware corporate interview briefing 
-    tailored to the specific title and raw job description requirements.
+    tailored to the specific title, raw job description requirements,
+    and custom user-provided context focus areas.
     """
-    # Build out a pristine targeted prompt injecting all 4 schema fields
+    
+    # Build out a dynamic instruction block depending on if user_context exists
+    user_section_instruction = ""
+    if body.user_context and body.user_context.strip():
+        user_section_instruction = f"""
+    5. **User Focus & Targeted Q&A**
+       - You MUST include this 5th section.
+       - Directly address, analyze, and answer the user's specific request or question: "{body.user_context.strip()}"
+    """
+
+    # Build out the final targeted prompt
     prompt = f"""
     You are an expert career coach and corporate intelligence researcher. Provide a 
     comprehensive, highly actionable interview preparation briefing for a candidate.
@@ -672,6 +683,7 @@ def generate_company_research(
     2. **Core Tech Stack & Skills Matrix** (Deep-dive into keywords extracted from the Job Description)
     3. **Key Strategic Focus or Recent Trends** (What this team/company is building right now)
     4. **3 Precision Questions to Ask the Interviewer** (High-impact, role-specific questions)
+    {user_section_instruction}
     
     Keep the tone professional, objective, direct, and crisp. Do not include introductory conversational fluff.
     """
