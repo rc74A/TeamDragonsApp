@@ -138,6 +138,6 @@ def test_update_interview_notes_invalid_job(client):
             "stage": "Applied",
             "interview_notes": "This shouldn't save anything"
         },
-        headers=USER_1
+        headers=USER_1,
     )
     assert response.status_code == 404
