@@ -363,6 +363,7 @@ export default function Dashboard() {
           deadline_state: jobForm.deadlineState,
           outcome_state: jobForm.outcomeState || null,
           outcome_notes: jobForm.outcomeNotes || null,
+          interview_notes: jobForm.interview_notes || null,
         }),
       });
 
@@ -884,6 +885,53 @@ export default function Dashboard() {
                       </div>
                     </div>
                   )}
+                  {/* S3-013 Add Interview Notes Section in Job Details */}
+                  <div
+                    className="db-outcome-panel"
+                    style={{ marginTop: "1.5rem", marginBottom: "1.5rem" }}
+                  >
+                    <h4 className="db-outcome-title">
+                      {" "}
+                      Interview Notes Preparation{" "}
+                    </h4>
+                    <div className="db-form-group db-form-group-no-margin">
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
+                        <label htmlFor="modalInterviewNotes">
+                          Interview Preparation and Notes
+                        </label>
+                        {jobForm.notes_updated_at && (
+                          <span
+                            style={{ fontSize: "0.75rem", color: "#9ca3af" }}
+                          >
+                            Last Saved At:{" "}
+                            {new Date(
+                              jobForm.notes_updated_at,
+                            ).toLocaleString()}
+                          </span>
+                        )}
+                      </div>
+                      <textarea
+                        id="modalInterviewNotes"
+                        placeholder="Write down Notes for your Upcoming Interview, Like Questions, etc..."
+                        value={jobForm.interview_notes || ""}
+                        rows={5}
+                        className="db-outcome-textarea"
+                        onChange={(e) =>
+                          setJobForm({
+                            ...jobForm,
+                            interview_notes: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
                   <div className="db-form-actions db-form-actions-spaced">
                     {/* S2-014: Render Archive button first to float left via CSS */}
                     {editingJobId && (

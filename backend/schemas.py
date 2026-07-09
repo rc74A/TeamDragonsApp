@@ -79,7 +79,7 @@ class JobUpdate(BaseModel):
     outcome_notes: str | None = Field(default=None)
 
     interview_date: datetime | str | None = Field(default=None)
-    notes: str | None = Field(default=None)
+    interview_notes: str | None = Field(default=None)
 
     @field_validator("title", "company", "stage", "location", "deadline_state")
     @classmethod
@@ -134,7 +134,8 @@ class JobOut(BaseModel):
     is_archived: bool
 
     interview_date: datetime | None = None
-    notes: str | None = None
+    interview_notes: str | None = None
+    notes_updated_at: datetime | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
