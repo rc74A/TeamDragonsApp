@@ -136,7 +136,7 @@ def test_update_interview_notes_invalid_job(client):
             "title": "False Title",
             "company": "False Company",
             "stage": "Applied",
-            "interview_notes": "This shouldn't save anything"
+            "interview_notes": "This shouldn't save anything",
         },
         headers=USER_1,
     )
