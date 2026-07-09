@@ -1,5 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
-from typing import Annotated
+from typing import Annotated, Optional
 
 from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, HTTPException
@@ -640,6 +640,7 @@ class ResearchRequest(BaseModel):
     job_title: str
     location: str | None = None
     job_description: str | None = None
+    user_context: Optional[str] = ""
 
 
 @airouter.post("/research")

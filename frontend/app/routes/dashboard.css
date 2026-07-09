@@ -638,3 +638,98 @@
   flex-direction: column;
   gap: 1.75rem; /* 🌟 This forces clean separation between stacked components */
 }
+
+/* --- AI Research Button Card Container --- */
+.ai-btn-container {
+  display: flex;
+  flex-direction: column;
+  width: auto; /* Shrinks container down from 100% full width */
+}
+
+/* Compact input tray inside the card */
+.ai-input-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #1e293b;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #334155;
+}
+
+.ai-context-textarea {
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #ffffff;
+  resize: none;
+  font-size: 12px;
+}
+
+.ai-panel-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.ai-btn-cancel {
+  background: transparent;
+  color: #94a3b8;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.ai-btn-submit {
+  background: #38bdf8;
+  color: #000000;              
+  font-weight: normal;         
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+/* --- Main Dashboard AI Briefing Display Output Box --- */
+.ai-briefing-display-card {
+  background: #1e293b;
+  border: 1px solid #38bdf8;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 25px;
+  color: #f8fafc;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.ai-briefing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ai-briefing-header h3 {
+  margin: 0;
+  color: #38bdf8;
+}
+
+.ai-briefing-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.ai-briefing-body {
+  white-space: pre-wrap;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+
+.db-btn-ai {
+  color: #000000 !important;   
+  font-weight: normal !important; 
+}

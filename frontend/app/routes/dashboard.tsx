@@ -520,6 +520,25 @@ const [activeAICompany, setActiveAICompany] = useState<string>("");
                 <span className="db-metric-label">Response Rate</span>
               </div>
             </section>
+          {/* 🌟 Clean AI Briefing Output Display Block */}
+              {activeAINotes && (
+                <div className="ai-briefing-display-card">
+                  <div className="ai-briefing-header">
+                    <h3>✨ Interview Prep Briefing: {activeAICompany}</h3>
+                    <button 
+                      type="button"
+                      onClick={() => setActiveAINotes(null)} 
+                      className="ai-briefing-close"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                  <div className="ai-briefing-body">
+                    {activeAINotes}
+                  </div>
+                </div>
+              )}
+
 
             <div className="db-section-header">
               <h3>Job Applications</h3>
