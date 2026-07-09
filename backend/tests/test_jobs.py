@@ -116,9 +116,9 @@ def test_update_interview_notes_success(client):
             "title": job["title"],
             "company": job["company"],
             "stage": job["stage"],
-            "interview_notes": "Remember to ask the employer some questions"
+            "interview_notes": "Remember to ask the employer some questions",
         },
-        headers=USER_1
+        headers=USER_1,
     )
     assert response.status_code == 200
     data = response.json()
