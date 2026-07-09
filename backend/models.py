@@ -61,6 +61,11 @@ class Job(Base):
         DateTime, nullable=False, default=utc_now, onupdate=utc_now
     )
 
+    research_notes: Mapped[str | None] = mapped_column(Text, nullable=True, default="")
+    research_updated_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=utc_now, onupdate=utc_now
+    )
+
 
 class Profile(Base):
     """
