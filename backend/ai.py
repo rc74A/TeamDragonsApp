@@ -662,7 +662,7 @@ def generate_company_research(
         user_section_instruction = (
             "SECTION 5: USER FOCUS & TARGETED Q&A\n"
             "Directly address, analyze, and answer the user's specific "
-            f"request or question: \"{body.user_context.strip()}\""
+            f'request or question: "{body.user_context.strip()}"'
         )
 
     # Build out the final targeted prompt pieces to avoid strict E501 limits
@@ -672,8 +672,7 @@ def generate_company_research(
         "briefing for a candidate."
     )
     p_fallback = (
-        "No explicit description provided. "
-        "Analyze general expectations for this title."
+        "No explicit description provided. Analyze general expectations for this title."
     )
     p_desc = body.job_description or p_fallback
     p_warn = (
