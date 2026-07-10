@@ -7,9 +7,16 @@ from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from database import get_db
-from domain import compute_job_metrics
+from domain import compute_job_metrics, compute_stage_analytics
 from models import Interview, Job, JobStageHistory, utc_now
-from schemas import JobCreate, JobMetrics, JobOut, JobStageHistoryOut, JobUpdate
+from schemas import (
+    JobAnalytics,
+    JobCreate,
+    JobMetrics,
+    JobOut,
+    JobStageHistoryOut,
+    JobUpdate,
+)
 
 jobsrouter = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
@@ -172,6 +179,50 @@ def job_metrics(
         row[0] for row in db.query(Job.stage).filter(Job.owner_id == user_id).all()
     ]
     return compute_job_metrics(stages)
+
+
+@jobsrouter.get("/analytics", response_model=JobAnalytics)
+def job_analytics(
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """
+    Return conversion and time-in-stage analytics for the user's jobs (S3-014).
+
+    Computed from the stage-change events logged by S2-009, scoped to
+    jobs owned by the requesting user. Defined before the /{job_id}
+    route so "analytics" isn't captured as an id.
+
+    Args:
+        user_id (str): Owner identity from the auth dependency.
+        db (Session): Database session.
+
+    Returns:
+        JobAnalytics: Funnel reach, stage conversion rates, and average
+            completed time in each stage.
+    """
+    jobs = db.query(Job).filter(Job.owner_id == user_id).all()
+    job_ids = [job.id for job in jobs]
+    events = (
+        db.query(JobStageHistory).filter(JobStageHistory.job_id.in_(job_ids)).all()
+        if job_ids
+        else []
+    )
+    return compute_stage_analytics(
+        [
+            {"id": job.id, "stage": job.stage, "created_at": job.created_at}
+            for job in jobs
+        ],
+        [
+            {
+                "job_id": event.job_id,
+                "old_stage": event.old_stage,
+                "new_stage": event.new_stage,
+                "changed_at": event.changed_at,
+            }
+            for event in events
+        ],
+    )
 
 
 @jobsrouter.get("/{job_id}", response_model=JobOut)

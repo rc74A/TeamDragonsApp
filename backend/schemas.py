@@ -79,7 +79,7 @@ class JobUpdate(BaseModel):
     outcome_notes: str | None = Field(default=None)
 
     interview_date: datetime | str | None = Field(default=None)
-    notes: str | None = Field(default=None)
+    interview_notes: str | None = Field(default=None)
 
     @field_validator("title", "company", "stage", "location", "deadline_state")
     @classmethod
@@ -134,7 +134,8 @@ class JobOut(BaseModel):
     is_archived: bool
 
     interview_date: datetime | None = None
-    notes: str | None = None
+    interview_notes: str | None = None
+    notes_updated_at: datetime | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -218,6 +219,32 @@ class JobMetrics(BaseModel):
     responses: int
     offers: int
     response_rate: float
+
+
+class StageConversion(BaseModel):
+    """Conversion between two consecutive funnel stages (S3-014)."""
+
+    from_stage: str
+    to_stage: str
+    reached_from: int
+    reached_to: int
+    rate: float
+
+
+class StageDwell(BaseModel):
+    """Average completed time spent in one stage (S3-014)."""
+
+    stage: str
+    avg_days: float
+    samples: int
+
+
+class JobAnalytics(BaseModel):
+    """Conversion and time-in-stage analytics from stage events (S3-014)."""
+
+    funnel: dict[str, int]
+    conversion: list[StageConversion]
+    time_in_stage: list[StageDwell]
 
 
 # ----- Experience -----

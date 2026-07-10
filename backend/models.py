@@ -56,6 +56,10 @@ class Job(Base):
     outcome_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     is_archived: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    interview_notes: Mapped[str | None] = mapped_column(Text, nullable=True, default="")
+    notes_updated_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=utc_now, onupdate=utc_now
+    )
 
 
 class Profile(Base):
