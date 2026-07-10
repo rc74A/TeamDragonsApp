@@ -135,7 +135,9 @@ export default function Documents() {
   };
 
   useEffect(() => {
-    fetchDocuments();
+    void Promise.resolve().then(() => {
+      fetchDocuments();
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterType, sortBy, order]);
 
