@@ -3,8 +3,7 @@ import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton, useAuth } from "@clerk/react-router";
 import { Link, redirect } from "react-router";
 import type { Route } from "./+types/findjobs";
-import { uploadDocument, type DocType } from "~/lib/document";
-import DuplicateModal from "~/components/DuplicateModal";
+import DocumentModal, { uploadDocument, type DocType } from "~/lib/document";
 import "./app.css";
 import "./documents.css";
 
@@ -138,38 +137,24 @@ export default function Documents() {
     fetchDocuments();
   }, [filterType, sortBy, order]);
 
-  const handleDuplicate = async (doc: DocumentItem, newTitle: string, newType: string) => {
-  setIsLoading(true);
-  setError(null);
-
-  try {
-    const token = await getToken();
-    const docId = doc.id;
-
-    const response = await fetch(`${BACKEND_URL}/api/documents/duplicate/${docId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        title: newTitle,
-        doc_type: newType
-      })
+  const handleDuplicate = async (docId: number) => {
+    var correctDoc = documents.find((doc) => {
+      return (doc.id === docId);
     });
 
-    if (!response.ok) {
-      throw new Error("Server failed to duplicate the document.");
+    if (correctDoc == null) {
+      setError("No document selected for duplication");
+      return;
     }
 
-    await fetchDocuments();
-  } catch (err: any) {
-    setError(err.message || "Failed to duplicate item.");
-  } finally {
-    setDuplicateModalOpen(false);
-    setIsLoading(false);
-  }
+    setDuplicatingItem(correctDoc);
+    setDuplicateModalOpen(true);
 
+    // Set modal open
+    // Take new paramaters for renaming
+    // Literally copy everything else
+    // Send docId to the backend as well as the
+    // name change and then you
   };
 
   const toggleVersionHistory = async (docId: number) => {
@@ -345,10 +330,7 @@ export default function Documents() {
                   )}
                   <button 
 		    type="button" 
-		    onClick={() => {
-			setDuplicatingItem(doc);
-			setDuplicateModalOpen(true);
-		    }}
+		    onClick={() => handleDuplicate(doc.id)}
 		    className="doc-btn"
 		  >
                     Duplicate
@@ -390,11 +372,9 @@ export default function Documents() {
       </div>
 
       {duplicateModalOpen && <DuplicateModal 
-	     	isOpen={duplicateModalOpen}
-		onClose={() => setDuplicateModalOpen(false)}
-		onSuccess={(newTitle, newType) => { 
-			handleDuplicate(duplicatingItem, newTitle, newType);
-		}}
+	     	isOpen={documentModalOpen}
+		onClose={() => setDocumentModalOpen(false)}
+		onSuccess{() => {}}
 		getToken={getToken}
 		initialData={duplicatingItem}
 	      />

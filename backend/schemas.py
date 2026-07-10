@@ -1,5 +1,6 @@
 import re
 from datetime import date, datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -636,3 +637,10 @@ class DocumentOut(BaseModel):
         """Config"""
 
         from_attributes = True
+
+class DocumentDuplicateRequest(BaseModel):
+    """Duplicating an existing document with a new title and doc_type"""
+    title: str
+    doc_type: Literal["resume", "cover_letter"]
+
+DocumentDuplicateRequest.model_rebuild()

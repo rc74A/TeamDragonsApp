@@ -44,8 +44,10 @@ async def lifespan(app: FastAPI):
     print(f"DB startup: {db_path}")
     if use_migrations:
         run_migrations()
+        engine.dispose()
     else:
         Base.metadata.create_all(bind=engine)
+        engine.dispose()
 
     yield
 

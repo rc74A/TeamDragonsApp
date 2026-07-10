@@ -5,13 +5,18 @@ from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from supabase import create_client
 
 from database import get_db
 from jobs import get_current_user_id
 from models import Document, DocumentVersion
-from schemas import DocumentOut, DocumentPost, DocumentVersionOut
+from schemas import (
+    DocumentDuplicateRequest,
+    DocumentOut,
+    DocumentPost,
+    DocumentVersionOut,
+)
 
 documentrouter = APIRouter(prefix="/api/documents", tags=["documents"])
 
@@ -265,3 +270,97 @@ async def list_document_versions(
             )
         )
     return out
+
+
+
+@documentrouter.post("/duplicate/{document_id}", status_code=201)
+async def duplicate_document_request(
+    document_id: int,
+    payload: DocumentDuplicateRequest,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """
+    Duplicates an existing document archetype alongside its complete history of version nodes.
+
+    Queries the primary document key framework using an explicit eager joinedload strategy
+    to prevent lazy-loading transaction evaluation drops. Clones the core tracking entry
+    and iteratively recreates every historical child version record while duplicating its
+    underlying binary asset cleanly within the targeted Supabase cloud storage buckets.
+
+    Params:
+        document_id (int): The database primary key of the source document row.
+        payload (DocumentDuplicateRequest): Validated model payload housing the new metadata parameters.
+        user_id (str): Extracted authenticated user token from dependency injection context.
+        db (Session): Active context transaction handle mapping tracking queries to the DB engine.
+
+    Returns:
+        dict: A success message payload outlining completion metrics.
+    """
+    stmt = (
+        select(Document)
+        .where(Document.id == document_id, Document.owner_id == user_id)
+        .options(joinedload(Document.versions))
+    )
+    original_doc = db.scalars(stmt).first()
+
+    if not original_doc:
+        raise HTTPException(status_code=404, detail="Source document not found or unauthorized.")
+
+    if not original_doc.versions:
+        raise HTTPException(status_code=400, detail="Source document has no active file versions to duplicate.")
+
+    new_parent_doc = Document(
+        owner_id=user_id,
+        doc_type=payload.doc_type,
+        title=payload.title,
+        content=original_doc.content,
+        job_snapshot=original_doc.job_snapshot,
+    )
+    db.add(new_parent_doc)
+    db.flush()
+
+    source_bucket = "resumes" if original_doc.doc_type == "resume" else "cover_letters"
+    target_bucket = "resumes" if payload.doc_type == "resume" else "cover_letters"
+
+    # Iteratively duplicate every single background version now that the list is populated
+    cloned_versions_count = 0
+    for old_version in original_doc.versions:
+        timestamp = int(datetime.datetime.now().timestamp())
+        file_ext = os.path.splitext(old_version.file_name or "")[1].lower()
+        safe_file_name = f"{timestamp}_v{old_version.version_number}{file_ext}"
+        target_file_path = f"users/{user_id}/{payload.doc_type}/{safe_file_name}"
+
+        try:
+            if source_bucket == target_bucket:
+                supabase.storage.from_(source_bucket).copy(old_version.storage_url, target_file_path)
+            else:
+                file_bytes = supabase.storage.from_(source_bucket).download(old_version.storage_url)
+                supabase.storage.from_(target_bucket).upload(
+                    path=target_file_path,
+                    file=file_bytes,
+                    file_options={"content-type": "application/octet-stream"}
+                )
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(status_code=502, detail=f"Cloud storage history copy halted: {str(e)}") from None
+
+        # Build an independent database version row node linking back to our new parent skeleton
+        new_version = DocumentVersion(
+            document_id=new_parent_doc.id,
+            version_number=old_version.version_number, # Retains accurate historical sequence numbers (v1, v2, etc)
+            file_name=old_version.file_name,
+            storage_url=target_file_path,
+            content=old_version.content,
+            job_snapshot=old_version.job_snapshot,
+        )
+        db.add(new_version)
+        cloned_versions_count += 1
+
+    db.commit()
+
+    return {
+        "message": "Document and complete historical version matrix duplicated successfully",
+        "new_document_id": new_parent_doc.id,
+        "total_versions_cloned": cloned_versions_count
+    }
