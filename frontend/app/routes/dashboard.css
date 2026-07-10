@@ -733,3 +733,9 @@
   color: #000000 !important;   
   font-weight: normal !important; 
 }
+.ai-brief-text-container {
+  white-space: pre-wrap; 
+  color: #f8fafc;
+  font-size: 14px;
+  line-height: 1.6;
+}

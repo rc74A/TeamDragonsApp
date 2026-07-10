@@ -658,9 +658,8 @@ def generate_company_research(
     user_section_instruction = ""
     if body.user_context and body.user_context.strip():
         user_section_instruction = f"""
-    5. **User Focus & Targeted Q&A**
-       - You MUST include this 5th section.
-       - Directly address, analyze, and answer the user's specific request or question: "{body.user_context.strip()}"
+    SECTION 5: USER FOCUS & TARGETED Q&A
+    Directly address, analyze, and answer the user's specific request or question: "{body.user_context.strip()}"
     """
 
     # Build out the final targeted prompt
@@ -669,20 +668,22 @@ def generate_company_research(
     comprehensive, highly actionable interview preparation briefing for a candidate.
     
     Target Parameters:
-    - **Company**: {body.company_name}
-    - **Role Title**: {body.job_title}
-    - **Location context**: {body.location or 'Not Specified'}
+    - Company: {body.company_name}
+    - Role Title: {body.job_title}
+    - Location context: {body.location or 'Not Specified'}
     
     Raw Job Description Requirements:
     \"\"\"
     {body.job_description or 'No explicit description provided. Analyze general expectations for this title.'}
     \"\"\"
     
-    Please provide the research structured exactly with these clear markdown headers:
-    1. **Company Mission & Regional Culture** (Tailored to the location context if relevant)
-    2. **Core Tech Stack & Skills Matrix** (Deep-dive into keywords extracted from the Job Description)
-    3. **Key Strategic Focus or Recent Trends** (What this team/company is building right now)
-    4. **3 Precision Questions to Ask the Interviewer** (High-impact, role-specific questions)
+    CRITICAL INSTRUCTION: Do NOT use any markdown syntax or special formatting symbols. Do not use asterisks (**), hashtags (#), or dashes for bullet points. Write exclusively in plain text using clear capitalization for section headers.
+    
+    Please provide the research structured exactly with these plain text headers, separating sections with a blank line:
+    SECTION 1: COMPANY MISSION & REGIONAL CULTURE
+    SECTION 2: CORE TECH STACK & SKILLS MATRIX
+    SECTION 3: KEY STRATEGIC FOCUS OR RECENT TRENDS
+    SECTION 4: 3 PRECISION QUESTIONS TO ASK THE INTERVIEWER
     {user_section_instruction}
     
     Keep the tone professional, objective, direct, and crisp. Do not include introductory conversational fluff.
