@@ -136,6 +136,7 @@ export default function Documents() {
 
   useEffect(() => {
     fetchDocuments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterType, sortBy, order]);
 
   const handleDuplicate = async (
@@ -170,7 +171,7 @@ export default function Documents() {
       }
 
       await fetchDocuments();
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || "Failed to duplicate item.");
     } finally {
       setDuplicateModalOpen(false);

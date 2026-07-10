@@ -5,7 +5,6 @@ interface DuplicateModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  getToken: () => Promise<string | null>;
   initialData?: { title: string; doc_type: DocType };
 }
 
@@ -13,7 +12,6 @@ export default function DuplicateModal({
   isOpen,
   onClose,
   onSuccess,
-  getToken,
   initialData,
 }: DuplicateModalProps) {
   const [title, setTitle] = useState(
@@ -35,7 +33,7 @@ export default function DuplicateModal({
     try {
       onSuccess(title, docType);
       onClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || "Something went wrong.");
     } finally {
       setLoading(false);

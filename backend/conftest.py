@@ -1,3 +1,9 @@
+import os
+
+# dummy variables
+os.environ.setdefault("SUPABASE_URL", "https://supabase.co")
+os.environ.setdefault("SUPABASE_KEY", "mock-key-placeholder")
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
