@@ -7,6 +7,7 @@ import { uploadDocument, type DocType } from "~/lib/document";
 import AnalyticsPanel from "../components/AnalyticsPanel";
 import "./app.css";
 import "./dashboard.css";
+import { AIResearchButton } from "../components/AIResearchButton";
 
 interface Job {
   id: number;
@@ -456,6 +457,9 @@ export default function Dashboard() {
     }
   };
 
+  const [activeAINotes, setActiveAINotes] = useState<string | null>(null);
+  const [activeAICompany, setActiveAICompany] = useState<string>("");
+
   /*
   const handleGenerateResume() = async () => {
   await uploadDocument({
@@ -538,6 +542,22 @@ export default function Dashboard() {
                 <span className="db-metric-label">Response Rate</span>
               </div>
             </section>
+            {/* 🌟 Clean AI Briefing Output Display Block */}
+            {activeAINotes && (
+              <div className="ai-briefing-display-card">
+                <div className="ai-briefing-header">
+                  <h3>✨ Interview Prep Briefing: {activeAICompany}</h3>
+                  <button
+                    type="button"
+                    onClick={() => setActiveAINotes(null)}
+                    className="ai-briefing-close"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div className="ai-briefing-body">{activeAINotes}</div>
+              </div>
+            )}
 
             <AnalyticsPanel />
 
@@ -728,6 +748,16 @@ export default function Dashboard() {
                     >
                       Edit Tracking
                     </button>
+                    <AIResearchButton
+                      company={job.company}
+                      title={job.title}
+                      location={job.location}
+                      description={job.description}
+                      onResearchComplete={(generatedText) => {
+                        setActiveAINotes(generatedText);
+                        setActiveAICompany(job.company);
+                      }}
+                    />
                     <button
                       type="button"
                       onClick={() => handleDeleteJob(job.id)}
