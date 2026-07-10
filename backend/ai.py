@@ -1,5 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
-from typing import Annotated, Optional
+from typing import Annotated
 
 from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, HTTPException
@@ -634,13 +634,15 @@ def save_cover_letter(
             status_code=500, detail="Failed to save cover letter."
         ) from e
 
+
 class ResearchRequest(BaseModel):
     """Input payload mapping from the Dashboard AI Brief button action"""
+
     company_name: str
     job_title: str
     location: str | None = None
     job_description: str | None = None
-    user_context: Optional[str] = ""
+    user_context: str | None = ""
 
 
 @airouter.post("/research")
@@ -649,11 +651,10 @@ def generate_company_research(
     user_id: Annotated[str, Depends(get_current_user_id)],
 ):
     """
-    Generates an expert, location-aware corporate interview briefing 
+    Generates an expert, location-aware corporate interview briefing
     tailored to the specific title, raw job description requirements,
     and custom user-provided context focus areas.
     """
-    
     # Build out a dynamic instruction block depending on if user_context exists
     user_section_instruction = ""
     if body.user_context and body.user_context.strip():
@@ -670,11 +671,11 @@ def generate_company_research(
     Target Parameters:
     - Company: {body.company_name}
     - Role Title: {body.job_title}
-    - Location context: {body.location or 'Not Specified'}
+    - Location context: {body.location or "Not Specified"}
     
     Raw Job Description Requirements:
     \"\"\"
-    {body.job_description or 'No explicit description provided. Analyze general expectations for this title.'}
+    {body.job_description or "No explicit description provided. Analyze general expectations for this title."}
     \"\"\"
     
     CRITICAL INSTRUCTION: Do NOT use any markdown syntax or special formatting symbols. Do not use asterisks (**), hashtags (#), or dashes for bullet points. Write exclusively in plain text using clear capitalization for section headers.
@@ -688,16 +689,16 @@ def generate_company_research(
     
     Keep the tone professional, objective, direct, and crisp. Do not include introductory conversational fluff.
     """
-    
+
     try:
         # Reuses the exact same verified 'genai.Client()' pattern initialization
         client = genai.Client()
         response = client.models.generate_content(
-            model=MODEL, # Reuses your teammate's defined "gemini-2.5-flash" variable string
-            contents=prompt
+            model=MODEL,  # Reuses your teammate's defined "gemini-2.5-flash" variable string
+            contents=prompt,
         )
-        
+
         return {"research_notes": response.text}
-        
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Gemini API Error: {str(e)}")

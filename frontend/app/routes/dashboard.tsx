@@ -5,7 +5,7 @@ import { useLoaderData, Link, useNavigate, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
 import "./app.css";
 import "./dashboard.css";
-import { AIResearchButton } from "../components/AIResearchButton"; 
+import { AIResearchButton } from "../components/AIResearchButton";
 
 interface Job {
   id: number;
@@ -450,10 +450,8 @@ export default function Dashboard() {
     }
   };
 
-
   const [activeAINotes, setActiveAINotes] = useState<string | null>(null);
-const [activeAICompany, setActiveAICompany] = useState<string>("");
-
+  const [activeAICompany, setActiveAICompany] = useState<string>("");
 
   return (
     <div className="db-root">
@@ -520,25 +518,22 @@ const [activeAICompany, setActiveAICompany] = useState<string>("");
                 <span className="db-metric-label">Response Rate</span>
               </div>
             </section>
-          {/* 🌟 Clean AI Briefing Output Display Block */}
-              {activeAINotes && (
-                <div className="ai-briefing-display-card">
-                  <div className="ai-briefing-header">
-                    <h3>✨ Interview Prep Briefing: {activeAICompany}</h3>
-                    <button 
-                      type="button"
-                      onClick={() => setActiveAINotes(null)} 
-                      className="ai-briefing-close"
-                    >
-                      &times;
-                    </button>
-                  </div>
-                  <div className="ai-briefing-body">
-                    {activeAINotes}
-                  </div>
+            {/* 🌟 Clean AI Briefing Output Display Block */}
+            {activeAINotes && (
+              <div className="ai-briefing-display-card">
+                <div className="ai-briefing-header">
+                  <h3>✨ Interview Prep Briefing: {activeAICompany}</h3>
+                  <button
+                    type="button"
+                    onClick={() => setActiveAINotes(null)}
+                    className="ai-briefing-close"
+                  >
+                    &times;
+                  </button>
                 </div>
-              )}
-
+                <div className="ai-briefing-body">{activeAINotes}</div>
+              </div>
+            )}
 
             <div className="db-section-header">
               <h3>Job Applications</h3>
@@ -725,16 +720,16 @@ const [activeAICompany, setActiveAICompany] = useState<string>("");
                     >
                       Edit Tracking
                     </button>
-                    <AIResearchButton 
-                    company={job.company}
-                    title={job.title}
-                    location={job.location}
-                    description={job.description}
-                    onResearchComplete={(generatedText) => {
-            setActiveAINotes(generatedText);
-            setActiveAICompany(job.company);
-          }}
-        />
+                    <AIResearchButton
+                      company={job.company}
+                      title={job.title}
+                      location={job.location}
+                      description={job.description}
+                      onResearchComplete={(generatedText) => {
+                        setActiveAINotes(generatedText);
+                        setActiveAICompany(job.company);
+                      }}
+                    />
                     <button
                       type="button"
                       onClick={() => handleDeleteJob(job.id)}

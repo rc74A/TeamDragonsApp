@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "@clerk/react-router"; 
+import { useAuth } from "@clerk/react-router";
 
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 interface AIButtonProps {
@@ -10,37 +10,43 @@ interface AIButtonProps {
   onResearchComplete: (generatedText: string) => void;
 }
 
-export function AIResearchButton({ company, title, location, description, onResearchComplete }: AIButtonProps) {
+export function AIResearchButton({
+  company,
+  title,
+  location,
+  description,
+  onResearchComplete,
+}: AIButtonProps) {
   const [loading, setLoading] = useState(false);
-  const [showInput, setShowInput] = useState(false); 
-  const [customContext, setCustomContext] = useState(""); 
-  const { getToken } = useAuth(); 
+  const [showInput, setShowInput] = useState(false);
+  const [customContext, setCustomContext] = useState("");
+  const { getToken } = useAuth();
 
   const handleAIRequest = async () => {
     setLoading(true);
     try {
-      const token = await getToken(); 
-      
-      const response = await fetch(`${BACKEND_URL}/api/ai/research`, {        
+      const token = await getToken();
+
+      const response = await fetch(`${BACKEND_URL}/api/ai/research`, {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           company_name: company,
           job_title: title,
           location: location || "",
           job_description: description || "",
-          user_context: customContext 
+          user_context: customContext,
         }),
       });
 
       if (!response.ok) throw new Error("API request failed");
-      
+
       const data = await response.json();
       onResearchComplete(data.research_notes);
-      setShowInput(false); 
+      setShowInput(false);
     } catch (err) {
       console.error("🚨 AI BUTTON ERROR DETECTED:", err);
       alert("Failed to generate AI briefing.");
@@ -69,9 +75,9 @@ export function AIResearchButton({ company, title, location, description, onRese
             className="ai-context-textarea"
           />
           <div className="ai-panel-actions">
-            <button 
+            <button
               type="button"
-              onClick={() => setShowInput(false)} 
+              onClick={() => setShowInput(false)}
               className="ai-btn-cancel"
             >
               Cancel

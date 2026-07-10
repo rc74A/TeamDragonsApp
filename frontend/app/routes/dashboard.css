@@ -683,8 +683,8 @@
 
 .ai-btn-submit {
   background: #38bdf8;
-  color: #000000;              
-  font-weight: normal;         
+  color: #000000;
+  font-weight: normal;
   padding: 4px 8px;
   border: none;
   border-radius: 4px;
@@ -730,11 +730,11 @@
 }
 
 .db-btn-ai {
-  color: #000000 !important;   
-  font-weight: normal !important; 
+  color: #000000 !important;
+  font-weight: normal !important;
 }
 .ai-brief-text-container {
-  white-space: pre-wrap; 
+  white-space: pre-wrap;
   color: #f8fafc;
   font-size: 14px;
   line-height: 1.6;
