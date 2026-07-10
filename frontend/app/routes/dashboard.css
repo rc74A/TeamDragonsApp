@@ -739,3 +739,67 @@
   font-size: 14px;
   line-height: 1.6;
 }
+
+/* Pipeline Analytics (S3-014) */
+.db-analytics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.db-analytics-block {
+  flex: 1;
+  min-width: 260px;
+  background-color: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.db-analytics-block h4 {
+  margin: 0 0 10px;
+  color: #06b6d4;
+  font-size: 14px;
+}
+
+.db-analytics-block ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.db-analytics-block li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid #4a5568;
+  font-size: 14px;
+}
+
+.db-analytics-block li:first-child {
+  border-top: none;
+}
+
+.db-analytics-step {
+  color: #e2e8f0;
+}
+
+.db-analytics-value {
+  color: #ffffff;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.db-analytics-detail {
+  color: #a0aec0;
+  font-weight: normal;
+  font-size: 12px;
+}
+
+.db-analytics-empty {
+  color: #a0aec0;
+  font-size: 13px;
+  margin: 0;
+}

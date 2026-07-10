@@ -3,10 +3,13 @@ fastapi-clerk-auth
 uvicorn
 pydantic
 sqlalchemy
+alembic
 pymysql
-python-jose 
+python-jose
 bcrypt
 google-genai
+supabase
+python-multipart
 
 # Testing (kept here so CI installs them and runs pytest)
 pytest

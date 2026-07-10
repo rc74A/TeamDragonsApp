@@ -1,0 +1,2713 @@
+[33mcommit f43575289d3291b1580aed82b951c6bc0e748f45[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mjake/S3-001[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Tue Jul 7 14:50:24 2026 -0400
+
+    Remove keys from .env.example
+
+[33mcommit 903c54db7d6b542699468733bf20f576e40c68b2[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Tue Jul 7 14:48:11 2026 -0400
+
+    Remove keys from .env.example
+
+[33mcommit fc0634c7e842d0e25eb74f313e0e2a69b8801404[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Tue Jul 7 14:43:36 2026 -0400
+
+    Beginning file service creation and resume/cover letter uploading
+
+[33mcommit b501fa58dcdf830166674b1a3738d6694c8cff18[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Tue Jun 30 18:28:31 2026 -0400
+
+    trigger vercel rebuild
+
+[33mcommit 4c09fe3d099c7c867c3a691dd86a616a089de528[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Tue Jun 30 16:35:48 2026 -0400
+
+    Remove drop db
+
+[33mcommit 708b7b217e2c76d96278c260c54f4ba096467b2c[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Tue Jun 30 16:33:55 2026 -0400
+
+    Dropping db
+
+[33mcommit 7c9d95f9e7d0a4409a7ecd60a5d33a837225a944[m
+Merge: 5bcef4d 2251603
+Author: Joshua Ware <jw692@njit.edu>
+Date:   Tue Jun 30 15:15:55 2026 -0400
+
+    Merge pull request #80 from rc74A/josh/DashboardUpgrades
+    
+    adding stories S2-080 -> S2-015
+
+[33mcommit 22516034d6201f7da156469cbb806606194ded52[m[33m ([m[1;31morigin/josh/DashboardUpgrades[m[33m)[m
+Merge: 6d88117 5bcef4d
+Author: Joshua Ware <jw692@njit.edu>
+Date:   Tue Jun 30 15:14:59 2026 -0400
+
+    Merge branch 'main' into josh/DashboardUpgrades
+
+[33mcommit 5bcef4d3116634e45aa6feabcc73c5863c31d8a9[m
+Merge: 8a56004 b066431
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 30 00:45:23 2026 -0400
+
+    Merge pull request #79 from rc74A/ricardo/add_transitions
+    
+    attempt to add transitions to stages.
+
+[33mcommit b066431547546106453c4f25aa7de137e0f3de78[m[33m ([m[1;31morigin/ricardo/add_transitions[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 30 00:42:31 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit ec552a5c87be3adf94cc02d0314ce00d6a0717d8[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 30 00:29:02 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit 05df4fb6ed09ab86233278ea911dd25482fcdcc0[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 30 00:11:07 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit 97278c1f1883987a33e241069ed4413f9b68c933[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 30 00:06:39 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit 6d881174ce51a0b8f60430948595b61cd713c69f[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 29 23:56:55 2026 -0400
+
+    ran ruff AGAIN
+
+[33mcommit c6134f6ad147a10571cee7ea64bdc59fa2aef676[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 29 23:55:09 2026 -0400
+
+    fixed ruff formatting
+
+[33mcommit 10146ea25468aa7cbcde2ba397c62cc471f2177b[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 29 23:43:33 2026 -0400
+
+    sync profile to main branch
+
+[33mcommit 1b7d0e528220007b0e7e5e6a08c5fa0de8231acb[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 23:43:03 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit ba2ebf0a4c1767523d8a68303cc68bfe48f29731[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 29 23:26:13 2026 -0400
+
+    fixed formatting issues/ran prettier
+
+[33mcommit ceaa102e8cdb60e3cec15370ea6872832fed8a0a[m
+Merge: 37e13c1 8a56004
+Author: Joshua Ware <jw692@njit.edu>
+Date:   Mon Jun 29 23:09:01 2026 -0400
+
+    Merge branch 'main' into josh/DashboardUpgrades
+
+[33mcommit 37e13c10d1cc6e13589c08b2300b40d3e871292e[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 29 23:04:06 2026 -0400
+
+    fixed merge conflicts
+
+[33mcommit 6d637772890908e298c9171387cce12e7f7c3b80[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 29 22:50:28 2026 -0400
+
+    fixed SQL formatting issue and TImezone Issue on TImeline
+
+[33mcommit 7d3ca94f339c3877382c15ae9cee6e43b1186803[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 22:41:27 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit 51b96cc6e8d38382b9e01e8caf8ad8ac38f1f727[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 22:38:31 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit 3a279c03008465025545d832475bfdeba07d5f07[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 22:31:35 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit 4530b34636b9deedf80b9afe4b87db53745e42d5[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 22:19:47 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit 8a560040995605b5e8a379124529cdef2d7092f9[m
+Merge: 5f1d292 63e167b
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 20:25:22 2026 -0400
+
+    Merge pull request #78 from rc74A/revert-77-ricardo/re-attempt_to_add_transitions
+    
+    Revert "Update dashboard.tsx"
+
+[33mcommit 63e167ba1856bc6f58fb6ff606bba0af098308dd[m[33m ([m[1;31morigin/revert-77-ricardo/re-attempt_to_add_transitions[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 20:24:43 2026 -0400
+
+    Revert "Update dashboard.tsx"
+
+[33mcommit 5f1d2920f7d18ca94234e41f5845c6cc7416fd1d[m
+Merge: 95b9a8a ed98d8e
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 20:22:59 2026 -0400
+
+    Merge pull request #77 from rc74A/ricardo/re-attempt_to_add_transitions
+    
+    Update dashboard.tsx
+
+[33mcommit ed98d8e9da1e4ccc3044505154b0fecd304a8273[m[33m ([m[1;31morigin/ricardo/re-attempt_to_add_transitions[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 20:22:19 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit ef56a9a92c47f3b2b84bfeeebc9f2db090094229[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 20:18:45 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit 95b9a8a20e9c272b5e1c2017e08661c2a87bde0e[m
+Merge: 8e6f842 bc31e8d
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 20:16:21 2026 -0400
+
+    Merge pull request #76 from rc74A/revert-75-ricardo/Attempt_to_add_transitions
+    
+    Revert "Update dashboard.tsx"
+
+[33mcommit bc31e8d7d22e600c7459a09a2df6cee37f09a483[m[33m ([m[1;31morigin/revert-75-ricardo/Attempt_to_add_transitions[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 20:15:36 2026 -0400
+
+    Revert "Update dashboard.tsx"
+
+[33mcommit 8e6f842733f11140073aa7586bf62a15253f5e82[m
+Merge: 6d766bb 6ee356b
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 20:11:07 2026 -0400
+
+    Merge pull request #75 from rc74A/ricardo/Attempt_to_add_transitions
+    
+    Update dashboard.tsx
+
+[33mcommit 6ee356bc1f9ee0f84f46f596abce1db29d2d2b79[m[33m ([m[1;31morigin/ricardo/Attempt_to_add_transitions[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 20:09:20 2026 -0400
+
+    Update dashboard.tsx
+    
+    Attempt to add stage transitions
+
+[33mcommit 7d04da9a54d53e189a575687294b1581b50d8585[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 29 16:55:03 2026 -0400
+
+    fixed bugs with archiving jobs
+
+[33mcommit 6d766bbb6fa14a929acf2e94f3327051c100c6e9[m
+Merge: 1af6621 d2ae650
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 16:39:21 2026 -0400
+
+    Merge pull request #74 from rc74A/ricardo/remove_drop_all
+    
+    removed drop all line from main.py
+
+[33mcommit d2ae6502a36990743fb46bb3250212d0b20c9c04[m[33m ([m[1;31morigin/ricardo/remove_drop_all[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 16:38:07 2026 -0400
+
+    Update main.py
+
+[33mcommit ea78387b4085e00a544429a47e6b8fce987e274d[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 16:36:26 2026 -0400
+
+    Update main.py
+    
+    Removed drop all line
+
+[33mcommit 82b892691fcbbccac3e55ba88572c4f13f13f373[m[33m ([m[1;32mjosh/DashboardUpgrades[m[33m)[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 29 13:30:59 2026 -0400
+
+    added spacing in the right side of dash-card. and added terminal outcome to timeline
+
+[33mcommit 1af6621385989bd3e14bf78321aa7e06819d9dfc[m
+Merge: f1c8d34 07959e6
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 29 11:46:37 2026 -0400
+
+    Merge pull request #73 from rc74A/jake/S2-023
+    
+    Various UI and QOL fixes
+
+[33mcommit 07959e6adb9f7ef7f36f618654443e365949ef42[m[33m ([m[1;31morigin/jake/S2-023[m[33m, [m[1;32mjake/S2-023[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 29 11:45:09 2026 -0400
+
+    Various UI and QOL fixes
+
+[33mcommit f1c8d3474dba5e512d592060c5619c5b39e1db4a[m
+Merge: 7b3ca0d d4544e8
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 29 10:33:28 2026 -0400
+
+    Merge pull request #72 from rc74A/jake/S2-023
+    
+    FIX: cover letter rendering bug
+
+[33mcommit d4544e8bfab0ac24826c07858eb4801312407798[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 29 10:32:29 2026 -0400
+
+    Prettier
+
+[33mcommit dec6f26303565239bcb9d00c915f308ae57a4e4e[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 29 10:31:23 2026 -0400
+
+    Fixed cover letter rending issue again
+
+[33mcommit 6716e17222005c95e5113f637c2f931fde4c26a8[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 29 10:28:21 2026 -0400
+
+    FIX: cover letter rendering bug
+
+[33mcommit 7b3ca0d2ae9cb1af0e918b1bea7c25827bf8ee50[m
+Merge: 0871871 485512a
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 29 10:18:16 2026 -0400
+
+    Merge pull request #71 from rc74A/jake/S2-023
+    
+    Jake/s2 023
+
+[33mcommit 485512a80f9ba9b6981cb84fec767b296e2fae2f[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 29 10:15:01 2026 -0400
+
+    Resume rewrite should now work as well.
+
+[33mcommit 66a0d38309ef03f0972f484b787f097f9db5f238[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 29 02:39:45 2026 -0400
+
+    complete job archiving workflow, fix schemas,
+
+[33mcommit 087187168e31bbc3ffb75f281a8763a7e6df69e4[m
+Merge: f37f477 1837e16
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 02:38:52 2026 -0400
+
+    Merge pull request #70 from rc74A/ricardo/show_description
+    
+    Update dashboard.tsx so the description shows on the job cards
+
+[33mcommit 1837e16a60ea9628dfefa4a3201e0852df3050d7[m[33m ([m[1;31morigin/ricardo/show_description[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 02:37:35 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit f37f47716c1608f931a40a0dc2f94df57bb425f3[m
+Merge: 6508f14 00ccdbf
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 01:45:07 2026 -0400
+
+    Merge pull request #68 from rc74A/ricardo/add_job_description_field
+    
+    Attempted to add a job description field to the job cards.
+
+[33mcommit 00ccdbffe7d7e1469aaa7b38dd2683e4b25d4005[m[33m ([m[1;31morigin/ricardo/add_job_description_field[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 01:44:10 2026 -0400
+
+    Update models.py
+
+[33mcommit 72e8cb3fbc7b84cea6eeeab3fe2d257757cd59cb[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 29 01:10:02 2026 -0400
+
+    Update test_jobs.py
+
+[33mcommit f33663087ea606dfb6ee3cf958ef182ec5ca5666[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 29 00:00:51 2026 -0400
+
+    Begin resume comparison section
+
+[33mcommit e05dac5e936c309e2d85c3cc7d18aaec9edcb586[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 23:06:28 2026 -0400
+
+    Update test_jobs.py
+
+[33mcommit 0aeb155d25495448999b3cd983359f6289e8c408[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 23:03:58 2026 -0400
+
+    Update test_jobs.py
+
+[33mcommit dc12c0eef0ec42d748fe2f13a72c187b8bf204fa[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 23:01:58 2026 -0400
+
+    Update test_jobs.py
+
+[33mcommit 29278ff78a8255665d7b8cccd87313e7eeffc718[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 22:59:22 2026 -0400
+
+    Update test_jobs.py
+
+[33mcommit c9292475c45a19b2b1dc365bad4a85d4fab6264f[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 22:57:52 2026 -0400
+
+    Update test_jobs.py
+
+[33mcommit 6508f14a5f28c479c102640d9096d4a6669aa5d0[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 22:55:47 2026 -0400
+
+    Update test_jobs.py
+
+[33mcommit 8566bb0757aa80c97482e1015bdd1cb8fe141631[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 22:54:51 2026 -0400
+
+    Update test_jobs.py
+
+[33mcommit fd34c4e306bd28fc850387969b9118fde9cc6384[m
+Merge: ec42488 cb477cf
+Author: Josh Ware <jw692@njit.edu>
+Date:   Sun Jun 28 21:25:02 2026 -0400
+
+    Merge branch 'main' of https://github.com/rc74A/TeamDragonsApp into josh/DashboardUpgrades
+
+[33mcommit 30b542c2176161f166ec1166e28ff96d016fb493[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 21:21:40 2026 -0400
+
+    Update jobs.py
+
+[33mcommit 0c5ca012cb0e98ee566cca3cf7d4e14ed5ebb3f4[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 21:13:59 2026 -0400
+
+    Update schemas.py
+
+[33mcommit cb477cf6db83e8cd67fa1d5b2a32730d90ca42c4[m
+Merge: 92bba01 3113ad6
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Sun Jun 28 21:00:50 2026 -0400
+
+    Merge pull request #69 from rc74A/jake/S2-023
+    
+    Jake/s2 023
+
+[33mcommit 3113ad628747f29992dc190ed63c375d762d21dd[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 28 21:00:12 2026 -0400
+
+    prettier
+
+[33mcommit 366b69f92e5066ab2880c40258cb425d89256207[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 28 20:55:31 2026 -0400
+
+    Side by side cover letter comparison and rewrite logic.
+
+[33mcommit a08ca40e2826b973b4e73f337e1ed9f5e0b3ddf8[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 20:46:00 2026 -0400
+
+    Update schemas.py
+
+[33mcommit 904f0cc7be924385a496f3e390fa7aba6d630502[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 20:44:27 2026 -0400
+
+    Update schemas.py
+
+[33mcommit 959d856fd4203b21d07d260cfda16db123ba7143[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 28 19:03:41 2026 -0400
+
+    Started rewrite process
+
+[33mcommit 6ae1f42aa4f1f793f5f5b7c71aec2da895d33a2b[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 17:40:25 2026 -0400
+
+    Update dashboard.tsx
+    
+    added description to the dashboard.
+
+[33mcommit fcb6434ca95de0f94b944f78ca08fbd75bf27851[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 17:33:52 2026 -0400
+
+    Update schemas.py
+    
+    Added description to schemas
+
+[33mcommit 9cf12beda2cfaa7f8590840aeaa95f7a75bdcb21[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 15:18:03 2026 -0400
+
+    Update main.py
+    
+    Added the drop_all line to lifespan
+
+[33mcommit 92bba01617518e73093b514c355ea341b9bf15a8[m
+Merge: b49f44d 68877af
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 01:14:47 2026 -0400
+
+    Merge pull request #65 from rc74A/ricardo/FixStageNames
+    
+    Updated the stage names and added an "Archived" stage. Also adjusted some of the backend tests as the previous tests were no longer accurate to the new set of stages.
+
+[33mcommit 68877af4daa6ad79f7ea7d43ed62f9d10db7bd77[m[33m ([m[1;31morigin/ricardo/FixStageNames[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 01:13:07 2026 -0400
+
+    Update test_metrics.py
+
+[33mcommit 1d265535f8bb744b701d8e7caf1ea3ae5165bf6a[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 01:11:54 2026 -0400
+
+    Update test_metrics.py
+
+[33mcommit d980459e2f0d0c65e526b6cef5f773e883f14dca[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 01:10:21 2026 -0400
+
+    Update test_metrics.py
+
+[33mcommit 1df4eec5cde443262373bbbf13d4901a32814dbd[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 01:08:47 2026 -0400
+
+    Update test_metrics.py
+
+[33mcommit b49f44d4682217529b2bee93c8d26318b2718767[m
+Merge: a1ef691 255f353
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Sun Jun 28 01:03:35 2026 -0400
+
+    Merge pull request #67 from rc74A/jake/S2-021
+    
+    Generated cover letters and resumes allow for saving now
+
+[33mcommit 255f353d033d8085f6f221965a7aab7b43bf89b1[m[33m ([m[1;31morigin/jake/S2-021[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 28 01:02:57 2026 -0400
+
+    Removed empty finally block
+
+[33mcommit 26afa1d9f3fe4ee3ffee454c740db36c4ce138ff[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 28 01:01:12 2026 -0400
+
+    Generated cover letters and resumes allow for saving now
+
+[33mcommit 8c14868380c0c8a9109a64331cf151831099232d[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 00:57:47 2026 -0400
+
+    Update test_metrics.py
+
+[33mcommit f0a9c6bf4ae69a6f468018a835dc85c6151fbfdf[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 00:55:54 2026 -0400
+
+    Update test_domain.py
+
+[33mcommit a747849c2eabd22a4f6b28a61e0aaf2dbd27b19f[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 00:54:48 2026 -0400
+
+    Update test_domain.py
+
+[33mcommit 724226c06f5cd68b2b03faece2db5a1ba9677203[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 00:53:08 2026 -0400
+
+    Update test_domain.py
+
+[33mcommit 8ba73ecee6db4286328bb3d8572c005fb0631bd5[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 00:51:40 2026 -0400
+
+    Update test_domain.py
+
+[33mcommit 9488ad0624a410beb875a4427394342a5052e272[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 00:45:31 2026 -0400
+
+    Update test_metrics.py
+
+[33mcommit 5c81f7c27e34749f223a3a0442617305f86ca93f[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 00:44:52 2026 -0400
+
+    Update test_domain.py
+
+[33mcommit e2870450a2fea9239b8c200b90866c945ecb2f7d[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 00:24:32 2026 -0400
+
+    Update test_metrics.py
+    
+    Updated an assert statement as it was no longer accurate to the new stages.
+
+[33mcommit 14691108db07877557933cd288c3683624d770c9[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sun Jun 28 00:20:20 2026 -0400
+
+    Update test_domain.py
+    
+    Updated 2 assert statements as they were no longer accurate the new stages.
+
+[33mcommit a1ef6914c590fa8802097593a46c76130bf3b1c0[m
+Merge: b71c345 99b0726
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Sat Jun 27 21:45:01 2026 -0400
+
+    Merge pull request #66 from rc74A/jake/S2-021
+    
+    Jake/s2 021
+
+[33mcommit 99b072641e6f3c5cadb1ac93f8f294479758589b[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sat Jun 27 21:43:59 2026 -0400
+
+    More fixes
+
+[33mcommit 56c7db91945f14a946b67aa4673b5b593819f602[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sat Jun 27 21:41:34 2026 -0400
+
+    Lint fixes
+
+[33mcommit 064010567ff40e2dcec11eb98c2e5db5eb541f22[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sat Jun 27 21:35:38 2026 -0400
+
+    Reformatting
+
+[33mcommit ddcc364588742b63f5ef91afd58b14dc62236e39[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sat Jun 27 21:10:20 2026 -0400
+
+    Update domain.py
+    
+    Updated the names of the stages
+
+[33mcommit b71c345923d90dbb692afed3e03e73404e52cf6f[m[33m ([m[1;31morigin/ricardo/update_tests[m[33m)[m
+Merge: b6232f2 afd7b65
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sat Jun 27 21:02:09 2026 -0400
+
+    Merge pull request #64 from rc74A/ricardo/JobCardDetails
+    
+    Updated the names of the stages. Added an "Archived" stage.
+
+[33mcommit afd7b65272248891e65aa6060d9edaa2eb4d64f3[m[33m ([m[1;31morigin/ricardo/JobCardDetails[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sat Jun 27 20:58:04 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit 266afdabede3518f890f785c3b58817a42cd506a[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sat Jun 27 15:16:57 2026 -0400
+
+    Resume generation complete, TODO: fix all the lint errors and the actual S2-021 logic
+
+[33mcommit ec4248882e1441f4a4a628d60a044c8bd547857e[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Fri Jun 26 19:21:48 2026 -0400
+
+    implement interview tracking form and layout in dashboard right column
+
+[33mcommit 9a15fc6e048a64939bd036084b831900241bda69[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Fri Jun 26 18:36:22 2026 -0400
+
+    Backend started generating tailored resumes
+
+[33mcommit ed9e68f4fc06ee17453795cd2b775187a2c46c3e[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Fri Jun 26 18:07:58 2026 -0400
+
+    Stage transition conreols and perissiance uupdates
+
+[33mcommit 015362b8a79997ad827fa44b56e47ba9684cc604[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Thu Jun 25 19:27:30 2026 -0400
+
+    Added Dropdown for Job cards on Dash, + Added Timeline to job changes
+
+[33mcommit b6232f25246e71c56d38bf3720d10c164f05dec5[m
+Merge: 9bb3bc9 62dafac
+Author: Joel Walker <theagingboy05@gmail.com>
+Date:   Thu Jun 25 14:47:57 2026 -0400
+
+    Merge pull request #63 from rc74A/joel/fix-section-clerk-auth
+    
+    Fix: migrate Education & Skills sections to Clerk auth (repairs main)
+
+[33mcommit 62dafac9386d694a3642f362d984279552c6d5b0[m[33m ([m[1;31morigin/joel/fix-section-clerk-auth[m[33m)[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Thu Jun 25 14:46:40 2026 -0400
+
+    Fix: migrate Education & Skills sections to Clerk auth (repairs main)
+    
+    The S2-017/S2-018 merges (#60/#61) were branched before the Clerk auth
+    migration landed on main, so Education and Skills still used the old
+    int owner_id + X-User-Id test pattern. Against the new Clerk backend
+    every section request 401s, which turned main's backend test job red.
+    
+    Align both sections with the Experience pattern already on main:
+    - models: Education.owner_id / Skill.owner_id -> String(50) (Clerk sub)
+    - schemas: EducationOut.owner_id / SkillOut.owner_id -> str
+    - tests: mint Bearer JWTs via create_test_token instead of X-User-Id
+    - frontend: EducationSection / SkillsSection fetch with useAuth()
+      getToken() + Authorization: Bearer, so the sections work for real
+      Clerk users instead of sending an ignored X-User-Id header
+    
+    Backend 50 pass + ruff clean; frontend 5 vitest + lint + build.
+    
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+[33mcommit 9bb3bc9824b8702be0ea02efa78630ea972d939d[m
+Merge: 50c3d37 63c0dfb
+Author: Joel Walker <theagingboy05@gmail.com>
+Date:   Thu Jun 25 14:36:56 2026 -0400
+
+    Merge pull request #61 from rc74A/joel/S2-018-skills-crud
+    
+    S2-018: Skills Section CRUD
+
+[33mcommit 50c3d37d48e96f4584b6b2ce93ef31d7f0be5d62[m
+Merge: 51443c9 8ad588e
+Author: Joel Walker <theagingboy05@gmail.com>
+Date:   Thu Jun 25 14:36:27 2026 -0400
+
+    Merge pull request #60 from rc74A/joel/S2-017-education-crud
+    
+    S2-017: Education Section CRUD
+
+[33mcommit 51443c9a8ac4cc7d09be03707e7c1da6ad4ba33d[m
+Merge: 6d38548 422a299
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Thu Jun 25 14:21:36 2026 -0400
+
+    Merge pull request #62 from rc74A/jake/S2-002
+    
+    Jake/s2 002
+
+[33mcommit 422a299ea70cbd77acb5e5eb59a50ff9702bdbb1[m[33m ([m[1;31morigin/jake/S2-002[m[33m, [m[1;32mjake/S2-002[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 25 14:19:08 2026 -0400
+
+    More tests fixes
+
+[33mcommit b114b7bb25261d1780ad17fbc5a410340b25e1ed[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 25 14:17:34 2026 -0400
+
+    More tests fixes
+
+[33mcommit cb995b6d4c673584a63cb0724183a0097925bb7c[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 25 14:06:37 2026 -0400
+
+    Fixed test cases
+
+[33mcommit f71837b21e2826714b2d9039e8babc8f9cb3d828[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 25 14:01:05 2026 -0400
+
+    ADD: Filter, sort completed, Added deadline, deadlinestate, location, etc to jobs
+
+[33mcommit 63c0dfb7a331f05571219f9523d6bbab9294b4ce[m[33m ([m[1;31morigin/joel/S2-018-skills-crud[m[33m)[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Thu Jun 25 13:51:35 2026 -0400
+
+    S2-018: Apply ruff format to skills.py and test_skills.py
+    
+    CI runs `ruff format --check .`; the shorter `Skill` name let two
+    calls fit on one line, so ruff collapsed them. No logic change.
+    
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+[33mcommit 8f37beeffcf9791b4672641b2f58a85e0fa9df4a[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Thu Jun 25 13:38:27 2026 -0400
+
+    S2-018: Skills section CRUD (model, API, tests, UI)
+    
+    Add an owner-scoped Skills resource following the Experience/Education
+    section pattern: Skill model, create/list/update/delete plus reorder
+    endpoints under /api/skills, and Pydantic schemas where `name` is
+    required & non-blank and `proficiency` — when given — must be one of
+    Beginner/Intermediate/Advanced/Expert (S2-BR-016); `category` is
+    optional free text. Empty proficiency means "unspecified". All queries
+    are owner-filtered; cross-user access returns 404 (S1-BR-007).
+    
+    test_skills.py (11 tests) covers ordering, update, delete, reorder,
+    create- AND update-path validation, the unauthorized path, owner
+    scoping, reorder dropping unowned ids, and that user 2 cannot reorder
+    user 1's skills. Backend suite: 36 pass.
+    
+    Frontend adds a self-contained SkillsSection component (add/edit/
+    delete/reorder, proficiency dropdown) wired into the profile page,
+    guarded against non-array responses, with matching .skill-* styles.
+    
+    Note: the S2-BR-016 text was not available in Jira; the proficiency
+    vocabulary is the testable interpretation and is easy to adjust.
+    
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+[33mcommit 8ad588eb89f5e36fd6c31057f302bf3b38f660b7[m[33m ([m[1;31morigin/joel/S2-017-education-crud[m[33m)[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Thu Jun 25 13:21:49 2026 -0400
+
+    S2-017: Education section CRUD (model, API, tests, UI)
+    
+    Add an owner-scoped Education resource mirroring the Experience
+    section pattern: Education model, create/list/update/delete plus
+    reorder endpoints under /api/education, and Pydantic schemas with
+    school + degree as required, non-blank fields (S2-BR-015). All
+    queries are filtered by owner; cross-user access returns 404
+    (S1-BR-007). New test_education.py covers ordering, update, delete,
+    reorder, required-field validation, the unauthorized path, and
+    owner scoping (7 tests; backend suite 25 pass).
+    
+    Frontend adds a self-contained EducationSection component
+    (add/edit/delete/reorder) wired into the profile page, guarded
+    against non-array responses, with matching .education-* styles.
+    
+    Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+[33mcommit b7e98429d0476c5a7eb991b391aeaf622aea2bb8[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 16:23:35 2026 -0400
+
+    ADD: frontend buttons for filtering and sorting
+
+[33mcommit 6d3854800a1558cc63aaa3adf953ce748b7f0db6[m
+Merge: 0a7326a be92094
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 14:55:05 2026 -0400
+
+    Merge pull request #59 from rc74A/jake/FIX/UI-and-auth
+    
+    Fixed profile and experiences with auth
+
+[33mcommit be92094d2b198c134be71ed71360e5eb015ac8ac[m[33m ([m[1;31morigin/jake/FIX/UI-and-auth[m[33m, [m[1;32mjake/FIX/UI-and-auth[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 14:53:38 2026 -0400
+
+    Fixed profile and experiences with auth
+
+[33mcommit 0a7326a05cf09615e2773eb2824b01e722f93e60[m
+Merge: d65541d 1ff1563
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 14:26:46 2026 -0400
+
+    Merge pull request #58 from rc74A/jake/FIX/UI-and-auth
+    
+    Jake/fix/UI and auth
+
+[33mcommit 1ff15632a5fece6da96d4b213b033b0aaf632d30[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 14:25:59 2026 -0400
+
+    Updated the other backend ruff test cases to work with the new auth system
+
+[33mcommit d2492091b05ad46bc5f08dbbe5348a302abe8e4a[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 14:21:41 2026 -0400
+
+    fix mock auth jwt token error
+
+[33mcommit e4cce5e4fa578891386a85bbec77c6ca0837502c[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 14:20:06 2026 -0400
+
+    fix mock auth jwt token error
+
+[33mcommit 17e4d9e4268226c941a2a1f9fa5198988acf5851[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 14:18:02 2026 -0400
+
+    Ruff format
+
+[33mcommit 79fca264bf854ce54f1e24b1373e7eb3b7af3c27[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 14:16:38 2026 -0400
+
+    FIX: unit tests regarding old auth system jobs and experiences
+
+[33mcommit c24f9d8e7cb2c4c53a444e1c3b79f0397b89fd0e[m
+Merge: e6ae091 d65541d
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 14:09:09 2026 -0400
+
+    Merge branch 'main' into jake/FIX/UI-and-auth
+
+[33mcommit d65541df97ee69b58871a4b160834bde6dc0d014[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 14:07:18 2026 -0400
+
+    Fixed job adding and removing from dashboard
+
+[33mcommit 9b08e5cd61821a108c5b29c530cb213f318924b0[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 11:22:12 2026 -0400
+
+    Force Vercel redeploy
+
+[33mcommit e6ae0916d6bd9781e00bcdcda0cfb198511c9fc8[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 11:21:34 2026 -0400
+
+    Force Vercel redeploy
+
+[33mcommit 407ff97808dc5874a24e1564f9630aff41310674[m
+Merge: 67bab7d 375b548
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 11:13:16 2026 -0400
+
+    Merge pull request #57 from rc74A/jake/FIX/UI-and-auth
+    
+    Fixed UI
+
+[33mcommit 375b548423e0679b9a9bfa348378aee98db6df12[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 11:12:07 2026 -0400
+
+    Fixed UI
+
+[33mcommit 67bab7deb4ee275a0f0acf1dd36e12d594467056[m
+Merge: b26779f 1e4a8da
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 09:35:29 2026 -0400
+
+    Merge pull request #56 from rc74A/jake/FIX/UI-and-auth
+    
+    Jake/fix/UI and auth
+
+[33mcommit 1e4a8da185e2f3cf2f1731411e4855e827d24a16[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 09:33:42 2026 -0400
+
+    Fixed mock authorization for vitest
+
+[33mcommit f9efdfdb14dd1da12ce04d8a39b24c8d608b97c5[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 00:08:11 2026 -0400
+
+    Prettier
+
+[33mcommit 2b5c1ef849d8cee891c265c5c42cf63bb141f9c6[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 24 00:07:50 2026 -0400
+
+    Unified UI, and fixed failed auth
+
+[33mcommit a1d9314079cb1981290c8330a96c8fa94d0aef6b[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Tue Jun 23 23:15:03 2026 -0400
+
+    Pre-css unification
+
+[33mcommit b26779f4ea302f631c801fde06c1a06c6870a37d[m
+Merge: 5ca5eac aa74c52
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Tue Jun 23 13:31:17 2026 -0400
+
+    Merge pull request #50 from rc74A/jason/confidentiality
+    
+    Added User ID Session Handling and Deletion of Jobs based on Ownership
+
+[33mcommit aa74c52fa6de0204bd7b6b8e066f3f7a93e371e5[m[33m ([m[1;31morigin/jason/confidentiality[m[33m)[m
+Merge: c3010a0 5ca5eac
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Tue Jun 23 13:27:55 2026 -0400
+
+    Merge branch 'main' into jason/confidentiality
+
+[33mcommit 5ca5eac7377caf6efdac6d3356cb94b07262ab85[m
+Merge: 98daf9c 7fef8dd
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Tue Jun 23 10:58:47 2026 -0400
+
+    Merge pull request #52 from rc74A/joel/S2-026-domain-tests
+    
+    S2-026: Add Unit Tests for Job Workflow and Profile Completion Logic
+
+[33mcommit 98daf9c4d2b10bd7f1493286d2d339f1d7e32ffc[m
+Merge: f2518dd d05508f
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Tue Jun 23 10:55:08 2026 -0400
+
+    Merge pull request #51 from rc74A/joel/S2-025-dashboard-metrics
+    
+    S2-025: Implement Dashboard Metrics (Stage Counts and Response Tracking)
+
+[33mcommit d05508f1e689e89453ae04ba3c84262269c9c675[m[33m ([m[1;31morigin/joel/S2-025-dashboard-metrics[m[33m, [m[1;32mjoel/S2-025-dashboard-metrics[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Tue Jun 23 10:54:14 2026 -0400
+
+    Prettier
+
+[33mcommit bde1a8d1c7d4d772cc3ad1da60efdd8f610c18e4[m
+Merge: 45553f9 f2518dd
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Tue Jun 23 10:50:57 2026 -0400
+
+    Merge branch 'main' into joel/S2-025-dashboard-metrics
+
+[33mcommit f2518dd193cb7de883a90c835dd107088493be18[m
+Merge: 1ed5cd2 49662f5
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Tue Jun 23 10:35:25 2026 -0400
+
+    Merge pull request #55 from rc74A/joel/S2-016-experience-crud
+    
+    S2-016: Implement Experience Section CRUD
+
+[33mcommit c3010a0f0db9ad5a019b3093d85c4524bc04ecb0[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 22 22:38:30 2026 -0400
+
+    ran prettier
+
+[33mcommit a6a018f42f0e0c634380dcf5e765fefda3828887[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 22 22:33:12 2026 -0400
+
+    fixed Unit tests
+
+[33mcommit 49662f5ec03e234c51f0123e3c02e6edb75e4db9[m[33m ([m[1;31morigin/joel/S2-016-experience-crud[m[33m)[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Mon Jun 22 19:49:57 2026 -0400
+
+    S2-016: Guard experience load against non-array responses
+    
+    Only set entries when the API returns an array, so an unexpected
+    response shape can't crash the page (and fixes profile.test.tsx, whose
+    fetch mock returns a non-array for the /api/experience call).
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+[33mcommit 9892994d783f164041b1dfa274e5e38aef7a4f11[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Mon Jun 22 19:47:33 2026 -0400
+
+    S2-016: Implement Experience Section CRUD
+    
+    Adds the first profile sub-section (employment/project entries) with full
+    CRUD + reorder, owner-scoped — establishing the pattern S2-017/S2-018 reuse.
+    
+    Backend:
+    - models.py: Experience model (owner_id, entry_type, title, organization,
+      start/end_date, description, position for ordering)
+    - schemas.py: ExperienceCreate/Update/Out + ReorderRequest; entry_type
+      restricted to employment/project; blank title rejected
+    - experience.py: POST/GET/PUT/DELETE /api/experience + PUT /reorder
+      (defined before /{exp_id}); every query owner-scoped, cross-user -> 404
+    - main.py: include the experience router
+    
+    Frontend:
+    - components/ExperienceSection.tsx: add/edit/delete/reorder UI fetching the
+      API; wired into the profile page
+    
+    Test evidence: backend pytest 18 passed (8 new: create+order, update,
+    delete, reorder, validation, unauthorized, owner-scoped); frontend
+    lint/format/build pass; live server verified create/reorder/delete +
+    cross-user isolation.
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+[33mcommit 583e370fea252fa2b26ac551e06e553defb722a6[m
+Merge: 0afdb95 1ed5cd2
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Mon Jun 22 14:32:26 2026 -0400
+
+    Merge branch 'main' into jason/confidentiality
+
+[33mcommit 0afdb9541a163b5479a49aafde97835dc3a890b2[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 22 13:13:08 2026 -0400
+
+    Ran Ruff to format jobs.py
+
+[33mcommit 1ed5cd28236cf9a93182d86e929f33b4a1ab4566[m
+Merge: 815ee0b 4c6ae7d
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Sun Jun 21 22:47:09 2026 -0400
+
+    Merge pull request #54 from rc74A/jake/S2-001
+    
+    Job search backend working, needs better aesthetics and QOl fixes suc…
+
+[33mcommit 4c6ae7df8e89636f219760be55a80da3056f9bd5[m[33m ([m[1;31morigin/jake/S2-001[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 21 22:46:22 2026 -0400
+
+    added dotenv for CI
+
+[33mcommit 9f87bdbe59603c602add8df155a8dcda4f73d6de[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 21 22:44:34 2026 -0400
+
+    add requests to requirements.txt for CI
+
+[33mcommit 269bc05fdc4f595effa3b0bb5c6436cc32cc6178[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 21 22:41:38 2026 -0400
+
+    Job search backend working, needs better aesthetics and QOl fixes such as loading screen
+
+[33mcommit 815ee0be3b1bd3a1c5f1463ba577f9e430033f5c[m
+Merge: bf5a82e 047ed5c
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Sun Jun 21 18:33:05 2026 -0400
+
+    Merge pull request #53 from rc74A/jake/S2-001
+    
+    Jake/s2 001
+
+[33mcommit 047ed5cdf3a66cf18a20d86d062a70ff361c9ae4[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 21 18:31:15 2026 -0400
+
+    prettier and formatting issues
+
+[33mcommit aa1951cd186edbfc79cab8100623bba284878114[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 21 18:25:24 2026 -0400
+
+    Frontend search util working with title, employer, keyword, excluded words and card display
+
+[33mcommit bb625fdf3253e90eb91de929940b94674d3b2f52[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 21 18:25:06 2026 -0400
+
+    Frontend search util working with title, employer, keyword, excluded words and card display
+
+[33mcommit 7f14cf4352f02577a2f3a29dbd76acb05667c17b[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 21 17:54:47 2026 -0400
+
+    Starting job search, initialized find jobs page, and api endpoint
+
+[33mcommit 39c1a8353c11cdfcf28ae4e77c4555a7540c5eeb[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 21 17:12:29 2026 -0400
+
+    Start job search
+
+[33mcommit bf5a82e89c04cd3561cbe904df778c2db6a5af8b[m
+Merge: 1a0bcb8 a5b65f6
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Sun Jun 21 16:53:40 2026 -0400
+
+    Merge pull request #49 from rc74A/jake/FIX/login-redirect
+    
+    Jake/fix/login redirect
+
+[33mcommit a5b65f6dfd82ff507823e5c4bc434b09b9ffb338[m[33m ([m[1;31morigin/jake/FIX/login-redirect[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 21 16:52:42 2026 -0400
+
+    Fixed the CI/CD for profile.tsx
+
+[33mcommit 7fef8dd0bdd9ed82b1d7bd5650478381cbb980e8[m[33m ([m[1;31morigin/joel/S2-026-domain-tests[m[33m)[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Sun Jun 21 15:19:41 2026 -0400
+
+    S2-026: Unit tests for job workflow and profile completion logic
+    
+    Adds focused tests for the core domain logic:
+    - domain.py: add compute_profile_completion(values) -> filled/total/percent
+      (pure, whitespace-aware), alongside the existing compute_job_metrics
+    - tests/test_domain.py: pure unit tests for metrics (stage counts,
+      response rate, divide-by-zero, full rate) and profile completion
+      (empty / partial / full / whitespace-only)
+    - tests/test_workflow.py: stage transitions persist through the API, and
+      edits advance the job's last-activity timestamp (timeline event)
+    
+    Stacked on S2-025 (#51) for the domain.py module. Backend pytest: 25 passed.
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+[33mcommit 45553f9f531cab7ffcaacabd8fd0e33309c4045d[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Sun Jun 21 15:15:38 2026 -0400
+
+    S2-025: Dashboard metrics (stage counts + response tracking)
+    
+    Adds baseline metrics computed from the user's stored jobs.
+    
+    Backend:
+    - domain.py: pure compute_job_metrics(stages) -> total, by_stage,
+      applications, responses, offers, response_rate (no DB/IO, easy to test)
+    - GET /api/jobs/metrics (owner-scoped; defined before /{job_id} so the
+      path isn't captured as an id); JobMetrics schema
+    Frontend:
+    - dashboard loader fetches /api/jobs/metrics alongside jobs; dashboard
+      renders a metrics row (Total / Applications / Responses / Offers /
+      Response Rate)
+    
+    Test evidence: backend pytest 15 passed (4 new metrics tests: empty,
+    stage counts + response rate, owner-scoped, unauthorized); frontend
+    lint/format/build pass; live server returns correct, owner-scoped metrics.
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+[33mcommit aab52c03316ad0640534c15904ed45f9706d1a5e[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sun Jun 21 14:20:47 2026 -0400
+
+    Update mockFetch to return user ID in response
+
+[33mcommit b21bc3f430d61ab0930119b2f0aa349e5369a651[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 22:35:27 2026 -0400
+
+    Fix error handling in handleSave function
+
+[33mcommit 3983d3b0944f6d6cac0865d7fc2ee9886f69d903[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 22:34:12 2026 -0400
+
+    Fix formatting for setJobForm call in dashboard
+
+[33mcommit 1d935282fc313e17f835a9b71ffd4a175a9efb3a[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 22:30:41 2026 -0400
+
+    Fix syntax by adding missing semicolon
+
+[33mcommit 837c4a3c0f337c0c3d0fc19b364195e10b36e696[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 22:24:19 2026 -0400
+
+    Fix indentation in docstring for delete job function
+
+[33mcommit 32930b6638be794bb6f1f96063872a7c04519233[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 22:20:38 2026 -0400
+
+    Fix typo in job stage from 'WishList' to 'Wishlist'
+
+[33mcommit 9ed104feb1e86c262bee8271d4db242261b92c04[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 22:16:56 2026 -0400
+
+    Fix docstring for delete_job function
+    
+    Updated docstring formatting for delete_job function.
+
+[33mcommit 95ae1f3100613797f49e95beee017d9e7612d54a[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 22:14:16 2026 -0400
+
+    Refactor docstring formatting in jobs.py
+    
+    Removed unnecessary line breaks and adjusted docstring formatting.
+
+[33mcommit 8ae1bd59b6ebfb8eeef0cae3386715ddfcb6b99e[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 22:11:16 2026 -0400
+
+    Update jobs.py
+
+[33mcommit 7dd0d8f25eb277cd6249881e805651a5e931bd6a[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 22:08:04 2026 -0400
+
+    Add docstring for delete job function
+
+[33mcommit 7fc8c97497deeaefd27a7bd4371a1be99a10d580[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 22:05:08 2026 -0400
+
+    Fix spacing in userId check condition
+
+[33mcommit 3a1a609aad4789c1dc335eee14911634a17958ae[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 22:04:43 2026 -0400
+
+    Fix formatting of if statement in dashboard.tsx
+
+[33mcommit 12ea9a8494b10fd9f34316acf715a70478c564a1[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 18:41:28 2026 -0400
+
+    Enhance dashboard with user-specific greetings and checks
+
+[33mcommit d84eba356d20e814d9340b966a944682c51d1d6d[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 18:26:59 2026 -0400
+
+    Update user ID handling in profile route
+
+[33mcommit d83c604e74ffd1b39b4469e678af9866eb992be9[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Sat Jun 20 15:08:57 2026 -0400
+
+    Add delete_job endpoint with ownership verification
+    
+    This endpoint ensures that only the owner can delete a job, enhancing security by preventing unauthorized deletions.
+
+[33mcommit ed9cc0b721676874fa98e34dc7a88f0d914d578b[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Fri Jun 19 23:00:59 2026 -0400
+
+    Prettier
+
+[33mcommit 0f54bbb3e7220dcf4435cc40d1333e8599426439[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Fri Jun 19 23:00:17 2026 -0400
+
+    Auth completely fixed
+
+[33mcommit 1a0bcb87ad177b148a7206da7b9a14622bcf1b9c[m[33m ([m[1;31morigin/ricardo/Job-Cards[m[33m, [m[1;32mjake/FIX/login-redirect[m[33m)[m
+Merge: 0ed0748 2e617a3
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Thu Jun 18 18:46:06 2026 -0400
+
+    Merge pull request #48 from rc74A/jake/FIX/login-redirect
+    
+    Fixed frontend requireAuth function that verifies cookie
+
+[33mcommit 2e617a3fed380dcd274f062238b2c6f77938e965[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 18 18:44:43 2026 -0400
+
+    Fixed frontend requireAuth function that verifies cookie
+
+[33mcommit 0ed07480b3e52fb519c9d266d75ce0d727b43352[m
+Merge: 60423ee 8bf6c8d
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Thu Jun 18 18:34:44 2026 -0400
+
+    Merge pull request #47 from rc74A/jake/FIX/login-redirect
+    
+    Defined navigate
+
+[33mcommit 8bf6c8df6e5a7e8d26320e8bfc3ad043114a35a7[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 18 18:33:34 2026 -0400
+
+    Defined navigate
+
+[33mcommit 60423ee95c2f97f78c714f4d87c4288960effd8f[m
+Merge: e50c140 966a383
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Thu Jun 18 18:31:00 2026 -0400
+
+    Merge pull request #46 from rc74A/revert-45-jake/FIX/login-redirect
+    
+    Revert "Revert previous login redirect (manually set cookies)"
+
+[33mcommit 966a383a4a75e34f8121dc57769948cc508b3544[m[33m ([m[1;31morigin/revert-45-jake/FIX/login-redirect[m[33m)[m
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Thu Jun 18 18:30:20 2026 -0400
+
+    Revert "Revert previous login redirect (manually set cookies)"
+
+[33mcommit e50c140d5a58b9cc93f2f18a2f61e0fd0bfb2ea5[m
+Merge: 03e09ea 7a19f58
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Thu Jun 18 18:24:20 2026 -0400
+
+    Merge pull request #45 from rc74A/jake/FIX/login-redirect
+    
+    Revert previous login redirect (manually set cookies)
+
+[33mcommit 7a19f58eb3654cd000ea98937ac231758e11498b[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 18 18:23:17 2026 -0400
+
+    prettier
+
+[33mcommit 3979682c2362e14de5bbf79b62cb89035e33038c[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 18 18:20:17 2026 -0400
+
+    Revert previous login redirect (manually set cookies)
+
+[33mcommit 03e09eab1911d3d5c6c1f33c754db6757c43744f[m[33m ([m[1;31morigin/jake/FIX/revert-main[m[33m)[m
+Merge: 8ec07af 3a1f100
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Thu Jun 18 10:57:35 2026 -0400
+
+    Merge pull request #44 from rc74A/jake/FIX/login-redirect
+    
+    Potentially fixed login redirect issue
+
+[33mcommit 3a1f1001c50c558deb1b8e30e5bd698e2f46d469[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 18 10:55:26 2026 -0400
+
+    Potentially fixed login redirect issue
+
+[33mcommit 8ec07afbb65c847eadebeb4768efc112a04767b5[m
+Merge: 88b7536 f9e6860
+Author: Joshua Ware <jw692@njit.edu>
+Date:   Wed Jun 17 22:41:14 2026 -0400
+
+    Merge pull request #43 from rc74A/josh/Fix_API_call
+    
+    Fixed API call to backend
+
+[33mcommit f9e68608634f5e2a17b9c29f5092d6e00282fc4a[m[33m ([m[1;31morigin/josh/Fix_API_call[m[33m)[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Wed Jun 17 22:40:20 2026 -0400
+
+    Ran Prettier
+
+[33mcommit 8c9e85525b433b77be2f8081c5ad4e17b1e5ba3d[m
+Author: Joshua Ware <jw692@njit.edu>
+Date:   Wed Jun 17 22:33:30 2026 -0400
+
+    Replace hardcoded API URL with environment variable
+
+[33mcommit 916b689d906e534c3579cab173c6f654ac1bd943[m
+Author: Joshua Ware <jw692@njit.edu>
+Date:   Wed Jun 17 22:30:53 2026 -0400
+
+    Fix backend URL environment variable reference
+
+[33mcommit 75a89e935fe76fe605716b8173c1456c8c931ab5[m
+Author: Joshua Ware <jw692@njit.edu>
+Date:   Wed Jun 17 22:29:03 2026 -0400
+
+    Rename API_BASE environment variable
+
+[33mcommit 729d7409f1cbfd33d9032c0a50c1a2acb2f4394a[m
+Author: Joshua Ware <jw692@njit.edu>
+Date:   Wed Jun 17 22:28:42 2026 -0400
+
+    Fix backend URL variable for login API
+
+[33mcommit 88b75364e2ef7e8e17c35b5159356ada6bfda021[m
+Merge: 3dc8071 5e14b3b
+Author: Joshua Ware <jw692@njit.edu>
+Date:   Wed Jun 17 22:06:59 2026 -0400
+
+    Merge pull request #40 from rc74A/josh/restore-new-dashboard
+    
+    Josh/restore new dashboard and fixed some stuff
+
+[33mcommit 5e14b3b30e40f4403bad5bf90792ae2ca26353bf[m[33m ([m[1;31morigin/josh/restore-new-dashboard[m[33m)[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Wed Jun 17 22:04:00 2026 -0400
+
+    Ran Prettier
+
+[33mcommit 27df579db4d7164197b1ca0a4428235d4039ae2f[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Wed Jun 17 21:56:30 2026 -0400
+
+    Attempt to fix Unit Tests PT3
+
+[33mcommit 3dc8071af6f9e4d3997cf891e3c0cc5dc4063d1b[m
+Merge: f49c6f8 644ea74
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Wed Jun 17 21:44:32 2026 -0400
+
+    Merge pull request #41 from rc74A/jake/FIX/PasswordHash
+    
+    Jake/fix/password hash
+
+[33mcommit 644ea746c50bf511a9113e50cb0d45e718a73efb[m[33m ([m[1;31morigin/jake/FIX/PasswordHash[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 17 21:43:31 2026 -0400
+
+    More CI fixing real quick, coming soon count fixed
+
+[33mcommit 56dd06e931efbe7a4fd701f6c2db3bfec5586913[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Wed Jun 17 21:42:35 2026 -0400
+
+    Fixing Unit Tests PT2
+
+[33mcommit 2c209390d8748256125049b0b82389e386194d20[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 17 21:40:07 2026 -0400
+
+    Fixed async problem with CI test mock token logic
+
+[33mcommit ada087729e839d6e3c3d20de21af9c5b07e5cd41[m
+Merge: 3fedab4 f49c6f8
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 17 21:35:00 2026 -0400
+
+    Merged main into vitest mock token logic
+
+[33mcommit 173ba8fdc9e956f23d548232e127946310e0e041[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Wed Jun 17 21:28:23 2026 -0400
+
+    fixed Unit test errors
+
+[33mcommit 3fedab42352a281a63841095d79e7376d7a70080[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 17 21:28:10 2026 -0400
+
+    Vitest fixed mock token logic
+
+[33mcommit f49c6f84d52d6b62c412febe8d37f611eb41a38f[m
+Merge: 277b617 29f2c49
+Author: Joel Walker <theagingboy05@gmail.com>
+Date:   Wed Jun 17 20:15:13 2026 -0400
+
+    Merge pull request #42 from rc74A/joel/fix-settings-test
+    
+    Fix settings test to match current Settings page (unblocks CI)
+
+[33mcommit 29f2c49e118061de2dff00df16405f336c63dd06[m[33m ([m[1;31morigin/joel/fix-settings-test[m[33m)[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Wed Jun 17 20:13:54 2026 -0400
+
+    Fix settings.test.tsx to match the current Settings page
+    
+    The settings page was reworked to show Security / Notifications /
+    Appearance (3 coming-soon items), but the test still asserted the old
+    Two-Factor Authentication / Webhook Notifications (2 items), so the
+    frontend CI job failed.
+    
+    Updated the assertions to match the current page. Frontend tests now
+    pass (5/5); lint, format, and build all green.
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+[33mcommit 778adf7f4e729cb60350c84f220bb3649a2137ac[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 17 20:09:24 2026 -0400
+
+    Maybe CI works again?
+
+[33mcommit c23171bc7d4f1fab8e3c32381d28fc81c094d882[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 17 19:59:10 2026 -0400
+
+    Fixed frontend setting page CI tests
+
+[33mcommit a721476109ce450e63137603390ee1b14325b4b8[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 17 19:50:32 2026 -0400
+
+    Removed unnescary frontend tests in profile
+
+[33mcommit 3a07552eaa1bf5105b17c1765c9a94390c694384[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 17 19:40:31 2026 -0400
+
+    Password hashing working
+
+[33mcommit 92454515f1c385b66a1bc748df8d07a615df92c7[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Wed Jun 17 15:13:14 2026 -0400
+
+    Fixed Styling error to match Unit Test
+
+[33mcommit e66b307dac46b40cb256b95fda348435c4f98ef9[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Wed Jun 17 15:01:46 2026 -0400
+
+    Reuploaded for a backup before i break something
+
+[33mcommit 89b5e8c6ee201c1e6a872356a26c9215a177be99[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Wed Jun 17 14:11:07 2026 -0400
+
+    Fixed a bug
+
+[33mcommit e5216012a1175600a5ef6b5be88ec9e15103ac0b[m
+Merge: 6fc38a4 6184c3f
+Author: Josh Ware <jw692@njit.edu>
+Date:   Wed Jun 17 14:11:01 2026 -0400
+
+    Merge branch 'josh/restore-new-dashboard' of https://github.com/rc74A/TeamDragonsApp into josh/restore-new-dashboard
+
+[33mcommit 6fc38a4e67b5f920ff262780efff5ae493f65cfb[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Wed Jun 17 14:03:26 2026 -0400
+
+    Attempt to fix merge conflicts, and other errors
+
+[33mcommit 6184c3f62a9d728669b11af4d5846aaae5352621[m
+Merge: 4f3b387 277b617
+Author: Joshua Ware <jw692@njit.edu>
+Date:   Tue Jun 16 19:27:11 2026 -0400
+
+    Merge branch 'main' into josh/restore-new-dashboard
+
+[33mcommit 4f3b387cb423cf11b8b90989252ac20a7410eebc[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Tue Jun 16 18:43:19 2026 -0400
+
+    fixed lint warnnings and ran prettier
+
+[33mcommit 5019eb8f1b1fdbbf3413478abe80f3978a21a3cc[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Tue Jun 16 18:00:03 2026 -0400
+
+    Fixed UI on dash/profile/login. Fixed Adding user information
+
+[33mcommit aecf1d4684b11912d1cb64f7f242ca60d26b3107[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Tue Jun 16 15:11:38 2026 -0400
+
+    attempted fix to dashborard.tsx
+
+[33mcommit 277b6176e1a2bfaff3d88d9f9e2ef3f45c43ebad[m[33m ([m[1;32mjosh/S1-022-profile-baseline[m[33m, [m[1;32mjosh/Dashboard[m[33m)[m
+Merge: e8b9905 89cd1b9
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 23:06:39 2026 -0400
+
+    Merge pull request #35 from rc74A/jake/S1-015
+    
+    Jake/s1 015
+
+[33mcommit 89cd1b9162ccf7ed435114c785607474ebbcc59c[m[33m ([m[1;31morigin/jake/S1-015[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 23:03:08 2026 -0400
+
+    fix CI test result
+
+[33mcommit 4042df1174e85e36bbd2f192fa7a2a00302dde7f[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 22:59:59 2026 -0400
+
+    Added link again ig
+
+[33mcommit 3fa2b0ad7b991415cb4f064983032852049f35fa[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 22:52:36 2026 -0400
+
+    prettify and ruff again
+
+[33mcommit 2247eccac66423e3f11adcd8bf97d0bfea2fa429[m
+Merge: 63059a4 e8b9905
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 22:45:33 2026 -0400
+
+    Merge branch 'main' into jake/S1-015
+
+[33mcommit 63059a401c3e59c18dd25a199c78afcd1a99dbee[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 22:40:09 2026 -0400
+
+    after merge
+
+[33mcommit fd25e6b271b5e4369f7886ce6a7237a2e8091647[m
+Merge: c9a4061 8ef772d
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 22:39:08 2026 -0400
+
+    premerge
+
+[33mcommit c9a40610ba618064d32bc942376b504e46a3ddb7[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 22:34:59 2026 -0400
+
+    locked out unless authenticated reimplemented
+
+[33mcommit e8b9905e9db277875fc3f46b18c83860f4861e33[m
+Merge: 61b917e 8ef772d
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 22:31:11 2026 -0400
+
+    Merge pull request #34 from rc74A/jake/S1-015
+    
+    Maybe authentication workign
+
+[33mcommit 8ef772d9904327cbd10c67d0d2afa326127a0bad[m
+Merge: ef8872e 61b917e
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 22:30:30 2026 -0400
+
+    Merge branch 'main' into jake/S1-015
+
+[33mcommit ef8872e847d0f2cf61f7c8a31306260853184c1c[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 22:27:54 2026 -0400
+
+    Maybe authentication workign
+
+[33mcommit 61b917e3fbc8914da475fc85d0004f2b96d08b3e[m
+Merge: 06b40f4 629d83b
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Mon Jun 15 18:53:53 2026 -0400
+
+    Merge pull request #29 from rc74A/josh/Dashboard
+    
+    Updated Login UI, Finished Dashboard to allow job adding and editing,…
+
+[33mcommit 629d83b40fe6a8414ebf368647ccd8ffa8c5c7ac[m[33m ([m[1;31morigin/josh/Dashboard[m[33m)[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 15 18:42:21 2026 -0400
+
+    Ran Prettier to align code with layout
+
+[33mcommit a8e9f820b8086adfee3542c5f94a748a3095adeb[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 15 18:37:06 2026 -0400
+
+    fixed Unit Tests
+
+[33mcommit 3a51a070070581a107fa448a7755d1508ee598bc[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 15 17:44:36 2026 -0400
+
+    Fixed Lint formatting
+
+[33mcommit 9970d6c73b0344619329d5f0d5a8544a3241d886[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 15 17:30:24 2026 -0400
+
+    added routing contexts to help fix pipeline tests
+
+[33mcommit 1ccf16d4de5602834335bd6019142f4bfa1b0c36[m
+Merge: 751f15d 06b40f4
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 15 17:20:23 2026 -0400
+
+    fixed merge conflicts
+
+[33mcommit 751f15d355b411aab27e66468692615e69b6a5d1[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 15 16:30:21 2026 -0400
+
+    Fixed Lint and Formatting Errors
+
+[33mcommit 06b40f47bbb3d25114e027e5f7a9c09492fc8aa3[m
+Merge: 98ce3fc 6a83033
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 16:14:52 2026 -0400
+
+    Merge pull request #33 from rc74A/jake/S1-015
+    
+    removed authentication on other pages for now as it has caused too ma…
+
+[33mcommit 6a83033821bd6e30b5646ef56503d144b4f190b7[m[33m ([m[1;32mjake/S1-015[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 16:12:49 2026 -0400
+
+    removed authentication on other pages for now as it has caused too many issues
+
+[33mcommit 98ce3fcd648dd8d1b5277aedb4a693a619dd7365[m
+Merge: 35afdfe ab18097
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 16:04:58 2026 -0400
+
+    Merge pull request #32 from rc74A/jake/S1-015
+    
+    Back to chasing browser token authentication
+
+[33mcommit ab18097980aea8d66c880361664ff41f8b82bd72[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 16:01:47 2026 -0400
+
+    Back to chasing browser token authentication
+
+[33mcommit 35afdfed33598c3db5c81008f1b488657ccf7030[m
+Merge: 9807778 bc35156
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 15:52:27 2026 -0400
+
+    Merge pull request #31 from rc74A/jake/S1-015
+    
+    redirecting fixed again (hopefully for the last time please)
+
+[33mcommit bc35156108f65969f0fa1321aff4298781d30248[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 15:50:37 2026 -0400
+
+    redirecting fixed again (hopefully for the last time please)
+
+[33mcommit 98077788c61de7578b987cfcf5c11ad3caf54e60[m
+Merge: 9442709 fd5dd70
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 15:43:33 2026 -0400
+
+    Merge pull request #30 from rc74A/jake/S1-015
+    
+    Hopefully more login fixes on production
+
+[33mcommit fd5dd7086f31825ecd416baa124083d563fd1738[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 15:41:04 2026 -0400
+
+    ...prettier
+
+[33mcommit 27b4959f9cfee641dca39d98da8002e01537f8b9[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 15:34:08 2026 -0400
+
+    Hopefully more login fixes on production
+
+[33mcommit f5322638890e1a9ae8ca25b798d7ec9f2aac33c7[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Mon Jun 15 14:25:29 2026 -0400
+
+    Updated Login UI, Finished Dashboard to allow job adding and editing, Fixed Settings UI. Added Progress bar on Profile
+
+[33mcommit 94427095148faad430a9c5d45c01ed31c6d44d81[m
+Merge: f793ad0 8eea6cf
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 14:04:53 2026 -0400
+
+    Merge pull request #28 from rc74A/jake/S1-015
+    
+    Fixing the login navigation
+
+[33mcommit 8eea6cff20cb704ad20d16c1dcf52beded37bbf9[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 14:03:07 2026 -0400
+
+    Prettier again
+
+[33mcommit 7e34a664794cf94f3e9125dd1680624d746d09fe[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 13:59:51 2026 -0400
+
+    Fixing the login navigation
+
+[33mcommit f793ad0a35ed25b072bb0ffad126d92dde1cab6d[m
+Merge: 912b6e5 f07ef8a
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 13:57:16 2026 -0400
+
+    Merge pull request #27 from rc74A/jake/S1-015
+    
+    Another cookie fix regarding login authentification
+
+[33mcommit f07ef8a1d9fa932d412d8db0ade8300029ebfb6a[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 13:54:20 2026 -0400
+
+    More ruff reformating :)
+
+[33mcommit b6d898b3947f0e8dd0413cfa99651498579a6ab2[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 13:46:37 2026 -0400
+
+    This formatting is so annoying
+
+[33mcommit ebe30bb179e65f38422e48d9f60eb4834eb5144c[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 13:44:57 2026 -0400
+
+    More linting of prettier formatting
+
+[33mcommit 55448b936681795488dfd8eca17cfd60c4f5ebfa[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 13:43:59 2026 -0400
+
+    More linting of prettier formatting
+
+[33mcommit 5ac25816b9a8de93197ced8323cf4aeb58140328[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 13:38:57 2026 -0400
+
+    Another cookie fix regarding login authentification
+
+[33mcommit 912b6e5201302e253e1a6c809c943bb4f8583688[m
+Merge: c80354c b955198
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 13:22:02 2026 -0400
+
+    Merge pull request #26 from rc74A/jake/S1-015
+    
+    Jake/s1 015
+
+[33mcommit b9551988dcd78e50ee4c16cde39b9f8d4307a4ba[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 13:18:56 2026 -0400
+
+    Login asking for email instaed of username
+
+[33mcommit dd04577c649aecf1cc5630905ae5421a24bc6db9[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 13:18:07 2026 -0400
+
+    frontend token verification on login fix
+
+[33mcommit c80354cc4658a3b2368cb6606b6b3f89f28b0025[m
+Merge: b252496 9b6ca5a
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 08:59:34 2026 -0400
+
+    Merge pull request #25 from rc74A/jake/S1-015
+    
+    Fixed localhost instead of env variable for vite endpoint
+
+[33mcommit 9b6ca5a64a33badb83170d7e7efa7e043b3c78a4[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Mon Jun 15 08:58:12 2026 -0400
+
+    Fixed localhost instead of env variable for vite endpoint
+
+[33mcommit b252496faa58989a0d7e21499f34a71bfb02a48a[m
+Merge: 6dea16b 2f6de39
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Sun Jun 14 23:26:12 2026 -0400
+
+    Merge pull request #24 from rc74A/jake/S1-015
+    
+    Jake/s1 015
+
+[33mcommit 2f6de396dce41c2ccf04594bfdf886dad2499835[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 14 23:24:56 2026 -0400
+
+    More reformatting yay
+
+[33mcommit ac06642cae7fda88a3846966c8bed4e08d77e1b5[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 14 23:23:28 2026 -0400
+
+    Prettier for linting
+
+[33mcommit c494fd32236fabe6d1e60013468badd0942299d6[m
+Merge: b500d8a 42967ee
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 14 23:13:23 2026 -0400
+
+    More merge conflicts
+
+[33mcommit b500d8a439705ffa32029396db967e9e93164133[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 14 23:08:14 2026 -0400
+
+    Merge with main complete, login state should persist
+
+[33mcommit d3356fff4d3bc816b2c39eeb60cc23e1a1561b4f[m
+Merge: 3600dd5 6dea16b
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 14 23:04:59 2026 -0400
+
+    post merge
+
+[33mcommit 3600dd56ebb122af7c49f4b5236b805a15f7f5af[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 14 22:59:05 2026 -0400
+
+    pre merge
+
+[33mcommit f345eed025d98f68a75ee5c497268b6dca93c325[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 14 22:58:18 2026 -0400
+
+    Fixed linting issues
+
+[33mcommit 42967eece0c1f2fe35ef132cb1f4a377e65a45e4[m
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Sun Jun 14 22:49:06 2026 -0400
+
+    Login.tsx using .env for backend route
+
+[33mcommit 7c682fa218d7c2e729fc2f9506b8b3be712d469d[m
+Merge: 5466a49 6dea16b
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Sun Jun 14 22:46:55 2026 -0400
+
+    Merge branch 'main' into jake/S1-015
+
+[33mcommit 5466a495e4cffca15a0181c6158afff168cb2cb7[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 14 22:35:13 2026 -0400
+
+    User authorization and page locking
+
+[33mcommit c24b8a735efd25833003c441f96ca99e137b461e[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sun Jun 14 22:12:25 2026 -0400
+
+    Site wide login tracking, unauthrized access blocking
+
+[33mcommit 6dea16bc50c8778c83561232b74959f1d1da2c9d[m
+Merge: c7b70ba d8e07dd
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sat Jun 13 23:14:45 2026 -0400
+
+    Merge pull request #23 from rc74A/joel/S1-022-profile-baseline
+    
+    S1-022: Implement Profile Baseline (Identity + Summary)
+
+[33mcommit d8e07dd57e636ea862c7b76ff91ef00b6208958c[m[33m ([m[1;31morigin/joel/S1-022-profile-baseline[m[33m, [m[1;32mjoel/S1-022-profile-baseline[m[33m)[m
+Merge: fb8b445 c7b70ba
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Sat Jun 13 22:54:50 2026 -0400
+
+    Merge remote-tracking branch 'origin/main' into joel/S1-022-profile-baseline
+    
+    # Conflicts:
+    #       frontend/package-lock.json
+
+[33mcommit c7b70ba8cfd4aaa795d093a32e37f28f93505004[m
+Merge: f699526 6bfb55e
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sat Jun 13 22:22:10 2026 -0400
+
+    Merge pull request #7 from rc74A/joel/S1-017-settings-page
+    
+    S1-017: Implement Settings Page Baseline
+
+[33mcommit 6bfb55e938f633d9e0af80ae3a295410dd82edf2[m[33m ([m[1;31morigin/joel/S1-017-settings-page[m[33m)[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Sat Jun 13 22:02:57 2026 -0400
+
+    S1-017: Rebuild Settings page baseline on current main
+    
+    The branch had drifted behind main and conflicted with the merged lint
+    tooling. Rebuilt cleanly on top of current main:
+    - settings.tsx: baseline account-settings form inside the app shell
+      (name/email, validation, localStorage persistence, Coming-soon rows)
+    - settings.css + Vitest/RTL bootstrap (config, test/test:watch scripts,
+      tsconfig types), settings.test.tsx
+    - package.json: union the lint tooling (now on main) with the test deps
+    - settings.tsx: justified eslint-disable for the post-hydration
+      localStorage sync (a lazy initializer would cause a hydration mismatch)
+    
+    Verified against the now-live gate: eslint, prettier check, build, and
+    vitest (4 passed) all pass.
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+[33mcommit fb8b445ba2f2d8585a04f99a85e5120c554e0919[m
+Merge: f2b6854 f699526
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Sat Jun 13 21:54:05 2026 -0400
+
+    Merge remote-tracking branch 'origin/main' into joel/S1-022-profile-baseline
+    
+    # Conflicts:
+    #       backend/models.py
+    #       frontend/app/routes/profile.tsx
+    #       frontend/package-lock.json
+    #       frontend/package.json
+
+[33mcommit f699526bec272eea23d9cc7448c843bc153e18a5[m
+Merge: 7d72b5d a878ed8
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sat Jun 13 21:42:26 2026 -0400
+
+    Merge pull request #6 from rc74A/joel/S1-008-ci-build-test
+    
+    S1-008: Configure CI Pipeline for Build and Test
+
+[33mcommit 7d72b5d6a26e27b8672be8602d9903e5ec84a13d[m
+Merge: 72e130c ebb5b9a
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sat Jun 13 21:42:10 2026 -0400
+
+    Merge pull request #5 from rc74A/joel/S1-006-lint-format
+    
+    S1-006: Configure Linting and Formatting
+
+[33mcommit f2b6854fa27d664ce944b9b36852284868ad6dc0[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Sat Jun 13 21:05:20 2026 -0400
+
+    S1-022: Address review findings (datetime, test, CSS)
+    
+    From an adversarial review of the diff:
+    - profile.py: empty_profile() now returns a NAIVE updated_at to match how
+      the DateTime column round-trips from the DB, so transient and persisted
+      profiles serialize identically (no stray 'Z' on empty profiles)
+    - test_profile.py: the partial-update test now asserts untouched fields
+      (full_name, email) also survive the refetch, not just the changed one
+    - profile.css: stop overriding the global input/button theme (app.css
+      styles those with !important so all forms look identical); keep only
+      layout, labels, status text, and the textarea the globals don't cover
+    - profile.tsx: drop the now-dead btn-primary class
+    
+    Verified: backend pytest 11 passed; frontend vitest 4 passed; build ok;
+    live server confirms empty + saved updated_at now serialize consistently.
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+[33mcommit ebb5b9a852d155273de2847db2111e76031f183b[m[33m ([m[1;31morigin/joel/S1-006-lint-format[m[33m)[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Sat Jun 13 21:00:34 2026 -0400
+
+    S1-006: Rebuild lint/format baseline on current main
+    
+    The prior branch had drifted far behind main (auth, login pipeline,
+    new pages, jobs DB) and conflicted unresolvably. Rebuilt cleanly on top
+    of today's main: the lint/format tooling + config, with the formatters
+    applied across the current codebase.
+    
+    - Tooling/config (net-new): eslint.config.js, .prettierrc.json,
+      .prettierignore, .editorconfig, .gitattributes, lint.yml workflow,
+      backend/pyproject.toml, requirements-dev.txt, Conventions.md section
+    - pyproject: exclude the committed venv (backend/bin, lib) from ruff;
+      allow FastAPI's Depends()/Header()/etc. in argument defaults (B008)
+    - Formatted merged-in code (prettier + ruff); added missing docstrings
+      to auth.py / main.py and fixed stale arg docs (creds/db); noqa the
+      SQLAlchemy session-factory naming in conftest.py
+    - No behavioral changes: formatting, comments, docstrings, config only
+    
+    Verified: frontend lint (0 errors) + format:check pass; backend ruff
+    check + format pass; app imports; backend pytest 5 passed.
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+[33mcommit a878ed8ec7741770cede5f90e0bc3731e6ee0320[m[33m ([m[1;31morigin/joel/S1-008-ci-build-test[m[33m)[m
+Merge: 76f1dee 72e130c
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Sat Jun 13 19:53:20 2026 -0400
+
+    Merge branch 'main' into joel/S1-008-ci-build-test
+
+[33mcommit 32ca011c1dfce6b77df116eee2cfe963626d0b72[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Sat Jun 13 19:47:36 2026 -0400
+
+    S1-022: Implement profile baseline (identity + summary)
+    
+    Backend (owner-scoped, DB-persisted profile):
+    - models.py: Profile model (owner_id unique) with baseline identity/
+      contact fields (full_name, email, phone, location) + summary; all
+      optional so partial profiles save and completion can be tracked later
+    - schemas.py: ProfileUpdate (email-format validation, length caps) and
+      ProfileOut
+    - profile.py: GET/PUT /api/profile, upsert scoped to the requesting
+      user; cross-user access impossible by construction (S1-BR-006/007/008).
+      Reuses the X-User-Id identity placeholder from jobs (S1-015 swaps both
+      to sessions)
+    - main.py: include profile router
+    
+    Frontend:
+    - profile.tsx: fills Ricardo's profile placeholder (keeps the app shell)
+      with an identity/contact + summary form; loads via GET, saves via PUT,
+      client-side email validation, success/error states
+    - profile.css: scoped styling (brand palette)
+    - bootstraps Vitest + RTL (test/test:watch scripts)
+    
+    Test evidence:
+    - backend pytest: 11 passed (6 new profile: empty default, create+persist,
+      update-preserves-fields, invalid-email 422, missing-identity 401,
+      cross-user isolation)
+    - frontend vitest: 4 passed (render in shell, load from API, save via PUT,
+      invalid-email blocks PUT)
+    - build exit 0; live uvicorn: GET/PUT/persist/isolation/401/422 verified
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+[33mcommit 06a76f7bbfe854bfc6342a5074c3914ee10902c8[m
+Merge: 25f6530 72e130c
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sat Jun 13 13:43:31 2026 -0400
+
+    merge main
+
+[33mcommit 72e130c1e711ab7399dca66886bb61038802d464[m
+Merge: 2cd0591 6c5a01a
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Sat Jun 13 13:41:50 2026 -0400
+
+    Merge pull request #21 from rc74A/jake/S1-011
+    
+    Forgot to add backend code for login pipeline
+
+[33mcommit 6c5a01a6811d7a6c98a4ba3aaaf4f06c5c7251ae[m[33m ([m[1;31morigin/jake/S1-011[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sat Jun 13 13:40:59 2026 -0400
+
+    Forget to add backend code for login pipeline
+
+[33mcommit 2cd0591cd20efe387642b12e5583cf34c4f8bb4b[m
+Merge: 12e915e 13b8743
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Sat Jun 13 13:40:11 2026 -0400
+
+    Merge pull request #20 from rc74A/jake/S1-011
+    
+    Jake/s1 011
+
+[33mcommit 13b874325092a067e98fa957021778a1b611ef3d[m
+Merge: 2327af7 6346f5f
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Sat Jun 13 13:39:12 2026 -0400
+
+    Register -> Login -> Dashboard working
+
+[33mcommit 25f65300882c3cf7c6d08046d2c0863c0ec9cfc5[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 11 19:36:55 2026 -0400
+
+    User authentication with database
+
+[33mcommit 2327af7bae8ebe40618080b592e412db0de25e77[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 11 19:34:45 2026 -0400
+
+    User authentication with database
+
+[33mcommit 9714ff0136f0d23477fe9d58b51852a91880fd7a[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 11 19:04:43 2026 -0400
+
+    Added users to DB, login verifies users existence
+
+[33mcommit 864d5f56de3c2f4b0e0ae413df73753a69a105a7[m
+Merge: b82f1da ea83752
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 11 18:13:49 2026 -0400
+
+    Merge branch 'joel/S1-019-job-entity-storage' into jake/S1-011
+
+[33mcommit b82f1da82224f48381f0f8bf17775a9b0257e832[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 11 18:13:39 2026 -0400
+
+    Pre-database merge
+
+[33mcommit ea83752ca14f0b46ed36387bb58878dce467b012[m[33m ([m[1;31morigin/joel/S1-019-job-entity-storage[m[33m)[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Thu Jun 11 11:59:21 2026 -0400
+
+    S1-019: Implement basic Job entity and storage with user ownership
+    
+    Adds the first database layer to the FastAPI backend:
+    - database.py: SQLAlchemy engine/session; MySQL via the .env DB_* vars
+      (per .env.example / architecture), SQLite fallback for local dev and
+      CI; tables created on startup as the baseline migration approach
+    - models.py: Job entity with S1-BR-014 baseline fields (title, company,
+      stage, last_activity) plus owner_id (S1-BR-006)
+    - schemas.py: Pydantic create/update/out models with field-level
+      validation (blank fields rejected)
+    - jobs.py: /api/jobs router - create, list, get, update; every query
+      filters by owner_id server-side (S1-BR-008); cross-user access
+      returns 404 (S1-BR-007); identity via X-User-Id header as a
+      documented placeholder until S1-011 sessions land
+    - main.py: include jobs router, create tables in lifespan, CORS: allow
+      PUT + X-User-Id, fix Authorizatoin->Authorization typo
+    - requirements.txt: add sqlalchemy, pymysql; pytest + httpx so CI runs
+      backend tests once the S1-008 workflow merges
+    
+    Test evidence:
+    - pytest: 5 passed (happy path, update persistence, blank-field 422s,
+      missing-identity 401, cross-user read/write denied)
+    - live uvicorn: create + list OK, cross-user GET 404, no-auth 401,
+      record survives server restart (SQLite persistence)
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+[33mcommit 12e915ea9135be4d95c26aceecb21f3b47a19cbe[m
+Merge: 4bd4ed7 0143942
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Wed Jun 10 22:32:25 2026 -0400
+
+    Merge pull request #17 from rc74A/jake/S1-011
+    
+    Jake/s1 011
+
+[33mcommit 014394247f2f1967064aa988275ff159d3e4df18[m
+Merge: 72c6888 3aff2e7
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 10 22:29:33 2026 -0400
+
+    Merge login and logout authentication branches
+
+[33mcommit 72c68881bf2b0e633a6300568913e184cd344c4b[m
+Merge: 1387767 7fa6f3d
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 10 22:14:21 2026 -0400
+
+    Merge branch 'jason/S1-012-Logout-Session-Invalidation' into jake/S1-011
+
+[33mcommit 3aff2e799c8bb2c22b722863fce31cf32b48d51c[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Wed Jun 10 22:11:46 2026 -0400
+
+    Add login screen, API post to backend, response back to frontend
+
+[33mcommit 6346f5f15cfe818281045d11753370e69f029fca[m[33m ([m[1;31morigin/josh/S1-010-User-Login-page[m[33m)[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Tue Jun 9 21:06:07 2026 -0400
+
+    Finished Register Page; Added CSS details; Added register to routes; Added Register on Dash
+
+[33mcommit 7fa6f3de3129630f39c2c2509d3ecbdc4783748d[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Tue Jun 9 20:29:04 2026 -0400
+
+    Add LogoutButton frontend component for user logout
+
+[33mcommit 7164fba784547c51f9ae9a0c480afa184f3bfe96[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Tue Jun 9 19:25:39 2026 -0400
+
+    Loging frontend, and submission logic, no backend yet
+
+[33mcommit a186438f0d8adbeb485ed921f6014c428a689881[m
+Merge: cc205f3 4bd4ed7
+Author: Josh Ware <jw692@njit.edu>
+Date:   Tue Jun 9 18:24:51 2026 -0400
+
+    Merge branch 'main' of https://github.com/rc74A/TeamDragonsApp into josh/S1-010-User-Login-page
+
+[33mcommit 256b0d759e39c5fc15833ee48300729e2122fecd[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Tue Jun 9 18:21:53 2026 -0400
+
+    Imported S1-012 invalid.py into FastAPI application
+
+[33mcommit 4bce3c171d9e55c5b67e1172cb312cd1f88b884e[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Tue Jun 9 18:20:13 2026 -0400
+
+    Add logout endpoint for user session invalidation
+    
+    Implement logout endpoint to clear authentication cookies.
+
+[33mcommit 4bd4ed7dac73de1bea9673beaa4d094264c0b344[m[33m ([m[1;31morigin/ruben/s1-007[m[33m)[m
+Merge: b048fda f9f388a
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 18:11:42 2026 -0400
+
+    Merge pull request #16 from rc74A/revert-15-ricardo/New-Pages2-fix2
+    
+    Revert "Ricardo/new pages2 fix2"
+
+[33mcommit f9f388ad4a1558819f0aa4c4902f61cb565cd3fa[m[33m ([m[1;31morigin/revert-15-ricardo/New-Pages2-fix2[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 18:11:07 2026 -0400
+
+    Revert "Ricardo/new pages2 fix2"
+
+[33mcommit b048fdaa03e5f86aba9ba2b71c36c06fd17d28b7[m
+Merge: db40742 f0ad19f
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 18:05:16 2026 -0400
+
+    Merge pull request #15 from rc74A/ricardo/New-Pages2-fix2
+    
+    Ricardo/new pages2 fix2
+    testing a fix for the dashboard link problem.
+
+[33mcommit f0ad19f223568e064a8160585cb17c09d45372bc[m[33m ([m[1;31morigin/ricardo/New-Pages2-fix2[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 18:04:22 2026 -0400
+
+    Update settings.tsx
+
+[33mcommit 0b954b4c78bced6dbb06539b09843163460dcfff[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 18:04:11 2026 -0400
+
+    Update profile.tsx
+
+[33mcommit 50394a650b473e1958745d8f3ce53aaa86c300ad[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 18:04:00 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit db407427c63b0b1b4a90b2d9864ccf3f5637d492[m
+Merge: 1387767 e86a78f
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 18:01:27 2026 -0400
+
+    Merge pull request #14 from rc74A/ricardo/New-Pages2-fix
+    
+    Ricardo/new pages2 fix
+    fixed problem where the link to the dashboard wouldn't work.
+
+[33mcommit e86a78f4aae1b6c686fc61278d7e719a15aa1305[m[33m ([m[1;31morigin/ricardo/New-Pages2-fix[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 18:00:48 2026 -0400
+
+    Update settings.tsx
+
+[33mcommit f23af78f94473d871e31693f7849d8fb3e054f45[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 18:00:38 2026 -0400
+
+    Update profile.tsx
+
+[33mcommit 121f16f2a915c638cdf85c1a1f5f36b3f54d0ca9[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 18:00:28 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit 1387767ee1121505578ed9e77ed8b29a7e0118f5[m
+Merge: fd91852 85f4a41
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 17:51:59 2026 -0400
+
+    Merge pull request #13 from rc74A/ricardo/New-Pages2
+    
+    Ricardo/new pages2
+    Added a settings page and functionality to the side menu on all existing pages.
+
+[33mcommit 85f4a41bab179da5ae131a77b82fdcf4ded315e7[m[33m ([m[1;31morigin/ricardo/New-Pages2[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 17:51:13 2026 -0400
+
+    Update settings.tsx
+
+[33mcommit 0cf445f0aa32b5e387d3d00b2d42465994ef8457[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 17:48:58 2026 -0400
+
+    Update routes.ts
+    
+    added a new line referencing the settings page
+
+[33mcommit 8c7d3036bae8a4ad6d598657e623daee54ec0c56[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 17:47:55 2026 -0400
+
+    Create settings.tsx
+    
+    added a settings page
+
+[33mcommit 879381ca8f7d16adee003663fa0503c924299408[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 17:46:12 2026 -0400
+
+    Update profile.tsx
+    
+    added links to all menu options
+
+[33mcommit 844bedeb3e3c7a3aa5fad226ab0879e24b4f4f8b[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 17:45:30 2026 -0400
+
+    Update dashboard.tsx
+    
+    added links to all menu options.
+
+[33mcommit fd9185283b7e4b269281cfe67717eed5d45ca0b5[m
+Merge: 89972a8 78dffc2
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:49:45 2026 -0400
+
+    Merge pull request #12 from rc74A/ricardo/New-Pages-fix2
+    
+    Update dashboard.tsx
+
+[33mcommit 78dffc22687185eeaf6fa4fd13e95b79b095166b[m[33m ([m[1;31morigin/ricardo/New-Pages-fix2[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:49:22 2026 -0400
+
+    Update dashboard.tsx
+
+[33mcommit 89972a8d4c4b58741fe82db03facfb74dacf5c46[m
+Merge: 64c092f d9683e9
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:41:11 2026 -0400
+
+    Merge pull request #11 from rc74A/ricardo/New-Pages-fix
+    
+    Update dashboard.tsx
+
+[33mcommit d9683e99dde45aff3dbec93ad0408ec9bfc39393[m[33m ([m[1;31morigin/ricardo/New-Pages-fix[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:40:43 2026 -0400
+
+    Update dashboard.tsx
+    
+    fixed a problem where the link to the profile from dashboard didn't work.
+
+[33mcommit 64c092fdd4d6e104ef670fdfd433b5d01e75ec8b[m
+Merge: d80db87 23a7be8
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:38:03 2026 -0400
+
+    Merge pull request #10 from rc74A/ricardo/New-Pages
+    
+    Ricardo/new pages
+    Added a prototype profile page. Added a link to profile from dashboard.
+
+[33mcommit 23a7be81d7288cc3b64bd3120f76ace4ad7fce38[m[33m ([m[1;31morigin/ricardo/New-Pages[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:34:36 2026 -0400
+
+    Update dashboard.tsx
+    
+    make profile page accessible from dashboard
+
+[33mcommit e7b7fcbaf68fe8b4606f968521206391c95900ab[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:33:06 2026 -0400
+
+    Update profile.tsx
+    
+    imported the css
+
+[33mcommit ddeec0c01c0b3761588bc0fa8c752b688fae886b[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:32:40 2026 -0400
+
+    Update profile.tsx
+    
+    updated the page to fit the template
+
+[33mcommit 7ed29ff0f3a960ffc1636ea5a63a53568458f180[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:31:15 2026 -0400
+
+    Rename login.tsx to profile.tsx
+
+[33mcommit 9f5bae8121bc3cfbc4e758addecafae778a729b1[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:31:03 2026 -0400
+
+    Rename profile.tsx to login.tsx
+
+[33mcommit 9704d9f7b43a4da97279f5b7d407b53e224ef073[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:30:47 2026 -0400
+
+    Rename home.tsx to dashboard.tsx
+
+[33mcommit 156d086ccdfe749df6ec3f9e47bb03c54bd7ba27[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:30:33 2026 -0400
+
+    Rename dashboard.tsx to home.tsx
+
+[33mcommit 95f2be9eb11980e450bff99d35975498517158c8[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:25:36 2026 -0400
+
+    Update routes.ts
+    
+    changed login.tsx to profile.tsx
+
+[33mcommit 4ec723c1017897781d4d2eb287a20c77b4ea6495[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:24:59 2026 -0400
+
+    Update routes.ts
+    
+    changed home.tsx to dashboard.tsx
+
+[33mcommit 9985aaaed1e5ae1c0e8709a69b0efcbff2653da8[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:17:27 2026 -0400
+
+    Rename login.tsx to profile.tsx
+
+[33mcommit fe19282c05f6519a2f3642b4551e6d3efe8db461[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 15:16:50 2026 -0400
+
+    Rename home.tsx to dashboard.tsx
+
+[33mcommit cc205f36fa7db4b0f70fd889c23c5bf37c91f64c[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Tue Jun 9 13:33:14 2026 -0400
+
+    Added fields to register page, and added button from login page
+
+[33mcommit d80db874e0c1806814a88c7c13cf1d875f3b65e6[m
+Merge: 6d989ed b763be2
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Tue Jun 9 11:01:26 2026 -0400
+
+    Merge pull request #9 from rc74A/jake/S1-005
+    
+    Jake/s1 005
+
+[33mcommit b763be292a65f23ff35e2909375979c795a534d6[m[33m ([m[1;31morigin/jake/S1-005[m[33m, [m[1;32mjake/S1-005[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Tue Jun 9 11:00:30 2026 -0400
+
+    Initialized database. Monorepo setup complete.
+
+[33mcommit 51e5c9317f617543e0b3b1254d0fe147d13a960c[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Tue Jun 9 10:38:54 2026 -0400
+
+    Backend: FastApi setup, CORS setup, API endpoint prototypes created
+
+[33mcommit 6d989edd769564193b6b5c7113ca664edec01a7c[m
+Merge: c8503d8 65a2559
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 02:09:23 2026 -0400
+
+    Merge pull request #8 from rc74A/ricardo/s1-016-Dashboard-Page-Layout
+    
+    Ricardo/s1 016 dashboard page layout
+    
+    Testing page layout for the dashboard.
+
+[33mcommit 65a25595215124b7eef714daf5f123f946962e8b[m[33m ([m[1;31morigin/ricardo/s1-016-Dashboard-Page-Layout[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 02:08:24 2026 -0400
+
+    Update home.tsx
+
+[33mcommit b1ca2fd94217d6ecb1a742f475f4caa44706d9a9[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 02:06:19 2026 -0400
+
+    Update home.tsx
+
+[33mcommit 8f910f24fb456be082b2d9049a9a5c1f9a83aeb3[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 02:05:44 2026 -0400
+
+    Create app.css
+
+[33mcommit ea9d1ae6c563e93641fec2c3a6e66ece286c5d71[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Tue Jun 9 02:04:03 2026 -0400
+
+    Update home.tsx
+
+[33mcommit 29d93047a1e8421e3770f01f695bbfe9c2d68e64[m
+Author: Josh Ware <jw692@njit.edu>
+Date:   Tue Jun 9 01:15:07 2026 -0400
+
+    Implemented a register page
+
+[33mcommit c8503d83a861c468c7cbb398dee086fd998e959b[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Mon Jun 8 18:10:53 2026 -0400
+
+    Add example environment configuration for frontend
+
+[33mcommit 1a8ba85fcbdd484d7a75d445f25cf5c19066a783[m
+Author: Jason Tailor <jt598@njit.edu>
+Date:   Mon Jun 8 18:09:59 2026 -0400
+
+    Add example environment configuration file for backend
+
+[33mcommit 76f1deea4a925747d5eabea0a09f4a13aa53aba5[m
+Author: Joel-Wwalker <theagingboy05@gmail.com>
+Date:   Sun Jun 7 14:00:52 2026 -0400
+
+    S1-008: Configure CI pipeline for build and test
+    
+    Adds .github/workflows/ci.yml running on every PR (and push to main):
+    - Frontend job: npm ci -> npm run build -> npm run test --if-present
+    - Backend job: install requirements if present -> python -m compileall
+      -> pytest (if installed)
+    
+    Test steps are wired but tolerant of frameworks not being installed yet,
+    so they run real tests automatically once S1-007 lands (no edit needed).
+    Build steps gate now. Together with lint.yml (S1-006) this completes the
+    CI/CD Baseline Gate (lint + build + unit tests on every PR).
+    
+    Also adds backend/.gitignore (Python artifacts) and docs/CI.md.
+    
+    Test evidence (verified locally):
+    - frontend: npm run build (exit 0), npm run test --if-present (exit 0)
+    - backend: python -m compileall -q . (exit 0)
+    - ci.yml validated as YAML
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+[33mcommit a4aee87da19520be7b2d7fe50b1435ed4fda1c5a[m
+Merge: c944965 189dced
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Fri Jun 5 19:17:01 2026 -0400
+
+    Merge pull request #1 from rc74A/Context-Documents
+    
+    Context documents
+
+[33mcommit 189dcede706552c268726780a3cdbc13e3ea9286[m[33m ([m[1;31morigin/Context-Documents[m[33m)[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Fri Jun 5 19:15:54 2026 -0400
+
+    Add files via upload
+
+[33mcommit 1c8cc01fab42a2a4bb2640a3e3679168bff7fcaf[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Fri Jun 5 19:15:29 2026 -0400
+
+    Add files via upload
+
+[33mcommit b564f73bb59f35702da2be9d8537f368717292a4[m
+Author: rc74A <158582904+rc74A@users.noreply.github.com>
+Date:   Fri Jun 5 19:14:59 2026 -0400
+
+    Add files via upload
+
+[33mcommit c9449650ece01b6e2ed13f6f5069565ded0d60f4[m[33m ([m[1;32mjake/Documentation[m[33m)[m
+Author: Jake Muzyka <jmuzyka4@gmail.com>
+Date:   Thu Jun 4 13:30:47 2026 -0400
+
+    Accidental .env commit
+
+[33mcommit 3af9bc882aadae7949aa5c4f2289a41dd4451143[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 4 13:28:53 2026 -0400
+
+    Fix tracking for frontend and backend
+
+[33mcommit 646069ea31a035982dad2b8c95222e2e0ff7d1dc[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 4 13:24:41 2026 -0400
+
+    React router setup, tailwind added as well for easier css
+
+[33mcommit b21d9a8ee78ab2f6859931497153895fc657c7d7[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 4 13:23:09 2026 -0400
+
+    React router setup, tailwind added as well for easier css
+
+[33mcommit ab794c338d5986e570410b5520a34bfa934e8e8c[m[33m ([m[1;31morigin/jake/Initial-Setup[m[33m, [m[1;32mjake/Initial-Setup[m[33m)[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 4 09:25:39 2026 -0400
+
+    Began S1-001 Engineering Coding Standards
+
+[33mcommit eadc869360aa6f8f222270264be1781f2de36afd[m
+Author: jmuzy <jmuzyka4@gmail.com>
+Date:   Thu Jun 4 08:56:11 2026 -0400
+
+    Initial Commit

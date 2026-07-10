@@ -231,6 +231,11 @@ export default function FindJobs() {
               </Link>
             </li>
             <li>
+              <Link to="/documents" className="nav-link">
+                Documents
+              </Link>
+            </li>
+            <li>
               <Link to="/findjobs" className="nav-link-active">
                 Find Jobs
               </Link>

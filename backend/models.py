@@ -10,7 +10,7 @@ from sqlalchemy import (
     Text,
     func,
 )
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
 
@@ -56,6 +56,10 @@ class Job(Base):
     outcome_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     is_archived: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    interview_notes: Mapped[str | None] = mapped_column(Text, nullable=True, default="")
+    notes_updated_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=utc_now, onupdate=utc_now
+    )
 
 
 class Profile(Base):
@@ -178,7 +182,6 @@ class JobStageHistory(Base):
 class Document(Base):
     """
     Generic document for saved documents,
-
     This is especially useful for saved resumes and cover letters.
     """
 
@@ -186,13 +189,49 @@ class Document(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     owner_id: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
-    # "resume" | "cover_letter"
     doc_type: Mapped[str] = mapped_column(String(20), nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)  # NEW
     content: Mapped[str] = mapped_column(Text, nullable=False)
     job_snapshot: Mapped[str] = mapped_column(Text, nullable=False)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=func.now()
     )
+
+    versions: Mapped[list["DocumentVersion"]] = relationship(
+        "DocumentVersion",
+        back_populates="document",
+        order_by="DocumentVersion.version_number.desc()",
+    )
+
+
+class DocumentVersion(Base):
+    """
+    Holds the metadata, text content, and cloud storage pointers
+    for every individual iteration of a document.
+    """
+
+    __tablename__ = "document_versions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    document_id: Mapped[int] = mapped_column(
+        ForeignKey("documents.id", ondelete="CASCADE"), nullable=False
+    )
+
+    # Versioning metadata
+    version_number: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    file_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    storage_url: Mapped[str] = mapped_column(String(2048), nullable=False)
+
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    job_snapshot: Mapped[str] = mapped_column(Text, nullable=False)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=func.now()
+    )
+
+    # Relationship back to the parent document
+    document: Mapped["Document"] = relationship("Document", back_populates="versions")
 
 
 class Interview(Base):

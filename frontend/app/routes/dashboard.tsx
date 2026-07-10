@@ -3,6 +3,8 @@ import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton, useAuth } from "@clerk/react-router";
 import { useLoaderData, Link, useNavigate, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
+import { uploadDocument, type DocType } from "~/lib/document";
+import AnalyticsPanel from "../components/AnalyticsPanel";
 import "./app.css";
 import "./dashboard.css";
 import { AIResearchButton } from "../components/AIResearchButton";
@@ -16,6 +18,7 @@ interface Job {
   description: string | null;
   deadline: string | null;
   deadlineState: string | null;
+  interview_notes: string | null;
   lastActivity: string | null;
   createdAt: string;
 }
@@ -145,6 +148,7 @@ export default function Dashboard() {
     description: "",
     deadline: "",
     deadlineState: "No Deadline",
+    interview_notes: "",
     outcomeState: "",
     outcomeNotes: "",
   });
@@ -190,6 +194,7 @@ export default function Dashboard() {
         description: String(rawJob.description),
         deadline: (rawJob.deadline as string) ?? null,
         deadlineState: (rawJob.deadline_state as string) ?? null,
+        interview_notes: String(rawJob.interview_notes),
         lastActivity: (rawJob.last_activity as string) ?? null,
         createdAt: (rawJob.created_at as string) || new Date().toISOString(),
         outcome_state: (rawJob.outcome_state as string) ?? null,
@@ -361,8 +366,10 @@ export default function Dashboard() {
           description: jobForm.description,
           deadline: jobForm.deadline || null,
           deadline_state: jobForm.deadlineState,
+          interview_notes: jobForm.interview_notes,
           outcome_state: jobForm.outcomeState || null,
           outcome_notes: jobForm.outcomeNotes || null,
+          interview_notes: jobForm.interview_notes || null,
         }),
       });
 
@@ -452,6 +459,18 @@ export default function Dashboard() {
 
   const [activeAINotes, setActiveAINotes] = useState<string | null>(null);
   const [activeAICompany, setActiveAICompany] = useState<string>("");
+ 
+  /*
+  const handleGenerateResume() = async () => {
+  await uploadDocument({
+      file: generatedPdfFile,
+      docType: "cover_letter",
+      content: generatedText,
+      jobSnapshot: JSON.stringify(foundJob),
+      getToken,
+    });
+  }
+    */
 
   return (
     <div className="db-root">
@@ -462,6 +481,11 @@ export default function Dashboard() {
             <li>
               <Link to="/" className="nav-link-active">
                 Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link to="/documents" className="nav-link">
+                Documents
               </Link>
             </li>
             <li>
@@ -534,6 +558,8 @@ export default function Dashboard() {
                 <div className="ai-briefing-body">{activeAINotes}</div>
               </div>
             )}
+
+            <AnalyticsPanel />
 
             <div className="db-section-header">
               <h3>Job Applications</h3>
@@ -640,6 +666,7 @@ export default function Dashboard() {
                     outcomeState: "",
                     outcomeNotes: "",
                     description: "",
+                    interview_notes: "",
                   });
                   setIsModalOpen(true);
                 }}
@@ -709,6 +736,7 @@ export default function Dashboard() {
                           description: job.description,
                           deadline: job.deadline || "",
                           deadlineState: job.deadlineState,
+                          interview_notes: job.interview_notes,
                           outcomeState: "",
                           outcomeNotes: "",
                         });
@@ -911,6 +939,53 @@ export default function Dashboard() {
                       </div>
                     </div>
                   )}
+                  {/* S3-013 Add Interview Notes Section in Job Details */}
+                  <div
+                    className="db-outcome-panel"
+                    style={{ marginTop: "1.5rem", marginBottom: "1.5rem" }}
+                  >
+                    <h4 className="db-outcome-title">
+                      {" "}
+                      Interview Notes Preparation{" "}
+                    </h4>
+                    <div className="db-form-group db-form-group-no-margin">
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
+                        <label htmlFor="modalInterviewNotes">
+                          Interview Preparation and Notes
+                        </label>
+                        {jobForm.notes_updated_at && (
+                          <span
+                            style={{ fontSize: "0.75rem", color: "#9ca3af" }}
+                          >
+                            Last Saved At:{" "}
+                            {new Date(
+                              jobForm.notes_updated_at,
+                            ).toLocaleString()}
+                          </span>
+                        )}
+                      </div>
+                      <textarea
+                        id="modalInterviewNotes"
+                        placeholder="Write down Notes for your Upcoming Interview, Like Questions, etc..."
+                        value={jobForm.interview_notes || ""}
+                        rows={5}
+                        className="db-outcome-textarea"
+                        onChange={(e) =>
+                          setJobForm({
+                            ...jobForm,
+                            interview_notes: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
                   <div className="db-form-actions db-form-actions-spaced">
                     {/* S2-014: Render Archive button first to float left via CSS */}
                     {editingJobId && (

@@ -1,5 +1,6 @@
 import re
 from datetime import date, datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -38,6 +39,7 @@ class JobCreate(BaseModel):
     description: str = Field(default=None, max_length=500)
     deadline: date | None = Field(default=None)
     deadline_state: str | None = Field(default="No Deadline", max_length=50)
+    interview_notes: str = Field(default=None, max_length=500)
     outcome_state: str | None = Field(default=None, max_length=50)
     outcome_notes: str | None = Field(default=None)
 
@@ -79,7 +81,7 @@ class JobUpdate(BaseModel):
     outcome_notes: str | None = Field(default=None)
 
     interview_date: datetime | str | None = Field(default=None)
-    notes: str | None = Field(default=None)
+    interview_notes: str | None = Field(default=None, max_length=500)
 
     @field_validator("title", "company", "stage", "location", "deadline_state")
     @classmethod
@@ -134,7 +136,8 @@ class JobOut(BaseModel):
     is_archived: bool
 
     interview_date: datetime | None = None
-    notes: str | None = None
+    interview_notes: str
+    notes_updated_at: datetime | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -218,6 +221,32 @@ class JobMetrics(BaseModel):
     responses: int
     offers: int
     response_rate: float
+
+
+class StageConversion(BaseModel):
+    """Conversion between two consecutive funnel stages (S3-014)."""
+
+    from_stage: str
+    to_stage: str
+    reached_from: int
+    reached_to: int
+    rate: float
+
+
+class StageDwell(BaseModel):
+    """Average completed time spent in one stage (S3-014)."""
+
+    stage: str
+    avg_days: float
+    samples: int
+
+
+class JobAnalytics(BaseModel):
+    """Conversion and time-in-stage analytics from stage events (S3-014)."""
+
+    funnel: dict[str, int]
+    conversion: list[StageConversion]
+    time_in_stage: list[StageDwell]
 
 
 # ----- Experience -----
@@ -566,3 +595,56 @@ class RewriteCoverLetterRequest(BaseModel):
     job: FoundJob
     existing_cover_letter: CoverLetter
     rewrite_prompt: str
+
+
+# General Documents
+
+
+class DocumentPost(BaseModel):
+    """Information needed to upload filse to supabase storage"""
+
+    doc_type: str
+    title: str
+    content: str
+    job_snapshot: str
+    file_name: str
+
+
+class DocumentVersionOut(BaseModel):
+    """Used for retrieving documents versions from the bacakend to the frontend"""
+
+    id: int
+    version_number: int
+    file_name: str
+    created_at: datetime
+    download_url: str | None = None
+
+    class Config:
+        """Config"""
+
+        from_attributes = True
+
+
+class DocumentOut(BaseModel):
+    """Used for retrieving documents from the bacakend to the frontend"""
+
+    id: int
+    doc_type: str
+    title: str
+    created_at: datetime
+    latest_version: DocumentVersionOut
+
+    class Config:
+        """Config"""
+
+        from_attributes = True
+
+
+class DocumentDuplicateRequest(BaseModel):
+    """Duplicating an existing document with a new title and doc_type"""
+
+    title: str
+    doc_type: Literal["resume", "cover_letter"]
+
+
+DocumentDuplicateRequest.model_rebuild()

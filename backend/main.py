@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 from profile import profilerouter
 
@@ -6,9 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from ai import airouter
 from database import Base, engine
+from documents import documentrouter
 from education import educationrouter
 from experience import experiencerouter
 from jobs import jobsrouter
+from migration_runner import run_migrations
 from search import searchrouter
 from skills import skillsrouter
 
@@ -25,10 +28,26 @@ async def lifespan(app: FastAPI):
     """Run startup and shutdown work around the app's lifetime."""
     # Init
     print("Starting Up")
-    # Baseline migration approach (S1-019): create missing tables on
-    # startup. Replace with real migrations (e.g. Alembic) when the
-    # schema starts changing.
-    Base.metadata.create_all(bind=engine)
+    # Production runs Alembic migrations (S3-016): adopts pre-Alembic
+    # databases, applies schema repairs, and records the version so
+    # rollbacks are possible (S3-BR-018). DB_HOST set means production
+    # MySQL (same convention database.py uses), so the gate can't be
+    # missed by forgetting PYTHON_ENV on Render. Dev and tests keep the
+    # fast create-missing-tables path (S1-019); set RUN_DB_MIGRATIONS=1
+    # to exercise migrations locally.
+    use_migrations = (
+        os.getenv("DB_HOST")
+        or os.getenv("PYTHON_ENV") == "production"
+        or os.getenv("RUN_DB_MIGRATIONS") == "1"
+    )
+    db_path = "alembic migrations" if use_migrations else "create_all (dev fallback)"
+    print(f"DB startup: {db_path}")
+    if use_migrations:
+        run_migrations()
+        engine.dispose()
+    else:
+        Base.metadata.create_all(bind=engine)
+        engine.dispose()
 
     yield
 
@@ -52,6 +71,7 @@ app.include_router(experiencerouter)
 app.include_router(educationrouter)
 app.include_router(skillsrouter)
 app.include_router(airouter)
+app.include_router(documentrouter)
 
 # ----- API Endpoints -----
 

@@ -77,6 +77,11 @@ export default function Settings() {
               </Link>
             </li>
             <li>
+              <Link to="/documents" className="nav-link">
+                Documents
+              </Link>
+            </li>
+            <li>
               <Link to="/findjobs" className="nav-link">
                 Find Jobs
               </Link>

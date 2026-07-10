@@ -1,0 +1,33 @@
+.db-modal-content-small {
+  max-width: 480px !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.db-file-input-field {
+  padding: 6px !important;
+}
+
+.db-file-input-field::file-selector-button {
+  background-color: #4a5568;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 12px;
+  font-size: 13px;
+  font-weight: bold;
+  transition: background-color 0.15s ease;
+}
+
+.db-file-input-field::file-selector-button:hover {
+  background-color: #718096;
+}
+
+.db-form-group input:disabled,
+.db-form-group select:disabled {
+  background-color: #2d3748 !important;
+  color: #718096 !important;
+  cursor: not-allowed;
+}
