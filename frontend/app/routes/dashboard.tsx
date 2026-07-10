@@ -459,7 +459,7 @@ export default function Dashboard() {
 
   const [activeAINotes, setActiveAINotes] = useState<string | null>(null);
   const [activeAICompany, setActiveAICompany] = useState<string>("");
- 
+
   /*
   const handleGenerateResume() = async () => {
   await uploadDocument({
