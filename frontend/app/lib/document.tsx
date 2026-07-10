@@ -64,4 +64,3 @@ export async function uploadDocument({
 
   return response.json();
 }
-

@@ -638,9 +638,12 @@ class DocumentOut(BaseModel):
 
         from_attributes = True
 
+
 class DocumentDuplicateRequest(BaseModel):
     """Duplicating an existing document with a new title and doc_type"""
+
     title: str
     doc_type: Literal["resume", "cover_letter"]
+
 
 DocumentDuplicateRequest.model_rebuild()

@@ -16,8 +16,12 @@ export default function DuplicateModal({
   getToken,
   initialData,
 }: DuplicateModalProps) {
-  const [title, setTitle] = useState(initialData ? `${initialData.title} (Copy)` : "");
-  const [docType, setDocType] = useState<DocType>(initialData?.doc_type ?? "resume");
+  const [title, setTitle] = useState(
+    initialData ? `${initialData.title} (Copy)` : "",
+  );
+  const [docType, setDocType] = useState<DocType>(
+    initialData?.doc_type ?? "resume",
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,11 +84,7 @@ export default function DuplicateModal({
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="db-btn-submit"
-            >
+            <button type="submit" disabled={loading} className="db-btn-submit">
               {loading ? "Processing..." : "Submit"}
             </button>
           </div>

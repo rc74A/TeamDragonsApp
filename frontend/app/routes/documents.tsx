@@ -138,38 +138,44 @@ export default function Documents() {
     fetchDocuments();
   }, [filterType, sortBy, order]);
 
-  const handleDuplicate = async (doc: DocumentItem, newTitle: string, newType: string) => {
-  setIsLoading(true);
-  setError(null);
+  const handleDuplicate = async (
+    doc: DocumentItem,
+    newTitle: string,
+    newType: string,
+  ) => {
+    setIsLoading(true);
+    setError(null);
 
-  try {
-    const token = await getToken();
-    const docId = doc.id;
+    try {
+      const token = await getToken();
+      const docId = doc.id;
 
-    const response = await fetch(`${BACKEND_URL}/api/documents/duplicate/${docId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        title: newTitle,
-        doc_type: newType
-      })
-    });
+      const response = await fetch(
+        `${BACKEND_URL}/api/documents/duplicate/${docId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title: newTitle,
+            doc_type: newType,
+          }),
+        },
+      );
 
-    if (!response.ok) {
-      throw new Error("Server failed to duplicate the document.");
+      if (!response.ok) {
+        throw new Error("Server failed to duplicate the document.");
+      }
+
+      await fetchDocuments();
+    } catch (err: any) {
+      setError(err.message || "Failed to duplicate item.");
+    } finally {
+      setDuplicateModalOpen(false);
+      setIsLoading(false);
     }
-
-    await fetchDocuments();
-  } catch (err: any) {
-    setError(err.message || "Failed to duplicate item.");
-  } finally {
-    setDuplicateModalOpen(false);
-    setIsLoading(false);
-  }
-
   };
 
   const toggleVersionHistory = async (docId: number) => {
@@ -343,14 +349,14 @@ export default function Documents() {
                       Preview
                     </a>
                   )}
-                  <button 
-		    type="button" 
-		    onClick={() => {
-			setDuplicatingItem(doc);
-			setDuplicateModalOpen(true);
-		    }}
-		    className="doc-btn"
-		  >
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDuplicatingItem(doc);
+                      setDuplicateModalOpen(true);
+                    }}
+                    className="doc-btn"
+                  >
                     Duplicate
                   </button>
                   <button
@@ -389,16 +395,17 @@ export default function Documents() {
         </main>
       </div>
 
-      {duplicateModalOpen && <DuplicateModal 
-	     	isOpen={duplicateModalOpen}
-		onClose={() => setDuplicateModalOpen(false)}
-		onSuccess={(newTitle, newType) => { 
-			handleDuplicate(duplicatingItem, newTitle, newType);
-		}}
-		getToken={getToken}
-		initialData={duplicatingItem}
-	      />
-      }
+      {duplicateModalOpen && (
+        <DuplicateModal
+          isOpen={duplicateModalOpen}
+          onClose={() => setDuplicateModalOpen(false)}
+          onSuccess={(newTitle, newType) => {
+            handleDuplicate(duplicatingItem, newTitle, newType);
+          }}
+          getToken={getToken}
+          initialData={duplicatingItem}
+        />
+      )}
     </div>
   );
 }
