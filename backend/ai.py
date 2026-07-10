@@ -658,47 +658,71 @@ def generate_company_research(
     # Build out a dynamic instruction block depending on if user_context exists
     user_section_instruction = ""
     if body.user_context and body.user_context.strip():
-        user_section_instruction = f"""
-    SECTION 5: USER FOCUS & TARGETED Q&A
-    Directly address, analyze, and answer the user's specific request or question: "{body.user_context.strip()}"
-    """
-
-    # Build out the final targeted prompt
-    prompt = f"""
-    You are an expert career coach and corporate intelligence researcher. Provide a 
-    comprehensive, highly actionable interview preparation briefing for a candidate.
-    
-    Target Parameters:
-    - Company: {body.company_name}
-    - Role Title: {body.job_title}
-    - Location context: {body.location or "Not Specified"}
-    
-    Raw Job Description Requirements:
-    \"\"\"
-    {body.job_description or "No explicit description provided. Analyze general expectations for this title."}
-    \"\"\"
-    
-    CRITICAL INSTRUCTION: Do NOT use any markdown syntax or special formatting symbols. Do not use asterisks (**), hashtags (#), or dashes for bullet points. Write exclusively in plain text using clear capitalization for section headers.
-    
-    Please provide the research structured exactly with these plain text headers, separating sections with a blank line:
-    SECTION 1: COMPANY MISSION & REGIONAL CULTURE
-    SECTION 2: CORE TECH STACK & SKILLS MATRIX
-    SECTION 3: KEY STRATEGIC FOCUS OR RECENT TRENDS
-    SECTION 4: 3 PRECISION QUESTIONS TO ASK THE INTERVIEWER
-    {user_section_instruction}
-    
-    Keep the tone professional, objective, direct, and crisp. Do not include introductory conversational fluff.
-    """
-
-    try:
-        # Reuses the exact same verified 'genai.Client()' pattern initialization
-        client = genai.Client()
-        response = client.models.generate_content(
-            model=MODEL,  # Reuses your teammate's defined "gemini-2.5-flash" variable string
-            contents=prompt,
+        # Broken into smaller strings to pass the 88 character line limit (E501)
+        user_section_instruction = (
+            "SECTION 5: USER FOCUS & TARGETED Q&A\n"
+            "Directly address, analyze, and answer the user's specific "
+            f"request or question: \"{body.user_context.strip()}\""
         )
 
-        return {"research_notes": response.text}
+    # Build out the final targeted prompt pieces to avoid strict E501 limits
+    p_intro = (
+        "You are an expert career coach and corporate intelligence researcher. "
+        "Provide a comprehensive, highly actionable interview preparation "
+        "briefing for a candidate."
+    )
+    p_fallback = (
+        "No explicit description provided. "
+        "Analyze general expectations for this title."
+    )
+    p_desc = body.job_description or p_fallback
+    p_warn = (
+        "CRITICAL INSTRUCTION: Do NOT use any markdown syntax or special "
+        "formatting symbols. Do not use asterisks (**), hashtags (#), or "
+        "dashes for bullet points. Write exclusively in plain text using "
+        "clear capitalization for section headers."
+    )
+    p_struct = (
+        "Please provide the research structured exactly with these plain "
+        "text headers, separating sections with a blank line:"
+    )
+    p_fluff = (
+        "Keep the tone professional, objective, direct, and crisp. "
+        "Do not include introductory conversational fluff."
+    )
 
+    prompt = f"""{p_intro}
+
+Target Parameters:
+- Company: {body.company_name}
+- Role Title: {body.job_title}
+- Location context: {body.location or "Not Specified"}
+
+Raw Job Description Requirements:
+\"\"\"
+{p_desc}
+\"\"\"
+
+{p_warn}
+
+{p_struct}
+SECTION 1: COMPANY MISSION & REGIONAL CULTURE
+SECTION 2: CORE TECH STACK & SKILLS MATRIX
+SECTION 3: KEY STRATEGIC FOCUS OR RECENT TRENDS
+SECTION 4: 3 PRECISION QUESTIONS TO ASK THE INTERVIEWER
+{user_section_instruction}
+
+{p_fluff}"""
+
+    try:
+        client = genai.Client()
+        response = client.models.generate_content(
+            model=MODEL,
+            contents=prompt,
+        )
+        return response.text
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Gemini API Error: {str(e)}")
+        # Added 'from None' to satisfy the B904 error rule
+        raise HTTPException(
+            status_code=500, detail=f"Gemini API Error: {str(e)}"
+        ) from None
