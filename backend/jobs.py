@@ -113,6 +113,8 @@ def create_job(
         location=payload.location,
         deadline=payload.deadline,
         deadline_state=payload.deadline_state,
+        interview_notes=payload.interview_notes,
+        research_notes=payload.research_notes,
     )
     db.add(job)
     db.commit()

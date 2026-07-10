@@ -149,6 +149,10 @@ export default function Dashboard() {
     interview_notes: "",
     outcomeState: "",
     outcomeNotes: "",
+    interview_notes: "",
+    notes_updated_at: null,
+    research_notes: "",
+    research_updated_at: null,
   });
 
   const [timelineData, setTimelineData] = useState<TimelineEntry[]>([]);
@@ -197,6 +201,10 @@ export default function Dashboard() {
         createdAt: (rawJob.created_at as string) || new Date().toISOString(),
         outcome_state: (rawJob.outcome_state as string) ?? null,
         outcome_notes: (rawJob.outcome_notes as string) ?? null,
+        interview_notes: (rawJob.interview_notes as string) ?? null,
+        notes_updated_at: (rawJob.notes_updated_at as string) ?? null,
+        research_notes: (rawJob.research_notes as string) ?? null,
+        research_updated_at: (rawJob.research_updated_at as string) ?? null,
       }),
     );
   }, [rawJobs]);
@@ -368,6 +376,7 @@ export default function Dashboard() {
           outcome_state: jobForm.outcomeState || null,
           outcome_notes: jobForm.outcomeNotes || null,
           interview_notes: jobForm.interview_notes || null,
+          research_notes: jobForm.research_notes || null,
         }),
       });
 
@@ -938,6 +947,47 @@ export default function Dashboard() {
                       />
                     </div>
                   </div>
+                  {/* S3-012 Research Notes Section */}
+                  <div
+                    className="db-outcome-panel"
+                    style={{ marginTop: "1.5rem", marginBottom: "1.5rem" }}
+                  >
+                    <h4 className="db-outcome-title">
+                      Company Research Notes
+                    </h4>
+                    <div className="db-form-group db-form-group-no-margin">
+                      <div 
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "0.5rem",
+                        }}
+                        >
+                          <label htmlFor="modalResearchNotes">
+                            Company Background Research Notes
+                          </label>
+                        {jobForm.research_updated_at && (
+                          <span style={{ fontSize: "0.75rem", color: "#9ca3af" }}>
+                            Last Saved At: {new Date(jobForm.research_updated_at).toLocaleString()}
+                          </span>
+                        )}
+                      </div>
+                      <textarea
+                        id="modalResearchNotes"
+                        placeholder="Write down things about the company's work culture, industry research, etc"
+                        value={jobForm.research_notes || ""}
+                        rows={5}
+                        className="db-outcome-textarea"
+                        onChange={(e) =>
+                          setJobForm({
+                            ...jobForm,
+                            research_notes: e.target.value,
+                          })
+                        }
+                      />
+                      </div>
+                    </div>   
                   <div className="db-form-actions db-form-actions-spaced">
                     {/* S2-014: Render Archive button first to float left via CSS */}
                     {editingJobId && (
