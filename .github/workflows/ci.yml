@@ -56,6 +56,9 @@ jobs:
         run: python -m compileall -q .
       - name: Unit tests
         # Runs pytest once S1-007 installs it; skips cleanly until then.
+        env:
+          SUPABASE_URL: "https://supabase.co"
+          SUPABASE_PRIV_KEY: "mock-key-placeholder"
         run: |
           if python -c "import pytest" 2>/dev/null; then
             pytest

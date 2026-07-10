@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from ai import airouter
 from database import Base, engine
+from documents import documentrouter
 from education import educationrouter
 from experience import experiencerouter
 from jobs import jobsrouter
@@ -43,8 +44,10 @@ async def lifespan(app: FastAPI):
     print(f"DB startup: {db_path}")
     if use_migrations:
         run_migrations()
+        engine.dispose()
     else:
         Base.metadata.create_all(bind=engine)
+        engine.dispose()
 
     yield
 
@@ -68,6 +71,7 @@ app.include_router(experiencerouter)
 app.include_router(educationrouter)
 app.include_router(skillsrouter)
 app.include_router(airouter)
+app.include_router(documentrouter)
 
 # ----- API Endpoints -----
 

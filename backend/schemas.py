@@ -1,5 +1,6 @@
 import re
 from datetime import date, datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -594,3 +595,56 @@ class RewriteCoverLetterRequest(BaseModel):
     job: FoundJob
     existing_cover_letter: CoverLetter
     rewrite_prompt: str
+
+
+# General Documents
+
+
+class DocumentPost(BaseModel):
+    """Information needed to upload filse to supabase storage"""
+
+    doc_type: str
+    title: str
+    content: str
+    job_snapshot: str
+    file_name: str
+
+
+class DocumentVersionOut(BaseModel):
+    """Used for retrieving documents versions from the bacakend to the frontend"""
+
+    id: int
+    version_number: int
+    file_name: str
+    created_at: datetime
+    download_url: str | None = None
+
+    class Config:
+        """Config"""
+
+        from_attributes = True
+
+
+class DocumentOut(BaseModel):
+    """Used for retrieving documents from the bacakend to the frontend"""
+
+    id: int
+    doc_type: str
+    title: str
+    created_at: datetime
+    latest_version: DocumentVersionOut
+
+    class Config:
+        """Config"""
+
+        from_attributes = True
+
+
+class DocumentDuplicateRequest(BaseModel):
+    """Duplicating an existing document with a new title and doc_type"""
+
+    title: str
+    doc_type: Literal["resume", "cover_letter"]
+
+
+DocumentDuplicateRequest.model_rebuild()

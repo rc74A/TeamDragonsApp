@@ -3,6 +3,7 @@ import { getAuth } from "@clerk/react-router/server";
 import { SignOutButton, useAuth } from "@clerk/react-router";
 import { useLoaderData, Link, useNavigate, redirect } from "react-router";
 import type { Route } from "./+types/dashboard";
+import { uploadDocument, type DocType } from "~/lib/document";
 import AnalyticsPanel from "../components/AnalyticsPanel";
 import "./app.css";
 import "./dashboard.css";
@@ -455,6 +456,18 @@ export default function Dashboard() {
     }
   };
 
+  /*
+  const handleGenerateResume() = async () => {
+  await uploadDocument({
+      file: generatedPdfFile,
+      docType: "cover_letter",
+      content: generatedText,
+      jobSnapshot: JSON.stringify(foundJob),
+      getToken,
+    });
+  }
+    */
+
   return (
     <div className="db-root">
       <header className="db-header">Dragon Application</header>
@@ -464,6 +477,11 @@ export default function Dashboard() {
             <li>
               <Link to="/" className="nav-link-active">
                 Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link to="/documents" className="nav-link">
+                Documents
               </Link>
             </li>
             <li>
