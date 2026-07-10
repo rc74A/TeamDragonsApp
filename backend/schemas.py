@@ -38,6 +38,7 @@ class JobCreate(BaseModel):
     description: str = Field(default=None, max_length=500)
     deadline: date | None = Field(default=None)
     deadline_state: str | None = Field(default="No Deadline", max_length=50)
+    interview_notes: str = Field(default=None, max_length=500)
     outcome_state: str | None = Field(default=None, max_length=50)
     outcome_notes: str | None = Field(default=None)
 
