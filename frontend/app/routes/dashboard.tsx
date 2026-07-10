@@ -17,7 +17,6 @@ interface Job {
   description: string | null;
   deadline: string | null;
   deadlineState: string | null;
-  interview_notes: string | null;
   lastActivity: string | null;
   createdAt: string;
 }
