@@ -64,6 +64,9 @@ export default function Documents() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
 
+  const [duplicatingItem, setDuplicatingItem] = useState<DocumentItem>();
+  const [duplicateModalOpen, setDuplicateModelOpen] = useState(false);
+
   const { getToken } = useAuth();
 
   const fetchDocuments = async () => {
@@ -133,6 +136,26 @@ export default function Documents() {
   useEffect(() => {
     fetchDocuments();
   }, [filterType, sortBy, order]);
+
+  const handleDuplicate = async (docId: number) => {
+    var correctDoc = documents.find((doc) => {
+      return (doc.id = docId);
+    });
+
+    if (correctDoc == null) {
+      setError("No document selected for duplication");
+      return;
+    }
+
+    setDuplicatingItem(correctDoc);
+    setDuplicateModelOpen(true);
+
+    // Set modal open
+    // Take new paramaters for renaming
+    // Literally copy everything else
+    // Send docId to the backend as well as the
+    // name change and then you
+  };
 
   const toggleVersionHistory = async (docId: number) => {
     if (expandedId === docId) {
@@ -312,6 +335,9 @@ export default function Documents() {
                   >
                     {expandedId === doc.id ? "Hide history" : "History"}
                   </button>
+                  <button type="button" onClick={() => handleDuplicate(doc.id)}>
+                    Duplicate
+                  </button>
                 </div>
 
                 {expandedId === doc.id && (
@@ -340,6 +366,8 @@ export default function Documents() {
           </div>
         </main>
       </div>
+
+      {duplicateModalOpen && <DuplicateModal />}
     </div>
   );
 }
