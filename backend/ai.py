@@ -726,3 +726,4 @@ SECTION 4: 3 PRECISION QUESTIONS TO ASK THE INTERVIEWER
         raise HTTPException(
             status_code=500, detail=f"Gemini API Error: {str(e)}"
         ) from None
+    
