@@ -80,3 +80,18 @@ app.include_router(documentrouter)
 async def read_root() -> dict:
     """Health-check root endpoint."""
     return {"message": "Backend testing"}
+
+
+@app.get("/version", tags=["root"])
+async def read_version() -> dict:
+    """
+    Report the deployed commit for the CD health check (S3-017).
+
+    Render injects RENDER_GIT_COMMIT into the environment; the deploy
+    workflow compares it against the commit it just verified so a
+    green run proves the new build is actually live, not a stale one.
+
+    Returns:
+        dict: The deployed commit sha, or "unknown" outside Render.
+    """
+    return {"commit": os.getenv("RENDER_GIT_COMMIT", "unknown")}
