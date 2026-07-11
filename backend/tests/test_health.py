@@ -8,8 +8,9 @@ def test_root_health(client):
     assert res.json() == {"message": "Backend testing"}
 
 
-def test_version_reports_unknown_outside_render(client):
+def test_version_reports_unknown_outside_render(client, monkeypatch):
     """Without RENDER_GIT_COMMIT set, /version still answers cleanly."""
+    monkeypatch.delenv("RENDER_GIT_COMMIT", raising=False)
     res = client.get("/version")
     assert res.status_code == 200
     assert res.json() == {"commit": "unknown"}

@@ -38,10 +38,15 @@ jobs:
   deploy:
     name: Deploy and verify production
     runs-on: ubuntu-latest
-    # Verify only after a green CI run (or on a manual dispatch).
+    # Verify only after a green push-triggered CI run (or on a manual
+    # dispatch). The event check matters: CI also runs on pull_request,
+    # and the branches filter above matches the HEAD branch name — so
+    # without it, a fork PR opened from a branch named "main" would
+    # fire this job (and the deploy hooks) from an unmerged PR.
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push')
     env:
       BACKEND_URL: https://teamdragonsapp.onrender.com
       FRONTEND_URL: https://team-dragons-app.vercel.app
@@ -53,8 +58,10 @@ jobs:
         run: |
           echo "Checking 'Lint and Format' for $SHA"
           for i in $(seq 1 12); do
+            # A transient API error counts as "pending" and is retried.
             CONCLUSION=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${SHA}" \
-              --jq '[.workflow_runs[] | select(.name == "Lint and Format")][0].conclusion // "pending"')
+              --jq '[.workflow_runs[] | select(.name == "Lint and Format")][0].conclusion // "pending"' \
+              2>/dev/null || echo "pending")
             echo "attempt $i: lint conclusion = $CONCLUSION"
             if [ "$CONCLUSION" = "success" ]; then exit 0; fi
             if [ "$CONCLUSION" = "failure" ] || [ "$CONCLUSION" = "cancelled" ]; then
@@ -66,10 +73,12 @@ jobs:
           echo "::error::Lint run for $SHA not found/finished after 3 minutes."
           exit 1
 
+      # Hooks fire only on the merge-triggered path; a manual dispatch
+      # is verify-only so "Run workflow" can never redeploy production.
       - name: Trigger Render deploy hook (when configured)
         env:
           HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-        if: ${{ env.HOOK != '' }}
+        if: ${{ github.event_name == 'workflow_run' && env.HOOK != '' }}
         run: |
           curl -fsS -X POST "$HOOK" -o /dev/null
           echo "Render deploy hook triggered."
@@ -77,7 +86,7 @@ jobs:
       - name: Trigger Vercel deploy hook (when configured)
         env:
           HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
-        if: ${{ env.HOOK != '' }}
+        if: ${{ github.event_name == 'workflow_run' && env.HOOK != '' }}
         run: |
           curl -fsS -X POST "$HOOK" -o /dev/null
           echo "Vercel deploy hook triggered."
@@ -95,9 +104,12 @@ jobs:
           exit 1
 
       - name: Verify the deployed backend commit
+        # This loop absorbs the whole Render build+deploy window (the
+        # health check above passes instantly against the old build),
+        # so its budget is ~15 minutes. Exits as soon as the sha lands.
         run: |
           echo "Expecting commit $SHA at $BACKEND_URL/version"
-          for i in $(seq 1 40); do
+          for i in $(seq 1 60); do
             BODY=$(curl -s --max-time 20 "$BACKEND_URL/version" || echo '')
             COMMIT=$(echo "$BODY" | python3 -c "import json,sys; print(json.load(sys.stdin).get('commit',''))" 2>/dev/null || echo '')
             echo "attempt $i: deployed commit = ${COMMIT:-<none>}"
@@ -119,12 +131,14 @@ jobs:
 
       - name: Verify the API auth layer responds
         run: |
-          CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$BACKEND_URL/api/jobs" || echo 000)
-          echo "GET /api/jobs (no token) -> HTTP $CODE"
-          if [ "$CODE" != "401" ] && [ "$CODE" != "403" ]; then
-            echo "::error::Expected 401/403 from the protected API, got $CODE."
-            exit 1
-          fi
+          for i in $(seq 1 5); do
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$BACKEND_URL/api/jobs" || echo 000)
+            echo "attempt $i: GET /api/jobs (no token) -> HTTP $CODE"
+            if [ "$CODE" = "401" ] || [ "$CODE" = "403" ]; then exit 0; fi
+            sleep 10
+          done
+          echo "::error::Expected 401/403 from the protected API, last got $CODE."
+          exit 1
 
       - name: Wait for frontend to be healthy
         run: |

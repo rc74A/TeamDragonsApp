@@ -56,20 +56,28 @@ workflow then triggers deploys itself, only after CI is green:
 
 - **Application:** `git revert` the bad commit and merge — CI + CD run
   and the health checks verify the rollback deploy. (Faster manual
-  option: "Rollback" on the service's previous deploy in the Render /
-  Vercel console, but the next merge re-deploys `main`, so revert the
-  commit regardless.)
+  option: on Render use Manual Deploy → "Deploy a specific commit" and
+  pick the last good sha — the one-click Rollback button needs a paid
+  plan; on Vercel promote the previous deployment. Either way the next
+  merge re-deploys `main`, so revert the commit regardless.)
 - **Database:** see the rollback plan in [Database.md](Database.md) —
   schema downgrades are guarded, data restores come from backups.
 
 ## Branch protection (one-time admin step, still pending)
 
 GitHub → Settings → Branches → rule for `main` → require the four CI
-checks (see [CI.md](CI.md)). Without it a merge can skip a red CI run;
-the CD workflow would catch the breakage only after it deployed.
+checks (see [CI.md](CI.md)). Without it a merge can land with a red CI
+run — and in that case the CD workflow is **skipped entirely** (it only
+runs on a green CI conclusion), so the broken auto-deploy is never
+health-checked and nothing turns red. Branch protection is what closes
+that gap.
 
 ## Manually verifying production
 
 Actions → **CD — Deploy and Verify** → Run workflow. Useful after a
 console-side change (env vars, manual deploy) to confirm production is
-healthy without pushing a commit.
+healthy without pushing a commit. A manual dispatch is **verify-only**:
+the deploy-hook steps are skipped on dispatch, so this can never
+redeploy production — it only checks it. (CD also only reacts to
+push-triggered CI runs on `main`, so pull requests — including fork
+PRs — can never fire the deploy hooks.)
