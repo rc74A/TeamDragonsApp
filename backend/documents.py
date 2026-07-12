@@ -191,7 +191,13 @@ async def list_documents(
     if doc_type:
         stmt = stmt.where(Document.doc_type == doc_type)
 
-    documents = db.scalars(stmt).all()
+    import traceback
+
+    try:
+        documents = db.scalars(stmt).all()
+    except Exception:
+        traceback.print_exc()
+        raise
 
     results = []
     for doc in documents:

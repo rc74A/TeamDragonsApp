@@ -1,33 +1,105 @@
-.db-modal-content-small {
-  max-width: 480px !important;
-  height: auto !important;
-  overflow: visible !important;
+.doc-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
-.db-file-input-field {
-  padding: 6px !important;
+.doc-modal-content {
+  background-color: #2d3748;
+  padding: 32px;
+  border-radius: 12px;
+  border: 1px solid #4a5568;
+  width: 420px;
+  max-width: 95vw;
+  max-height: 85vh;
+  overflow-y: auto;
 }
 
-.db-file-input-field::file-selector-button {
-  background-color: #4a5568;
-  color: #ffffff;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 12px;
-  font-size: 13px;
+.doc-modal-content-small {
+  width: 380px;
+}
+
+.doc-modal-content h3 {
+  font-size: 20px;
   font-weight: bold;
-  transition: background-color 0.15s ease;
+  margin: 0 0 16px;
+  color: #06b6d4;
 }
 
-.db-file-input-field::file-selector-button:hover {
-  background-color: #718096;
+.doc-form-group {
+  margin-bottom: 16px;
 }
 
-.db-form-group input:disabled,
-.db-form-group select:disabled {
-  background-color: #2d3748 !important;
-  color: #718096 !important;
+.doc-form-group label {
+  display: block;
+  font-size: 14px;
+  color: #e2e8f0;
+  margin-bottom: 6px;
+}
+
+.doc-form-group input,
+.doc-form-group select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #4a5568;
+  background-color: #1a202c;
+  color: #ffffff;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.doc-form-group input:focus,
+.doc-form-group select:focus {
+  outline: none;
+  border-color: #06b6d4;
+}
+
+.doc-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.doc-btn-cancel {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: 1px solid #4a5568;
+  background-color: transparent;
+  color: #a0aec0;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.doc-btn-cancel:hover {
+  background-color: #1a202c;
+}
+
+.doc-btn-submit {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  background-color: #06b6d4;
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.doc-btn-submit:hover {
+  background-color: #0891b2;
+}
+
+.doc-btn-submit:disabled,
+.doc-btn-cancel:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }

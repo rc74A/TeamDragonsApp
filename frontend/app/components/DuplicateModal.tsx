@@ -41,15 +41,15 @@ export default function DuplicateModal({
   };
 
   return (
-    <div className="db-modal-overlay">
+    <div className="doc-modal-overlay">
       {/* Specific small container utility class to keep the form look clean */}
-      <div className="db-modal-content db-modal-content-small">
+      <div className="doc-modal-content doc-modal-content-small">
         <h3>{initialData ? "Duplicate Document" : "Upload Document"}</h3>
 
-        {error && <p className="db-error">{error}</p>}
+        {error && <p className="doc-error">{error}</p>}
 
         <form onSubmit={handleSubmit}>
-          <div className="db-form-group">
+          <div className="doc-form-group">
             <label>Document Title</label>
             <input
               type="text"
@@ -61,7 +61,7 @@ export default function DuplicateModal({
             />
           </div>
 
-          <div className="db-form-group">
+          <div className="doc-form-group">
             <label>Document Type</label>
             <select
               value={docType}
@@ -73,16 +73,16 @@ export default function DuplicateModal({
             </select>
           </div>
 
-          <div className="db-form-actions">
+          <div className="doc-form-actions">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="db-btn-cancel"
+              className="doc-btn-cancel"
             >
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="db-btn-submit">
+            <button type="submit" disabled={loading} className="doc-btn-submit">
               {loading ? "Processing..." : "Submit"}
             </button>
           </div>
