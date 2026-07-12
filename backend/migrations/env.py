@@ -16,8 +16,13 @@ from database import Base, build_database_url  # noqa: E402
 
 config = context.config
 
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
+# CLI runs configure logging from alembic.ini; programmatic startup runs
+# (migration_runner) skip it, because fileConfig would disable the app's
+# own loggers and silence all request/error logging (S3-018).
+if config.config_file_name is not None and config.attributes.get(
+    "configure_logger", True
+):
+    fileConfig(config.config_file_name, disable_existing_loggers=False)
 
 # URL precedence: ALEMBIC_DATABASE_URL (scratch runs like autogenerate),
 # then a URL passed programmatically via config.attributes (the
