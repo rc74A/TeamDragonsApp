@@ -15,18 +15,13 @@ export default function DocumentModal({
   onSuccess,
   initialData,
 }: DocumentModalProps) {
-  const [newTitle, setNewTitle] = useState("");
-  const [newType, setNewType] = useState<DocType>("resume");
+  const [newTitle, setNewTitle] = useState(
+    initialData ? `${initialData.title} (copy)` : "",
+  );
+  const [newType, setNewType] = useState<DocType>(
+    initialData?.doc_type ?? "resume",
+  );
   const [error, setError] = useState("");
-
-  // Reset fields whenever a new item is opened for duplication
-  useEffect(() => {
-    if (initialData) {
-      setNewTitle(`${initialData.title} (copy)`);
-      setNewType(initialData.doc_type);
-      setError("");
-    }
-  }, [initialData]);
 
   if (!isOpen) return null;
 

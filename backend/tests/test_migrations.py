@@ -62,6 +62,7 @@ def _make_pre_alembic_db(url):
     with engine.begin() as connection:
         connection.execute(sa.text("DROP TABLE educations"))
         connection.execute(sa.text("DROP TABLE skills"))
+        connection.execute(sa.text("DROP TABLE documents"))
         connection.execute(
             sa.text(
                 "CREATE TABLE educations (id INTEGER PRIMARY KEY, "
@@ -77,6 +78,14 @@ def _make_pre_alembic_db(url):
                 "owner_id INTEGER NOT NULL, name VARCHAR(100) NOT NULL, "
                 "category VARCHAR(100), proficiency VARCHAR(20), "
                 "position INTEGER, created_at DATETIME)"
+            )
+        )
+        connection.execute(
+            sa.text(
+                "CREATE TABLE documents (id INTEGER PRIMARY KEY, "
+                "owner_id VARCHAR(50) NOT NULL, doc_type VARCHAR(20) NOT NULL, "
+                "content TEXT NOT NULL, job_snapshot TEXT NOT NULL, "
+                "created_at DATETIME NOT NULL)"
             )
         )
         connection.execute(
