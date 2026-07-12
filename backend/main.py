@@ -67,6 +67,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    # Let cross-origin frontend code read the request id (S3-018).
+    expose_headers=["X-Request-ID"],
 )
 app.include_router(jobsrouter)
 app.include_router(profilerouter)

@@ -60,6 +60,10 @@ def _alembic_config(database_url: str) -> Config:
     config = Config(str(_BACKEND_DIR / "alembic.ini"))
     config.set_main_option("script_location", str(_BACKEND_DIR / "migrations"))
     config.attributes["sqlalchemy_url"] = database_url
+    # Programmatic runs must not let env.py's fileConfig re-own logging:
+    # it would disable the app's "teamdragons" logger and silence every
+    # request/error log for the process lifetime (S3-018).
+    config.attributes["configure_logger"] = False
     return config
 
 

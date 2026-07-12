@@ -68,7 +68,10 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   // S3-018: capture the error with context instead of failing silently —
   // shows in the browser console and in Vercel's function logs for SSR.
-  console.error("[route-error]", error);
+  // Plain 404s are expected navigation noise, not errors worth logging.
+  if (!(isRouteErrorResponse(error) && error.status === 404)) {
+    console.error("[route-error]", error);
+  }
 
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";

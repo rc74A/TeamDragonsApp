@@ -6,18 +6,29 @@ crashing route has to live in the production router set.
 
 import logging
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.testclient import TestClient
 
 from observability import setup_observability
 
+_TEST_ORIGIN = "http://testorigin.example"
+
 
 def _crashy_app():
-    """Build a minimal instrumented app with one healthy and one
-    crashing route.
+    """Build a minimal instrumented app mirroring main.py's wiring:
+    observability first, CORS added after (so CORS is outermost).
     """
     app = FastAPI()
     setup_observability(app)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[_TEST_ORIGIN],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+        expose_headers=["X-Request-ID"],
+    )
 
     @app.get("/ok")
     async def ok() -> dict:
@@ -26,6 +37,10 @@ def _crashy_app():
     @app.get("/boom")
     async def boom() -> dict:
         raise RuntimeError("kaboom: secret internals")
+
+    @app.get("/teapot")
+    async def teapot() -> dict:
+        raise HTTPException(status_code=418, detail="short and stout")
 
     return app
 
@@ -97,3 +112,57 @@ def test_requests_are_access_logged(caplog):
         and "duration_ms=" in m
         for m in messages
     )
+
+
+def test_500s_keep_cors_headers(caplog):
+    """The middleware-generated 500 passes back out through CORS, so a
+    browser on the frontend origin can read it. Pins the load-bearing
+    ordering: setup_observability before CORSMiddleware.
+    """
+    test_client = TestClient(_crashy_app(), raise_server_exceptions=False)
+    res = test_client.get("/boom", headers={"Origin": _TEST_ORIGIN})
+
+    assert res.status_code == 500
+    assert res.headers.get("access-control-allow-origin") == _TEST_ORIGIN
+    assert res.headers.get("X-Request-ID")
+
+
+def test_expected_4xx_gets_warning_access_line(caplog):
+    """HTTPExceptions skip the crash path and log as WARNING access
+    lines, keeping their FastAPI response shape.
+    """
+    test_client = TestClient(_crashy_app(), raise_server_exceptions=False)
+    with caplog.at_level(logging.INFO, logger="teamdragons"):
+        res = test_client.get("/teapot")
+
+    assert res.status_code == 418
+    assert res.json() == {"detail": "short and stout"}
+    warning_lines = [r for r in caplog.records if r.levelno == logging.WARNING]
+    assert any(
+        "path=/teapot" in r.getMessage() and "status=418" in r.getMessage()
+        for r in warning_lines
+    )
+
+
+def test_request_ids_are_unique_per_request():
+    """Two requests never share a request id."""
+    test_client = TestClient(_crashy_app(), raise_server_exceptions=False)
+    first = test_client.get("/ok").headers["X-Request-ID"]
+    second = test_client.get("/ok").headers["X-Request-ID"]
+    assert first and second and first != second
+
+
+def test_logger_survives_programmatic_migrations(tmp_path):
+    """Running migrations at startup must not disable the app logger:
+    alembic's fileConfig would normally switch it off for the whole
+    process lifetime (the production-only S3-016/S3-018 interaction).
+    """
+    from migration_runner import run_migrations
+    from observability import setup_logging
+
+    setup_logging()
+    run_migrations(f"sqlite:///{(tmp_path / 'obs.db').as_posix()}")
+
+    app_logger = logging.getLogger("teamdragons")
+    assert app_logger.disabled is False
+    assert app_logger.isEnabledFor(logging.ERROR)

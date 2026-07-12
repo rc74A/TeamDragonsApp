@@ -22,14 +22,19 @@ nothing existing changes shape.
 
 **Frontend.** The root `ErrorBoundary` in `frontend/app/root.tsx`
 renders a fallback page instead of a blank screen when a route
-crashes, and logs the error (`[route-error]`) to the browser console —
-and to Vercel's function logs when the crash happens during SSR.
+crashes, and logs the error (`[route-error]`; plain 404s are skipped
+as navigation noise). Where that log lands depends on where the crash
+happened: during server-side rendering it reaches Vercel's function
+logs; after hydration, in the user's browser, it only reaches their
+browser console — ask the reporter for it, or reproduce the crash
+yourself.
 
 ## Tracing a user-reported error
 
 1. Ask for (or reproduce) the failing request; grab `request_id` from
    the error body or the `X-Request-ID` response header in the browser
-   dev-tools Network tab.
+   dev-tools Network tab. (The header is CORS-exposed, so frontend
+   code can also read it programmatically.)
 2. Render → the backend service → Logs → search that id. The matching
    ERROR line has the method, path, and full traceback.
 3. Frontend-only crashes: Vercel → project → Logs, search
