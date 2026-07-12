@@ -1,0 +1,166 @@
+name: CD — Deploy and Verify
+
+# S3-017: merging to main triggers a production deployment that is
+# verified with health checks (S3-BR-016 / S3-BR-017).
+#
+# How it fits together:
+# - Vercel (frontend) and Render (backend) deploy main via their Git
+#   integrations. If the RENDER_DEPLOY_HOOK_URL / VERCEL_DEPLOY_HOOK_URL
+#   repo secrets are configured (see docs/Deployment.md), this workflow
+#   triggers those deploys itself — that mode lets auto-deploy be turned
+#   off in the consoles so nothing deploys before CI is green.
+# - Either way, this workflow then verifies production: backend up,
+#   the deployed commit matches (via /version), the API auth layer
+#   responds, and the frontend serves. A red run on a main commit means
+#   the deployment is broken even though CI passed.
+#
+# workflow_run only fires once this file is on the default branch, and
+# it waits for "CI — Build and Test" to finish on main. The lint
+# workflow runs in parallel to CI, so the first job below also confirms
+# lint passed for the same commit before verifying a deploy.
+
+on:
+  workflow_run:
+    workflows: ["CI — Build and Test"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+# One production verification at a time; later commits queue.
+concurrency:
+  group: cd-production
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+
+jobs:
+  deploy:
+    name: Deploy and verify production
+    runs-on: ubuntu-latest
+    # Verify only after a green push-triggered CI run (or on a manual
+    # dispatch). The event check matters: CI also runs on pull_request,
+    # and the branches filter above matches the HEAD branch name — so
+    # without it, a fork PR opened from a branch named "main" would
+    # fire this job (and the deploy hooks) from an unmerged PR.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push')
+    env:
+      BACKEND_URL: https://teamdragonsapp.onrender.com
+      FRONTEND_URL: https://team-dragons-app.vercel.app
+      SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+    steps:
+      - name: Confirm lint passed for this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Checking 'Lint and Format' for $SHA"
+          for i in $(seq 1 12); do
+            # A transient API error counts as "pending" and is retried.
+            CONCLUSION=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${SHA}" \
+              --jq '[.workflow_runs[] | select(.name == "Lint and Format")][0].conclusion // "pending"' \
+              2>/dev/null || echo "pending")
+            echo "attempt $i: lint conclusion = $CONCLUSION"
+            if [ "$CONCLUSION" = "success" ]; then exit 0; fi
+            if [ "$CONCLUSION" = "failure" ] || [ "$CONCLUSION" = "cancelled" ]; then
+              echo "::error::Lint failed for $SHA — not verifying this deploy."
+              exit 1
+            fi
+            sleep 15
+          done
+          echo "::error::Lint run for $SHA not found/finished after 3 minutes."
+          exit 1
+
+      # Hooks fire only on the merge-triggered path; a manual dispatch
+      # is verify-only so "Run workflow" can never redeploy production.
+      - name: Trigger Render deploy hook (when configured)
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        if: ${{ github.event_name == 'workflow_run' && env.HOOK != '' }}
+        run: |
+          curl -fsS -X POST "$HOOK" -o /dev/null
+          echo "Render deploy hook triggered."
+
+      - name: Trigger Vercel deploy hook (when configured)
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        if: ${{ github.event_name == 'workflow_run' && env.HOOK != '' }}
+        run: |
+          curl -fsS -X POST "$HOOK" -o /dev/null
+          echo "Vercel deploy hook triggered."
+
+      - name: Wait for backend to be healthy
+        run: |
+          echo "Polling $BACKEND_URL/ (Render deploys/cold starts can take minutes)"
+          for i in $(seq 1 40); do
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$BACKEND_URL/" || echo 000)
+            echo "attempt $i: HTTP $CODE"
+            if [ "$CODE" = "200" ]; then exit 0; fi
+            sleep 15
+          done
+          echo "::error::Backend never became healthy at $BACKEND_URL"
+          exit 1
+
+      - name: Verify the deployed backend commit
+        # This loop absorbs the whole Render build+deploy window (the
+        # health check above passes instantly against the old build),
+        # so its budget is ~15 minutes. Exits as soon as the sha lands.
+        run: |
+          echo "Expecting commit $SHA at $BACKEND_URL/version"
+          for i in $(seq 1 60); do
+            BODY=$(curl -s --max-time 20 "$BACKEND_URL/version" || echo '')
+            COMMIT=$(echo "$BODY" | python3 -c "import json,sys; print(json.load(sys.stdin).get('commit',''))" 2>/dev/null || echo '')
+            echo "attempt $i: deployed commit = ${COMMIT:-<none>}"
+            if [ "$COMMIT" = "$SHA" ]; then
+              echo "Deployed commit matches."
+              exit 0
+            fi
+            if [ "$COMMIT" = "unknown" ]; then
+              echo "::warning::/version live but RENDER_GIT_COMMIT unset — deploy is up, commit unverified."
+              exit 0
+            fi
+            if [ -z "$BODY" ] || [ -z "$COMMIT" ]; then
+              echo "::warning::/version not available (pre-S3-017 build still live?) — retrying."
+            fi
+            sleep 15
+          done
+          echo "::error::Deployed backend never reported commit $SHA."
+          exit 1
+
+      - name: Verify the API auth layer responds
+        run: |
+          for i in $(seq 1 5); do
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$BACKEND_URL/api/jobs" || echo 000)
+            echo "attempt $i: GET /api/jobs (no token) -> HTTP $CODE"
+            if [ "$CODE" = "401" ] || [ "$CODE" = "403" ]; then exit 0; fi
+            sleep 10
+          done
+          echo "::error::Expected 401/403 from the protected API, last got $CODE."
+          exit 1
+
+      - name: Wait for frontend to be healthy
+        run: |
+          for i in $(seq 1 20); do
+            CODE=$(curl -sL -o /dev/null -w '%{http_code}' --max-time 20 "$FRONTEND_URL" || echo 000)
+            echo "attempt $i: HTTP $CODE"
+            if [ "$CODE" = "200" ]; then exit 0; fi
+            sleep 15
+          done
+          echo "::error::Frontend never became healthy at $FRONTEND_URL"
+          exit 1
+
+      - name: Write summary
+        if: always()
+        run: |
+          {
+            echo "## Production verification for \`$SHA\`"
+            echo ""
+            echo "| Check | Target |"
+            echo "| --- | --- |"
+            echo "| Backend health | $BACKEND_URL/ |"
+            echo "| Deployed commit | $BACKEND_URL/version |"
+            echo "| API auth layer | $BACKEND_URL/api/jobs (expects 401) |"
+            echo "| Frontend health | $FRONTEND_URL |"
+          } >> "$GITHUB_STEP_SUMMARY"

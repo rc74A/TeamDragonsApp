@@ -39,6 +39,7 @@ class JobCreate(BaseModel):
     description: str = Field(default=None, max_length=500)
     deadline: date | None = Field(default=None)
     deadline_state: str | None = Field(default="No Deadline", max_length=50)
+    interview_notes: str = Field(default=None, max_length=500)
     outcome_state: str | None = Field(default=None, max_length=50)
     outcome_notes: str | None = Field(default=None)
 
@@ -80,7 +81,7 @@ class JobUpdate(BaseModel):
     outcome_notes: str | None = Field(default=None)
 
     interview_date: datetime | str | None = Field(default=None)
-    interview_notes: str | None = Field(default=None)
+    notes: str | None = Field(default=None)
 
     @field_validator("title", "company", "stage", "location", "deadline_state")
     @classmethod
@@ -135,8 +136,7 @@ class JobOut(BaseModel):
     is_archived: bool
 
     interview_date: datetime | None = None
-    interview_notes: str | None = None
-    notes_updated_at: datetime | None = None
+    notes: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 

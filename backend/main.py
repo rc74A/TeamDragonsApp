@@ -12,6 +12,7 @@ from education import educationrouter
 from experience import experiencerouter
 from jobs import jobsrouter
 from migration_runner import run_migrations
+from observability import logger, setup_observability
 from search import searchrouter
 from skills import skillsrouter
 
@@ -27,7 +28,7 @@ origins = [
 async def lifespan(app: FastAPI):
     """Run startup and shutdown work around the app's lifetime."""
     # Init
-    print("Starting Up")
+    logger.info("Starting up")
     # Production runs Alembic migrations (S3-016): adopts pre-Alembic
     # databases, applies schema repairs, and records the version so
     # rollbacks are possible (S3-BR-018). DB_HOST set means production
@@ -41,6 +42,7 @@ async def lifespan(app: FastAPI):
         or os.getenv("RUN_DB_MIGRATIONS") == "1"
     )
     db_path = "alembic migrations" if use_migrations else "create_all (dev fallback)"
+    logger.info("DB startup: %s", db_path)
     if use_migrations:
         run_migrations()
         engine.dispose()
@@ -48,14 +50,16 @@ async def lifespan(app: FastAPI):
         Base.metadata.create_all(bind=engine)
         engine.dispose()
 
-    print(f"DB startup: {db_path}")
     yield
 
-    print("Shutting Down")
+    logger.info("Shutting down")
     # Shutdown
 
 
 app = FastAPI(lifespan=lifespan)
+# S3-018: request ids + structured logs + clean 500s. Added before CORS
+# so CORS stays outermost and error responses keep their CORS headers.
+setup_observability(app)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -63,6 +67,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    # Let cross-origin frontend code read the request id (S3-018).
+    expose_headers=["X-Request-ID"],
 )
 app.include_router(jobsrouter)
 app.include_router(profilerouter)
@@ -80,3 +86,18 @@ app.include_router(documentrouter)
 async def read_root() -> dict:
     """Health-check root endpoint."""
     return {"message": "Backend testing"}
+
+
+@app.get("/version", tags=["root"])
+async def read_version() -> dict:
+    """
+    Report the deployed commit for the CD health check (S3-017).
+
+    Render injects RENDER_GIT_COMMIT into the environment; the deploy
+    workflow compares it against the commit it just verified so a
+    green run proves the new build is actually live, not a stale one.
+
+    Returns:
+        dict: The deployed commit sha, or "unknown" outside Render.
+    """
+    return {"commit": os.getenv("RENDER_GIT_COMMIT", "unknown")}

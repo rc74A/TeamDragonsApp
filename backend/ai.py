@@ -633,3 +633,95 @@ def save_cover_letter(
         raise HTTPException(
             status_code=500, detail="Failed to save cover letter."
         ) from e
+
+
+class ResearchRequest(BaseModel):
+    """Input payload mapping from the Dashboard AI Brief button action"""
+
+    company_name: str
+    job_title: str
+    location: str | None = None
+    job_description: str | None = None
+    user_context: str | None = ""
+
+
+@airouter.post("/research")
+def generate_company_research(
+    body: ResearchRequest,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+):
+    """
+    Generates an expert, location-aware corporate interview briefing
+    tailored to the specific title, raw job description requirements,
+    and custom user-provided context focus areas.
+    """
+    # Build out a dynamic instruction block depending on if user_context exists
+    user_section_instruction = ""
+    if body.user_context and body.user_context.strip():
+        # Broken into smaller strings to pass the 88 character line limit (E501)
+        user_section_instruction = (
+            "SECTION 5: USER FOCUS & TARGETED Q&A\n"
+            "Directly address, analyze, and answer the user's specific "
+            f'request or question: "{body.user_context.strip()}"'
+        )
+
+    # Build out the final targeted prompt pieces to avoid strict E501 limits
+    p_intro = (
+        "You are an expert career coach and corporate intelligence researcher. "
+        "Provide a comprehensive, highly actionable interview preparation "
+        "briefing for a candidate."
+    )
+    p_fallback = (
+        "No explicit description provided. Analyze general expectations for this title."
+    )
+    p_desc = body.job_description or p_fallback
+    p_warn = (
+        "CRITICAL INSTRUCTION: Do NOT use any markdown syntax or special "
+        "formatting symbols. Do not use asterisks (**), hashtags (#), or "
+        "dashes for bullet points. Write exclusively in plain text using "
+        "clear capitalization for section headers."
+    )
+    p_struct = (
+        "Please provide the research structured exactly with these plain "
+        "text headers, separating sections with a blank line:"
+    )
+    p_fluff = (
+        "Keep the tone professional, objective, direct, and crisp. "
+        "Do not include introductory conversational fluff."
+    )
+
+    prompt = f"""{p_intro}
+
+Target Parameters:
+- Company: {body.company_name}
+- Role Title: {body.job_title}
+- Location context: {body.location or "Not Specified"}
+
+Raw Job Description Requirements:
+\"\"\"
+{p_desc}
+\"\"\"
+
+{p_warn}
+
+{p_struct}
+SECTION 1: COMPANY MISSION & REGIONAL CULTURE
+SECTION 2: CORE TECH STACK & SKILLS MATRIX
+SECTION 3: KEY STRATEGIC FOCUS OR RECENT TRENDS
+SECTION 4: 3 PRECISION QUESTIONS TO ASK THE INTERVIEWER
+{user_section_instruction}
+
+{p_fluff}"""
+
+    try:
+        client = genai.Client()
+        response = client.models.generate_content(
+            model=MODEL,
+            contents=prompt,
+        )
+        return response.text
+    except Exception as e:
+        # Added 'from None' to satisfy the B904 error rule
+        raise HTTPException(
+            status_code=500, detail=f"Gemini API Error: {str(e)}"
+        ) from None
