@@ -41,7 +41,6 @@ async def lifespan(app: FastAPI):
         or os.getenv("RUN_DB_MIGRATIONS") == "1"
     )
     db_path = "alembic migrations" if use_migrations else "create_all (dev fallback)"
-    print(f"DB startup: {db_path}")
     if use_migrations:
         run_migrations()
         engine.dispose()
@@ -49,6 +48,7 @@ async def lifespan(app: FastAPI):
         Base.metadata.create_all(bind=engine)
         engine.dispose()
 
+    print(f"DB startup: {db_path}")
     yield
 
     print("Shutting Down")

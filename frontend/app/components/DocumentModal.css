@@ -1,0 +1,98 @@
+.dm-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dm-modal {
+  background-color: #2d3748;
+  padding: 32px;
+  border-radius: 12px;
+  border: 1px solid #4a5568;
+  width: 420px;
+  max-width: 95vw;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.dm-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 0 20px;
+  color: #06b6d4;
+}
+
+.dm-form-group {
+  margin-bottom: 16px;
+}
+
+.dm-form-group label {
+  display: block;
+  font-size: 14px;
+  color: #e2e8f0;
+  margin-bottom: 6px;
+}
+
+.dm-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #4a5568;
+  background-color: #1a202c;
+  color: #ffffff;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.dm-input:focus {
+  outline: none;
+  border-color: #06b6d4;
+}
+
+.dm-error {
+  color: #f56565;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.dm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.dm-btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dm-btn-cancel {
+  background-color: transparent;
+  border: 1px solid #4a5568;
+  color: #a0aec0;
+}
+
+.dm-btn-cancel:hover {
+  background-color: #1a202c;
+}
+
+.dm-btn-confirm {
+  background-color: #06b6d4;
+  color: #ffffff;
+}
+
+.dm-btn-confirm:hover {
+  background-color: #0891b2;
+}

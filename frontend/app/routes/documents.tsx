@@ -7,6 +7,7 @@ import { uploadDocument, type DocType } from "~/lib/document";
 import DuplicateModal from "~/components/DuplicateModal";
 import "./app.css";
 import "./documents.css";
+import "./dashboard.css";
 
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
@@ -399,15 +400,20 @@ export default function Documents() {
       </div>
 
       {duplicateModalOpen && (
-        <DuplicateModal
-          isOpen={duplicateModalOpen}
-          onClose={() => setDuplicateModalOpen(false)}
-          onSuccess={(newTitle, newType) => {
-            handleDuplicate(duplicatingItem, newTitle, newType);
-          }}
-          getToken={getToken}
-          initialData={duplicatingItem}
-        />
+        <div className="db-modal-overlay">
+          <div className="db-modal-content db-modal-content-small">
+            <DuplicateModal
+              className="db-modal-overlay db-modal-content db-modal-content-small"
+              isOpen={duplicateModalOpen}
+              onClose={() => setDuplicateModalOpen(false)}
+              onSuccess={(newTitle, newType) => {
+                handleDuplicate(duplicatingItem, newTitle, newType);
+              }}
+              getToken={getToken}
+              initialData={duplicatingItem}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
