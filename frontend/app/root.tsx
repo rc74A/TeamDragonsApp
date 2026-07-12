@@ -66,6 +66,10 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let details = "An unexpected error occurred.";
   let stack: string | undefined;
 
+  // S3-018: capture the error with context instead of failing silently —
+  // shows in the browser console and in Vercel's function logs for SSR.
+  console.error("[route-error]", error);
+
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";
     details =
