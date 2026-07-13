@@ -149,6 +149,7 @@ export default function Dashboard() {
     deadlineState: "No Deadline",
     outcomeState: "",
     outcomeNotes: "",
+    prepNotes: "",
   });
 
   const [timelineData, setTimelineData] = useState<TimelineEntry[]>([]);
@@ -196,6 +197,8 @@ export default function Dashboard() {
         createdAt: (rawJob.created_at as string) || new Date().toISOString(),
         outcome_state: (rawJob.outcome_state as string) ?? null,
         outcome_notes: (rawJob.outcome_notes as string) ?? null,
+        prepNotes: (rawJob.prep_notes as string) ?? "",
+        notesUpdatedAt: (rawJob.notes_updated_at as string) ?? null,
       }),
     );
   }, [rawJobs]);
@@ -365,6 +368,7 @@ export default function Dashboard() {
           deadline_state: jobForm.deadlineState,
           outcome_state: jobForm.outcomeState || null,
           outcome_notes: jobForm.outcomeNotes || null,
+          prep_notes: jobForm.prepNotes || null,
         }),
       });
 
@@ -661,6 +665,7 @@ export default function Dashboard() {
                     outcomeState: "",
                     outcomeNotes: "",
                     description: "",
+                    prepNotes: "",
                   });
                   setIsModalOpen(true);
                 }}
@@ -732,6 +737,7 @@ export default function Dashboard() {
                           deadlineState: job.deadlineState,
                           outcomeState: "",
                           outcomeNotes: "",
+                          prepNotes: job.prepNotes || "",
                         });
                         setIsModalOpen(true);
                         fetchJobInterviews(job.id);
@@ -1042,6 +1048,37 @@ export default function Dashboard() {
                     </div>
                   )}
                   <hr className="db-modal-divider" />
+                  {/* S3-013: Interview Prep Notes Section */}
+                  <h3 className="db-modal-title-blue view-title-spacing">💡 Interview Preparation Notes</h3>
+                  <div className="db-form-group">
+                  {(() => {
+                  const selectedJob = clientJobs.find(j => j.id === editingJobId);
+                  return selectedJob?.notesUpdatedAt ? (
+                  <p className="db-timeline-empty subform-group-spacing">
+                  ⏳ Last Audited Stamp: {(() => {
+      const utcString = selectedJob.notesUpdatedAt.endsWith("Z")
+        ? selectedJob.notesUpdatedAt
+        : `${selectedJob.notesUpdatedAt}Z`;
+      
+      return new Date(utcString).toLocaleString();
+    })()}
+                </p>
+                  ) : (
+                    <p className="db-timeline-empty subform-group-spacing">
+                  Maintain structured preparation talking points, pitches, or cheat-sheets for your rounds.
+                    </p>
+                  );
+                })()}
+              <textarea
+              id="modalPrepNotes"
+              placeholder="Paste your elevator pitch, STAR method notes, questions to ask the interviewer, or technical notes..."
+              value={jobForm.prepNotes}
+              rows={5}
+              className="db-outcome-textarea"
+              onChange={(e) => setJobForm({ ...jobForm, prepNotes: e.target.value })}
+              />
+            </div>
+              <hr className="db-modal-divider" />
                   {/* S2-011: Interview Tracking Management Panel */}
                   <h3 className="db-modal-title-blue view-title-spacing">
                     🎙️ Scheduled Interviews
