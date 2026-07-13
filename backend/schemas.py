@@ -36,12 +36,13 @@ class JobCreate(BaseModel):
     company: str = Field(max_length=200)
     stage: str = Field(default="Saved", max_length=50)
     location: str | None = Field(default=None, max_length=200)
-    description: str = Field(default=None, max_length=500)
+    description: str = Field(default=None, max_length=1000)
     deadline: date | None = Field(default=None)
     deadline_state: str | None = Field(default="No Deadline", max_length=50)
-    interview_notes: str = Field(default=None, max_length=500)
+    interview_notes: str = Field(default=None, max_length=5000)
     outcome_state: str | None = Field(default=None, max_length=50)
     outcome_notes: str | None = Field(default=None)
+    research_notes: str | None = Field(default=None, max_length=5000)
 
     interview_date: datetime | str | None = Field(default=None)
     notes: str | None = Field(default=None)
@@ -73,13 +74,14 @@ class JobUpdate(BaseModel):
     company: str | None = Field(default=None, max_length=200)
     stage: str | None = Field(default=None, max_length=50)
     location: str | None = Field(default=None, max_length=200)
-    description: str | None = Field(default=None, max_length=500)
+    description: str | None = Field(default=None, max_length=1000)
     deadline: date | None = Field(default=None)
     deadline_state: str | None = Field(default=None, max_length=50)
-
+    research_notes: str | None = Field(default=None, max_length=5000)
+    interview_notes: str | None = Field(default=None, max_length=5000)
     outcome_state: str | None = Field(default=None, max_length=50)
     outcome_notes: str | None = Field(default=None)
-
+    research_notes: str | None = Field(default=None)
     interview_date: datetime | str | None = Field(default=None)
     notes: str | None = Field(default=None)
 
@@ -134,10 +136,11 @@ class JobOut(BaseModel):
     outcome_state: str | None = None
     outcome_notes: str | None = None
     is_archived: bool
-
+    research_notes: str | None = None
+    interview_notes: str | None = None  
     interview_date: datetime | None = None
     notes: str | None = None
-
+    notes_updated_at: datetime | None = None
     model_config = ConfigDict(from_attributes=True)
 
 

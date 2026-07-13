@@ -803,3 +803,24 @@
   font-size: 13px;
   margin: 0;
 }
+
+.ai-briefing-body {
+  white-space: pre-wrap;
+}
+
+.btn-save-prep {
+  margin-top: 8px;
+  width: 100%;
+  background: #10b981; 
+  color: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-save-prep:hover {
+  background: #059669;
+}

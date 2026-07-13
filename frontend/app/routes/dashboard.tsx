@@ -9,6 +9,7 @@ import "./app.css";
 import "./dashboard.css";
 import { AIResearchButton } from "../components/AIResearchButton";
 
+
 interface Job {
   id: number;
   title: string;
@@ -467,6 +468,82 @@ export default function Dashboard() {
   }
     */
 
+  const [interviewNotes, setInterviewNotes] = useState<string>("");
+
+  const handleSaveAIResearch = async (jobId: number, selectedJobRecord: any) => {
+  if (!activeAINotes) return;
+  
+  try {
+    const token = await getToken();
+    if (!token) return;
+
+    const response = await fetch(`${BACKEND_URL}/api/jobs/${jobId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title: selectedJobRecord.title,
+        company: selectedJobRecord.company,
+        stage: selectedJobRecord.stage,
+        location: selectedJobRecord.location,
+        deadline: selectedJobRecord.deadline,
+        deadline_state: selectedJobRecord.deadline_state || selectedJobRecord.deadlineState,
+        outcome_state: selectedJobRecord.outcome_state || null,
+        outcome_notes: selectedJobRecord.outcome_notes || null,
+        interview_notes: selectedJobRecord.interview_notes || null,
+        research_notes: activeAINotes, 
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to update job");
+    
+    alert("AI Research notes successfully saved to this job!");
+  } catch (error) {
+    console.error("Error saving research notes:", error);
+    alert("Failed to save research notes.");
+  }
+};
+
+const handleSavePrepNotes = async (jobId: number, selectedJobRecord: any) => {
+  try {
+    const token = await getToken();
+    if (!token) return;
+
+    const response = await fetch(`${BACKEND_URL}/api/jobs/${jobId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title: selectedJobRecord.title,
+        company: selectedJobRecord.company,
+        stage: selectedJobRecord.stage,
+        location: selectedJobRecord.location,
+        deadline: selectedJobRecord.deadline,
+        deadline_state: selectedJobRecord.deadline_state || selectedJobRecord.deadlineState,
+        outcome_state: selectedJobRecord.outcome_state || null,
+        outcome_notes: selectedJobRecord.outcome_notes || null,
+        interview_notes: interviewNotes, 
+        research_notes: selectedJobRecord.research_notes || null,
+      }),
+    });
+
+    if (!response.ok) throw new Error("Failed to update job");
+    
+    alert("Interview prep notes updated successfully!");
+  } catch (error) {
+    console.error("Error saving prep notes:", error);
+    alert("Failed to save interview prep notes.");
+  }
+};
+
+
+
+
+
   return (
     <div className="db-root">
       <header className="db-header">Dragon Application</header>
@@ -537,22 +614,36 @@ export default function Dashboard() {
                 <span className="db-metric-label">Response Rate</span>
               </div>
             </section>
-            {/* 🌟 Clean AI Briefing Output Display Block */}
+            {/* Clean AI Briefing Output Display Block */}
             {activeAINotes && (
               <div className="ai-briefing-display-card">
                 <div className="ai-briefing-header">
-                  <h3>✨ Interview Prep Briefing: {activeAICompany}</h3>
-                  <button
-                    type="button"
-                    onClick={() => setActiveAINotes(null)}
-                    className="ai-briefing-close"
-                  >
-                    &times;
-                  </button>
-                </div>
-                <div className="ai-briefing-body">{activeAINotes}</div>
-              </div>
-            )}
+                <h3>✨ Interview Prep Briefing: {activeAICompany}</h3>
+                <div className="ai-modal-actions">
+                {displayJobs.find(j => j.company === activeAICompany) && (
+            <button type="button" className="ai-btn-save" 
+            onClick={() => {
+              const targetedJob = displayJobs.find(j => j.company === activeAICompany);
+              if (targetedJob) handleSaveAIResearch(targetedJob.id, targetedJob);
+            }}
+          >
+            Save to Job Notes
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={() => setActiveAINotes(null)}
+          className="ai-briefing-close"
+            >
+          &times;
+        </button>
+      </div>
+    </div>
+    <div className="ai-briefing-body">
+      {activeAINotes}
+    </div>
+  </div>
+)}
 
             <AnalyticsPanel />
 
@@ -733,6 +824,7 @@ export default function Dashboard() {
                           outcomeState: "",
                           outcomeNotes: "",
                         });
+                        setInterviewNotes((job as any).interview_notes || "");
                         setIsModalOpen(true);
                         fetchJobInterviews(job.id);
                         fetchJobTimeline(job.id);
@@ -880,6 +972,31 @@ export default function Dashboard() {
                       <option value="Past">Past</option>
                       <option value="Extended">Extended</option>
                     </select>
+                  </div>
+
+                  <div className="db-form-group">
+                    <label>Interview Preparation Notes</label>
+                    <textarea
+                      id="modalPrepNotes"
+                      placeholder="Write your technical talking points, behavioral examples, or questions to ask the interviewer here..."
+                      value={interviewNotes}
+                      rows={5}
+                      className="db-outcome-textarea"
+                      onChange={(e) => setInterviewNotes(e.target.value)}
+                      maxLength={5000}
+                    />
+                    <button
+                      type="button"
+                      className="btn-save-prep"
+                      onClick={() => {
+                        if (editingJobId) {
+                          const matchingJob = displayJobs.find(j => j.id === editingJobId);
+                          handleSavePrepNotes(editingJobId, matchingJob);
+                        }
+                      }}
+                    >
+                      💾 Persist Prep Notes Changes
+                    </button>
                   </div>
 
                   {/* S2-013: Terminal Conclusion Tracking Panel Block */}
