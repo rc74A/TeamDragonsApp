@@ -43,9 +43,11 @@ export function AIResearchButton({
       });
 
       if (!response.ok) throw new Error("API request failed");
-
-      const data = await response.json();
-      onResearchComplete(data.research_notes);
+      const generatedText = await response.text();
+      const cleanText = generatedText
+        .replace(/^"|"$/g, "")
+        .replace(/\\n/g, "\n");
+      onResearchComplete(cleanText);
       setShowInput(false);
     } catch (err) {
       console.error("🚨 AI BUTTON ERROR DETECTED:", err);
