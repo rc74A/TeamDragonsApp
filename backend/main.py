@@ -2,6 +2,7 @@ import os
 from contextlib import asynccontextmanager
 from profile import profilerouter
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -17,6 +18,8 @@ from search import searchrouter
 from skills import skillsrouter
 
 # ----- FastAPI setup -----
+
+load_dotenv()
 
 origins = [
     "https://team-dragons-app.vercel.app",

@@ -3,6 +3,7 @@ import json
 import os
 from typing import Annotated, Literal
 
+from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
@@ -18,6 +19,7 @@ from schemas import (
     DocumentVersionOut,
 )
 
+load_dotenv()
 documentrouter = APIRouter(prefix="/api/documents", tags=["documents"])
 
 SUPABASE_URL = "https://acnfzbtvpovzzyqwgbys.supabase.co"
@@ -160,6 +162,7 @@ async def list_documents(
     doc_type: Literal["resume", "cover_letter"] | None = None,
     sort_by: Literal["created_at", "file_name", "title"] = "created_at",
     order: Literal["asc", "desc"] = "desc",
+    include_archived: bool = False,
 ):
     """
     Lists all documents owned by the current user, one entry per distinct
@@ -191,16 +194,13 @@ async def list_documents(
     if doc_type:
         stmt = stmt.where(Document.doc_type == doc_type)
 
-    import traceback
-
-    try:
-        documents = db.scalars(stmt).all()
-    except Exception:
-        traceback.print_exc()
-        raise
+    documents = db.scalars(stmt).all()
 
     results = []
     for doc in documents:
+        if doc.is_archived != include_archived:
+            continue
+
         if not doc.versions:
             continue
 
@@ -221,6 +221,7 @@ async def list_documents(
                 doc_type=doc.doc_type,
                 title=doc.title,
                 created_at=doc.created_at,
+                is_archived=doc.is_archived,
                 latest_version=DocumentVersionOut(
                     id=latest.id,
                     version_number=latest.version_number,
@@ -382,3 +383,110 @@ async def duplicate_document_request(
         "new_document_id": new_parent_doc.id,
         "total_versions_cloned": cloned_versions_count,
     }
+
+
+@documentrouter.post("/{document_id}/archive", response_model=DocumentOut)
+async def archive_document(
+    document_id: int,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """Marks a document as archived, hiding it from the default active list."""
+    stmt = select(Document).where(
+        Document.id == document_id, Document.owner_id == user_id
+    )
+    doc = db.scalars(stmt).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    if not doc.versions:
+        raise HTTPException(status_code=404, detail="Document has no versions")
+
+    doc.is_archived = True
+    db.commit()
+    db.refresh(doc)
+
+    latest = doc.versions[0]
+    bucket_name = "resumes" if doc.doc_type == "resume" else "cover_letters"
+    try:
+        signed = supabase.storage.from_(bucket_name).create_signed_url(
+            latest.storage_url, 900
+        )
+        download_url = signed.get("signedURL")
+    except Exception:
+        download_url = None
+
+    return DocumentOut(
+        id=doc.id,
+        doc_type=doc.doc_type,
+        title=doc.title,
+        created_at=doc.created_at,
+        is_archived=doc.is_archived,
+        latest_version=DocumentVersionOut(
+            id=latest.id,
+            version_number=latest.version_number,
+            file_name=latest.file_name,
+            created_at=latest.created_at,
+            download_url=download_url,
+        ),
+    )
+
+
+@documentrouter.post("/{document_id}/restore", response_model=DocumentOut)
+async def restore_document(
+    document_id: int,
+    user_id: Annotated[str, Depends(get_current_user_id)],
+    db: Annotated[Session, Depends(get_db)],
+):
+    """
+    Restores a previously archived document back to the active list.
+
+    Params:
+        document_id (int): The id of the parent Document to restore.
+        user_id (str): Extracted authenticated user token from dependency injection.
+        db (Session): Active context transaction handle tracking the local instance.
+
+    Returns:
+        DocumentOut: The restored document, including its latest version
+        and a fresh signed preview URL, with is_archived set to False.
+
+    Raises:
+        HTTPException(404): If no document with this id exists for the
+        current user, or if it has no uploaded versions.
+    """
+    stmt = select(Document).where(
+        Document.id == document_id, Document.owner_id == user_id
+    )
+    doc = db.scalars(stmt).first()
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    if not doc.versions:
+        raise HTTPException(status_code=404, detail="Document has no versions")
+
+    doc.is_archived = False
+    db.commit()
+    db.refresh(doc)
+
+    latest = doc.versions[0]
+    bucket_name = "resumes" if doc.doc_type == "resume" else "cover_letters"
+    try:
+        signed = supabase.storage.from_(bucket_name).create_signed_url(
+            latest.storage_url, 900
+        )
+        download_url = signed.get("signedURL")
+    except Exception:
+        download_url = None
+
+    return DocumentOut(
+        id=doc.id,
+        doc_type=doc.doc_type,
+        title=doc.title,
+        created_at=doc.created_at,
+        is_archived=doc.is_archived,
+        latest_version=DocumentVersionOut(
+            id=latest.id,
+            version_number=latest.version_number,
+            file_name=latest.file_name,
+            created_at=latest.created_at,
+            download_url=download_url,
+        ),
+    )
