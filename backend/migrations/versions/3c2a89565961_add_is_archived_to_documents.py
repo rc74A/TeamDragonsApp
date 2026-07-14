@@ -56,5 +56,5 @@ def downgrade() -> None:
     with op.batch_alter_table("documents", schema=None) as batch_op:
         batch_op.drop_column("is_archived")
 
-    op.drop_table("document_versions")
+    # op.drop_table("document_versions")
     # ### end Alembic commands ###
