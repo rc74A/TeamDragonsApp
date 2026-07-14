@@ -66,7 +66,9 @@ export default function Documents() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
 
-  const [duplicatingItem, setDuplicatingItem] = useState<DocumentItem | null>(null);
+  const [duplicatingItem, setDuplicatingItem] = useState<DocumentItem | null>(
+    null,
+  );
   const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
 
   const [archiveModalOpen, setArchiveModalOpen] = useState(false);
@@ -174,7 +176,9 @@ export default function Documents() {
       );
 
       if (!response.ok) {
-        setError(err instanceof Error ? err.message : "Failed to duplicate item.");
+        setError(
+          err instanceof Error ? err.message : "Failed to duplicate item.",
+        );
       }
 
       await fetchDocuments();

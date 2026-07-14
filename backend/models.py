@@ -189,6 +189,7 @@ class Document(Base):
     title: Mapped[str] = mapped_column(String(255), nullable=False)  # NEW
     content: Mapped[str] = mapped_column(Text, nullable=False)
     job_snapshot: Mapped[str] = mapped_column(Text, nullable=False)
+    is_archived: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=func.now()
