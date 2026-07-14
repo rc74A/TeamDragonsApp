@@ -34,18 +34,12 @@ def upgrade() -> None:
                 sa.Column("notes_updated_at", sa.DateTime(), nullable=True)
             )
 
-        if "interview_notes" in existing_columns:
-            batch_op.drop_column("interview_notes")
-
     # ### end Alembic commands ###
 
 
 def downgrade() -> None:
     """Downgrade schema."""
     with op.batch_alter_table("jobs", schema=None) as batch_op:
-        # Re-add the old column if your system needs it back
-        batch_op.add_column(sa.Column("interview_notes", sa.TEXT(), nullable=True))
-
         batch_op.drop_column("notes_updated_at")
         batch_op.drop_column("prep_notes")
 
