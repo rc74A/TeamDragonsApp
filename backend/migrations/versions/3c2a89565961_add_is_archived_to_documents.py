@@ -22,19 +22,18 @@ def upgrade() -> None:
     """Upgrade schema."""
     # document_versions already exists on this DB from before Alembic tracked it —
     # commented out for local recovery only, restore before committing
-    op.create_table(
-        "document_versions",
-        sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column("document_id", sa.Integer(), nullable=False),
-        sa.Column("version_number", sa.Integer(), nullable=False),
-        sa.Column("file_name", sa.String(length=255), nullable=False),
-        sa.Column("storage_url", sa.String(length=2048), nullable=False),
-        sa.Column("content", sa.Text(), nullable=False),
-        sa.Column("job_snapshot", sa.Text(), nullable=False),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
-        sa.ForeignKeyConstraint(["document_id"], ["documents.id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("id"),
-    )
+    # op.create_table('document_versions',
+    # sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    # sa.Column('document_id', sa.Integer(), nullable=False),
+    # sa.Column('version_number', sa.Integer(), nullable=False),
+    # sa.Column('file_name', sa.String(length=255), nullable=False),
+    # sa.Column('storage_url', sa.String(length=2048), nullable=False),
+    # sa.Column('content', sa.Text(), nullable=False),
+    # sa.Column('job_snapshot', sa.Text(), nullable=False),
+    # sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
+    # sa.ForeignKeyConstraint(['document_id'], ['documents.id'], ondelete='CASCADE'),
+    # sa.PrimaryKeyConstraint('id')
+    # )
 
     with op.batch_alter_table("documents", schema=None) as batch_op:
         batch_op.add_column(
