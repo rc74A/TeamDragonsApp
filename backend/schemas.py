@@ -83,6 +83,9 @@ class JobUpdate(BaseModel):
     interview_date: datetime | str | None = Field(default=None)
     notes: str | None = Field(default=None)
 
+    prep_notes: str | None = Field(default=None)
+    notes_updated_at: datetime | None = None
+
     @field_validator("title", "company", "stage", "location", "deadline_state")
     @classmethod
     def validate_not_blank(cls, value: str | None) -> str | None:
@@ -138,7 +141,8 @@ class JobOut(BaseModel):
     interview_date: datetime | None = None
     notes: str | None = None
 
-    model_config = ConfigDict(from_attributes=True)
+    prep_notes: str | None = Field(default=None)
+    notes_updated_at: datetime | None = None
 
 
 class JobStageHistoryOut(BaseModel):
