@@ -19,7 +19,7 @@ depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
-    
+    """Upgrade the database schema."""
     # 1. Use the clean, modern inspection method to grab current columns
     conn = op.get_bind()
     inspector = sa.inspect(conn)
