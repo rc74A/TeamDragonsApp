@@ -149,7 +149,8 @@ export default function Dashboard() {
     deadlineState: "No Deadline",
     outcomeState: "",
     outcomeNotes: "",
-    prepNotes: "",
+    aiNotes: "",
+    personalNotes: "",
   });
 
   const [timelineData, setTimelineData] = useState<TimelineEntry[]>([]);
@@ -368,7 +369,7 @@ export default function Dashboard() {
           deadline_state: jobForm.deadlineState,
           outcome_state: jobForm.outcomeState || null,
           outcome_notes: jobForm.outcomeNotes || null,
-          prep_notes: jobForm.prepNotes || null,
+          
         }),
       });
 
@@ -665,7 +666,8 @@ export default function Dashboard() {
                     outcomeState: "",
                     outcomeNotes: "",
                     description: "",
-                    prepNotes: "",
+                    aiNotes: "",
+                    personalNotes: "",
                   });
                   setIsModalOpen(true);
                 }}
@@ -726,6 +728,7 @@ export default function Dashboard() {
                     <button
                       type="button"
                       onClick={() => {
+                        const [aiPart, personalPart] = (job.prepNotes || "").split("\n--- PERSONAL_NOTES_DIVIDER ---\n");
                         setEditingJobId(job.id);
                         setJobForm({
                           title: job.title,
@@ -737,7 +740,8 @@ export default function Dashboard() {
                           deadlineState: job.deadlineState,
                           outcomeState: "",
                           outcomeNotes: "",
-                          prepNotes: job.prepNotes || "",
+                          aiNotes: aiPart || "",
+                          personalNotes: personalPart || "",
                         });
                         setIsModalOpen(true);
                         fetchJobInterviews(job.id);
@@ -1047,38 +1051,52 @@ export default function Dashboard() {
                       ))}
                     </div>
                   )}
-                  <hr className="db-modal-divider" />
-                  {/* S3-013: Interview Prep Notes Section */}
-                  <h3 className="db-modal-title-blue view-title-spacing">💡 Interview Preparation Notes</h3>
-                  <div className="db-form-group">
-                  {(() => {
-                  const selectedJob = clientJobs.find(j => j.id === editingJobId);
-                  return selectedJob?.notesUpdatedAt ? (
-                  <p className="db-timeline-empty subform-group-spacing">
-                  ⏳ Last Audited Stamp: {(() => {
-      const utcString = selectedJob.notesUpdatedAt.endsWith("Z")
-        ? selectedJob.notesUpdatedAt
-        : `${selectedJob.notesUpdatedAt}Z`;
-      
-      return new Date(utcString).toLocaleString();
-    })()}
-                </p>
-                  ) : (
-                    <p className="db-timeline-empty subform-group-spacing">
-                  Maintain structured preparation talking points, pitches, or cheat-sheets for your rounds.
-                    </p>
-                  );
-                })()}
+                 {/* S3-013 & S3-012: Distinct AI Research & Personal Interview Prep Layout */}
+            <h3 className="db-modal-title-blue view-title-spacing">✨ Company Research Notes</h3>
+            <div className="db-form-group">
+              {activeAINotes && (
+                <button
+                  type="button"
+                  className="db-btn-submit subform-btn-layout"
+                  onClick={() => setJobForm({ ...jobForm, aiNotes: activeAINotes })}
+                >
+                  🚀 Autofill Generated AI Briefing Here
+                </button>
+              )}
               <textarea
-              id="modalPrepNotes"
-              placeholder="Paste your elevator pitch, STAR method notes, questions to ask the interviewer, or technical notes..."
-              value={jobForm.prepNotes}
-              rows={5}
-              className="db-outcome-textarea"
-              onChange={(e) => setJobForm({ ...jobForm, prepNotes: e.target.value })}
+                id="modalAiNotes"
+                placeholder="AI research trends, metrics, and scraped context live here..."
+                value={jobForm.aiNotes}
+                rows={5}
+                className="db-outcome-textarea"
+                onChange={(e) => setJobForm({ ...jobForm, aiNotes: e.target.value })}
               />
             </div>
-              <hr className="db-modal-divider" />
+
+            <h3 className="db-modal-title-blue view-title-spacing">💡 My Interview Preparation Notes</h3>
+            <div className="db-form-group">
+              {(() => {const selectedJob = clientJobs.find(j => j.id === editingJobId);
+                return selectedJob?.notesUpdatedAt && (
+                  <p className="db-timeline-empty subform-group-spacing">
+                    ⏳ Last Audited Stamp: {(() => {
+                      const utcString = selectedJob.notesUpdatedAt.endsWith("Z")
+                        ? selectedJob.notesUpdatedAt
+                        : `${selectedJob.notesUpdatedAt}Z`;
+                      return new Date(utcString).toLocaleString();
+                    })()}
+                  </p>
+                );
+              })()}
+              <textarea
+                id="modalPersonalNotes"
+                placeholder="My specific talking points, technical checklists, questions to ask..."
+                value={jobForm.personalNotes}
+                rows={5}
+                className="db-outcome-textarea"
+                onChange={(e) => setJobForm({ ...jobForm, personalNotes: e.target.value })}
+              />
+            </div>
+            <hr className="db-modal-divider" />
                   {/* S2-011: Interview Tracking Management Panel */}
                   <h3 className="db-modal-title-blue view-title-spacing">
                     🎙️ Scheduled Interviews
