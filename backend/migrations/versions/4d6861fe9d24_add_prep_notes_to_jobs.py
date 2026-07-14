@@ -10,7 +10,6 @@ from collections.abc import Sequence
 
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.engine import reflection
 
 # revision identifiers, used by Alembic.
 revision: str = "4d6861fe9d24"
@@ -18,9 +17,6 @@ down_revision: str | Sequence[str] | None = "52e0af935ad6"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
-
-from alembic import op
-import sqlalchemy as sa
 
 def upgrade() -> None:
     # 1. Use the clean, modern inspection method to grab current columns
@@ -31,10 +27,12 @@ def upgrade() -> None:
     with op.batch_alter_table("jobs", schema=None) as batch_op:
         if "prep_notes" not in existing_columns:
             batch_op.add_column(sa.Column("prep_notes", sa.Text(), nullable=True))
-            
+
         if "notes_updated_at" not in existing_columns:
-            batch_op.add_column(sa.Column("notes_updated_at", sa.DateTime(), nullable=True))
-        
+            batch_op.add_column(
+                sa.Column("notes_updated_at", sa.DateTime(), nullable=True)
+            )
+
         if "interview_notes" in existing_columns:
             batch_op.drop_column("interview_notes")
 
