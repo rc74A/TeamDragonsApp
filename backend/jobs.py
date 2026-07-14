@@ -291,8 +291,8 @@ def update_job(
 
     if "outcome_state" in updates and updates["outcome_state"] is not None:
         job.is_archived = True
-    
-    if "prep_notes" in updates: 
+
+    if "prep_notes" in updates:
         job.notes_updated_at = utc_now()
 
     job.last_activity = utc_now()

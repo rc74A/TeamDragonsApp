@@ -144,6 +144,7 @@ class JobOut(BaseModel):
     prep_notes: str | None = Field(default=None)
     notes_updated_at: datetime | None = None
 
+
 class JobStageHistoryOut(BaseModel):
     """Response body representing a single historical point on the job timeline."""
 
