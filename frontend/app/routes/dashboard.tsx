@@ -369,6 +369,7 @@ export default function Dashboard() {
           deadline_state: jobForm.deadlineState,
           outcome_state: jobForm.outcomeState || null,
           outcome_notes: jobForm.outcomeNotes || null,
+          prep_notes: `${jobForm.aiNotes || ""}\n--- PERSONAL_NOTES_DIVIDER ---\n${jobForm.personalNotes || ""}`,
         }),
       });
 
