@@ -690,23 +690,6 @@ export default function Dashboard() {
                     <h4>{job.title}</h4>
                     <p className="db-card-company"> {job.description}</p>
                     <p className="db-card-company">🏢 {job.company}</p>
-                    <div className="db-inline-stage-wrapper">
-                      <span className="db-card-status">📋 Status:</span>
-                      <select
-                        value={job.stage}
-                        aria-label={`Change pipeline stage for ${job.title}`}
-                        onChange={(e) =>
-                          handleInlineStageChange(job.id, job, e.target.value)
-                        }
-                        className="db-card-inline-select"
-                      >
-                        <option value="Wishlist">Wishlist</option>
-                        <option value="Applied">Applied</option>
-                        <option value="Interviewing">Interviewing</option>
-                        <option value="Offer">Offer</option>
-                        <option value="Rejected">Rejected</option>
-                      </select>
-                    </div>
                     <p className="db-card-status">
                       📍 Location: {job.location}
                     </p>

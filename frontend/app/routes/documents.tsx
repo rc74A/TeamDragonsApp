@@ -11,7 +11,6 @@ import "./dashboard.css";
 
 const BACKEND_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
-type DocType = "resume" | "cover_letter";
 type SortBy = "created_at" | "file_name";
 type Order = "asc" | "desc";
 
@@ -28,6 +27,7 @@ interface DocumentItem {
   doc_type: DocType;
   title: string;
   created_at: string;
+  is_archived: boolean;
   latest_version: DocumentVersion;
 }
 
@@ -66,8 +66,12 @@ export default function Documents() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
 
-  const [duplicatingItem, setDuplicatingItem] = useState<DocumentItem>();
+  const [duplicatingItem, setDuplicatingItem] = useState<DocumentItem | null>(null);
   const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
+
+  const [archiveModalOpen, setArchiveModalOpen] = useState(false);
+  const [archivedDocs, setArchivedDocs] = useState<DocumentItem[]>([]);
+  const [isLoadingArchived, setIsLoadingArchived] = useState(false);
 
   const { getToken } = useAuth();
 
@@ -148,7 +152,7 @@ export default function Documents() {
     newType: string,
   ) => {
     setIsLoading(true);
-    setError(null);
+    setError("");
 
     try {
       const token = await getToken();
@@ -170,7 +174,7 @@ export default function Documents() {
       );
 
       if (!response.ok) {
-        throw new Error("Server failed to duplicate the document.");
+        setError(err instanceof Error ? err.message : "Failed to duplicate item.");
       }
 
       await fetchDocuments();
@@ -206,6 +210,55 @@ export default function Documents() {
     } catch {
       setError("Couldn't load version history.");
     }
+  };
+
+  const fetchArchivedDocuments = async () => {
+    try {
+      setIsLoadingArchived(true);
+      const token = await getToken();
+      if (!token) return;
+
+      const params = new URLSearchParams({
+        sort_by: "created_at",
+        order: "desc",
+        include_archived: "true",
+      });
+
+      const response = await fetch(
+        `${BACKEND_URL}/api/documents?${params.toString()}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      if (!response.ok) return;
+
+      setArchivedDocs(await response.json());
+    } finally {
+      setIsLoadingArchived(false);
+    }
+  };
+
+  const handleArchiveToggle = async (
+    doc: DocumentItem,
+    targetState: "archive" | "restore",
+  ) => {
+    try {
+      const token = await getToken();
+      const response = await fetch(
+        `${BACKEND_URL}/api/documents/${doc.id}/${targetState}`,
+        { method: "POST", headers: { Authorization: `Bearer ${token}` } },
+      );
+      if (!response.ok) throw new Error(`Failed to ${targetState} document.`);
+      await fetchDocuments();
+      await fetchArchivedDocuments();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Action failed.");
+    }
+  };
+
+  const openArchiveModal = () => {
+    setArchiveModalOpen(true);
+    fetchArchivedDocuments();
   };
 
   return (
@@ -311,7 +364,14 @@ export default function Documents() {
               onClick={() => setOrder(order === "asc" ? "desc" : "asc")}
               className="doc-btn doc-btn-ghost"
             >
-              {order === "asc" ? "Oldest first" : "Newest first"}
+              {order === "asc" ? "Descending" : "Ascending"}
+            </button>
+            <button
+              type="button"
+              onClick={openArchiveModal}
+              className="doc-link-view-archived"
+            >
+              View archived
             </button>
           </div>
 
@@ -370,6 +430,13 @@ export default function Documents() {
                   >
                     {expandedId === doc.id ? "Hide history" : "History"}
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => handleArchiveToggle(doc, "archive")}
+                    className="doc-btn doc-btn-ghost"
+                  >
+                    Archive
+                  </button>
                 </div>
 
                 {expandedId === doc.id && (
@@ -412,6 +479,56 @@ export default function Documents() {
               getToken={getToken}
               initialData={duplicatingItem}
             />
+          </div>
+        </div>
+      )}
+
+      {archiveModalOpen && (
+        <div
+          className="doc-modal-overlay"
+          onClick={() => setArchiveModalOpen(false)}
+        >
+          <div
+            className="doc-archive-modal-frame"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="doc-archive-modal-header">
+              <h3>Archived Documents</h3>
+              <button
+                type="button"
+                className="doc-archive-close-btn"
+                onClick={() => setArchiveModalOpen(false)}
+              >
+                ×
+              </button>
+            </div>
+
+            {isLoadingArchived && <p>Loading...</p>}
+
+            {!isLoadingArchived && archivedDocs.length === 0 && (
+              <p className="doc-archive-empty-text">No archived documents.</p>
+            )}
+
+            <div className="doc-archive-list-container">
+              {archivedDocs.map((doc) => (
+                <div key={doc.id} className="doc-archive-item-card">
+                  <div>
+                    <p className="doc-archive-item-title">{doc.title}</p>
+                    <p className="doc-archive-item-subtitle">
+                      {doc.doc_type === "resume" ? "Resume" : "Cover Letter"} ·
+                      v{doc.latest_version.version_number}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="doc-btn-restore"
+                    onClick={() => handleArchiveToggle(doc, "restore")}
+                  >
+                    Restore
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
