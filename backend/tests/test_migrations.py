@@ -60,6 +60,14 @@ def _make_pre_alembic_db(url):
     engine = sa.create_engine(url)
     Base.metadata.create_all(bind=engine)
     with engine.begin() as connection:
+        # Drop anything create_all built that isn't part of the real
+        # pre-Alembic baseline (e.g. tables added to models.py after
+        # baseline was stamped in production), so this fixture doesn't
+        # drift forward every time a new model is added.
+        extra_tables = set(sa.inspect(connection).get_table_names()) - BASELINE_TABLES
+        for table in extra_tables:
+            connection.execute(sa.text(f"DROP TABLE {table}"))
+
         connection.execute(sa.text("DROP TABLE educations"))
         connection.execute(sa.text("DROP TABLE skills"))
         connection.execute(sa.text("DROP TABLE documents"))
