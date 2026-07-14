@@ -37,20 +37,6 @@ def upgrade() -> None:
         )
 
     op.create_table(
-        "document_versions",
-        sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column("document_id", sa.Integer(), nullable=False),
-        sa.Column("version_number", sa.Integer(), nullable=False),
-        sa.Column("file_name", sa.String(length=255), nullable=False),
-        sa.Column("storage_url", sa.String(length=2048), nullable=False),
-        sa.Column("content", sa.Text(), nullable=False),
-        sa.Column("job_snapshot", sa.Text(), nullable=False),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
-        sa.ForeignKeyConstraint(["document_id"], ["documents.id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("id"),
-    )
-
-    op.create_table(
         "educations",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("owner_id", sa.String(length=50), nullable=False),
@@ -212,5 +198,4 @@ def downgrade() -> None:
         batch_op.drop_index(batch_op.f("ix_documents_owner_id"))
 
     op.drop_table("documents")
-    op.drop_table("document_versions", if_exists=True)
     # ### end Alembic commands ###
