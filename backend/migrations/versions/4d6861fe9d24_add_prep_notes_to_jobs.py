@@ -19,18 +19,22 @@ branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
+from alembic import op
+import sqlalchemy as sa
+
 def upgrade() -> None:
-    # 🟢 1. Use SQLAlchemy's inspector to safely check existing columns
+    # 1. Use the clean, modern inspection method to grab current columns
     conn = op.get_bind()
-    inspector = reflection.Inspector.from_engine(conn)
+    inspector = sa.inspect(conn)
     existing_columns = [c["name"] for c in inspector.get_columns("jobs")]
 
     with op.batch_alter_table("jobs", schema=None) as batch_op:
-        # 🟢 2. Always add your new interview preparation notes columns
-        batch_op.add_column(sa.Column("prep_notes", sa.Text(), nullable=True))
-        batch_op.add_column(sa.Column("notes_updated_at", sa.DateTime(), nullable=True))
-
-        # 🟢 3. Only drop 'interview_notes' if it ACTUALLY exists in the database
+        if "prep_notes" not in existing_columns:
+            batch_op.add_column(sa.Column("prep_notes", sa.Text(), nullable=True))
+            
+        if "notes_updated_at" not in existing_columns:
+            batch_op.add_column(sa.Column("notes_updated_at", sa.DateTime(), nullable=True))
+        
         if "interview_notes" in existing_columns:
             batch_op.drop_column("interview_notes")
 
